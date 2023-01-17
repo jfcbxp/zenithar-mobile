@@ -40,10 +40,20 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    AsyncStorage.getItem("user")
-      .then((result) => result && setUser(JSON.parse(result)))
-      .finally(() => setLoading(false));
-  }, [user]);
+    firebaseAuth.onAuthStateChanged((user) => {
+      if (user) {
+        AsyncStorage.getItem("user").then(async (result) => {
+          if (result) {
+            let usuario: User = JSON.parse(result);
+            setUser(usuario);
+          }
+        });
+      } else {
+        firebaseAuth.signOut();
+      }
+      setLoading(false);
+    });
+  }, []);
 
   const signUp = async (
     _email: string,
