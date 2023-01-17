@@ -6,17 +6,27 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 type AuthContextProps = {
   user: User | undefined;
   loading: boolean;
-  signUp(_email: string, _password: string, _nome: string): Promise<void>;
-  signIn(_email: string, _password: string): Promise<void>;
+  signUp(
+    _email: string,
+    _password: string,
+    _fullName: string,
+    _cpf: string,
+    _cellphone: string,
+    _birthDate: string
+  ): Promise<void>;
+  signIn(
+    _email: string,
+    _password: string
+  ): Promise<void>;
   signOut(): Promise<void>;
 };
 
 const defaultState = {
   user: undefined,
   loading: true,
-  signUp: async () => {},
-  signIn: async () => {},
-  signOut: async () => {},
+  signUp: async () => { },
+  signIn: async () => { },
+  signOut: async () => { },
 };
 
 export const AuthContext = createContext<AuthContextProps>(defaultState);
@@ -35,12 +45,27 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .finally(() => setLoading(false));
   }, [user]);
 
-  const signUp = async (_email: string, _password: string, _nome: string) => {
+  const signUp = async (
+    _email: string,
+    _password: string,
+    _fullName: string,
+    _cpf: string,
+    _cellphone: string,
+    _birthDate: string
+  ) => {
     setLoading(true);
     firebaseAuth
       .createUserWithEmailAndPassword(_email, _password)
       .then(async (result) => {
-        result.user && _userRegister(result.user.uid, _email, _nome);
+        result.user && _userRegister(
+          result.user.uid,
+          _email,
+          _password,
+          _fullName,
+          _cpf,
+          _cellphone,
+          _birthDate,
+        )
       })
       .catch((error) => {
         if (error.code === "auth/weak-password") {
@@ -53,16 +78,26 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       });
   };
 
-  const _userRegister = async (_uid: string, _email: string, _nome: string) => {
+  const _userRegister = async (
+    _uid: string,
+    _email: string,
+    _password: string,
+    _fullName: string,
+    _cpf: string,
+    _cellphone: string,
+    _birthDate: string
+  ) => {
     await realtime
       .ref("users")
       .child(_uid)
       .set({
-        nome: _nome,
-        email: _email,
+        fullName: _fullName,
+        cpf: _cpf,
+        cellphone: _cellphone,
+        birthDate: _birthDate,
       })
       .then(() => {
-        let _user: User = { uid: _uid, nome: _nome, email: _email };
+        let _user: User = { uid: _uid, fullName: _fullName, email: _email };
         _storeUser(_user);
       });
   };
@@ -87,10 +122,32 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .then((snapshot) => {
         let _user: User = {
           uid: _uid,
-          nome: snapshot.val().nome,
+          fullName: snapshot.val().fullName,
           email: snapshot.val().email,
         };
-        _storeUser(_user);
+        // Verificação de E-mail
+        firebaseAuth.onAuthStateChanged((user) => {
+          if (user) {
+            if (user.emailVerified) {
+              AsyncStorage.getItem('user')
+                .then(async (result) => {
+                  if (result) {
+                    let _user: User = JSON.parse(result)
+                    setUser(_user)
+                    _storeUser(_user);
+                  }
+                })
+            } else {
+              firebaseAuth.signOut()
+              signOut()
+              alert("Você ainda não verificou seu [e-mail].")
+            }
+          } else {
+            firebaseAuth.signOut()
+            signOut()
+          }
+          setLoading(false)
+        })
       });
   };
 

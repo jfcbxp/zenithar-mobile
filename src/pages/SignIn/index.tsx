@@ -49,7 +49,7 @@ export default function SignIn({ navigation }: Properties) {
           <Button onPress={handleSingIn} title='ENTRAR' />
         </View>
         <CommandLink
-          onPress={() => { }}
+          onPress={() => { navigation.navigate("SignUp") }}
           title='Cadastre-se' />
         <CommandLink
           onPress={() => { }}
