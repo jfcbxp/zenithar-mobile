@@ -1,18 +1,34 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, View, StyleSheet } from "react-native";
 import { TextInput } from "../../components/inputs/text-input";
 import { TextInputMask } from "../../components/inputs/text-input-mask";
 import { Button } from "../../components/buttons/button";
 import { Dialog } from "../../components/modals/dialog";
+import { StackScreenProps } from "@react-navigation/stack";
+import { StackParams } from "../../types/stack.params";
+import { AuthContext } from "../../contexts/auth.provider";
 
-export default function SignUp() {
+interface Properties extends StackScreenProps<StackParams, "SignUp"> { }
+
+export default function SignUp({ navigation }: Properties) {
     const [fullName, setFullName] = useState('')
     const [cpf, setCPF] = useState('')
     const [email, setEmail] = useState('')
     const [cellphone, setCellphone] = useState('')
     const [birthDate, setBirthDate] = useState('')
+    const [password, setPassword] = useState('')
     const [visible, setVisible] = useState(false)
+    const authContext = useContext(AuthContext)
+
+    const handleSignUp = () => {
+        if (email == '' || password == '' || fullName == '' || cpf == '' || cellphone == '' || birthDate == '') {
+            alert('Por favor, preencher todos os campos')
+        } else {
+            authContext.signUp(email, password, fullName, cpf, cellphone, birthDate)
+            setVisible(true)
+        }
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -60,7 +76,14 @@ export default function SignUp() {
                         maxLength={10}
                         placeholder='Data de nascimento'
                         placeholderTextColor='#1F537E' />
-                    <Button onPress={() => setVisible(true)} title="CONTINUAR" />
+                    <TextInput
+                        value={password}
+                        onChangeText={setPassword}
+                        textContentType='password'
+                        secureTextEntry
+                        placeholder='Senha'
+                        placeholderTextColor='#1F537E' />
+                    <Button onPress={handleSignUp} title="CONTINUAR" />
                 </View>
             </View>
             <Dialog
