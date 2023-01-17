@@ -57,15 +57,20 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     firebaseAuth
       .createUserWithEmailAndPassword(_email, _password)
       .then(async (result) => {
-        result.user && _userRegister(
-          result.user.uid,
-          _email,
-          _password,
-          _fullName,
-          _cpf,
-          _cellphone,
-          _birthDate,
-        )
+        if (result.user && result.user.emailVerified) {
+          _userRegister(
+            result.user.uid,
+            _email,
+            _password,
+            _fullName,
+            _cpf,
+            _cellphone,
+            _birthDate,
+          )
+        } else {
+          firebaseAuth.signOut()
+          alert("Você ainda não verificou seu [e-mail].")
+        }
       })
       .catch((error) => {
         if (error.code === "auth/weak-password") {
@@ -76,6 +81,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           alert(error);
         }
       });
+    setLoading(false)
   };
 
   const _userRegister = async (
@@ -107,11 +113,17 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     firebaseAuth
       .signInWithEmailAndPassword(_email, _password)
       .then(async (result) => {
-        result.user && _getUserRegister(result.user.uid);
+        if (result.user && result.user.emailVerified) {
+          _getUserRegister(result.user.uid);
+        } else {
+          firebaseAuth.signOut()
+          alert("Você ainda não verificou seu [e-mail].")
+        }
       })
       .catch((error) => {
         alert(error.code);
       });
+    setLoading(false)
   };
 
   const _getUserRegister = async (_uid: string) => {
@@ -125,29 +137,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           fullName: snapshot.val().fullName,
           email: snapshot.val().email,
         };
-        // Verificação de E-mail
-        firebaseAuth.onAuthStateChanged((user) => {
-          if (user) {
-            if (user.emailVerified) {
-              AsyncStorage.getItem('user')
-                .then(async (result) => {
-                  if (result) {
-                    let _user: User = JSON.parse(result)
-                    setUser(_user)
-                    _storeUser(_user);
-                  }
-                })
-            } else {
-              firebaseAuth.signOut()
-              signOut()
-              alert("Você ainda não verificou seu [e-mail].")
-            }
-          } else {
-            firebaseAuth.signOut()
-            signOut()
-          }
-          setLoading(false)
-        })
+        _storeUser(_user);
       });
   };
 
