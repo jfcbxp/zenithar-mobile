@@ -13,22 +13,19 @@ type AuthContextProps = {
     _cpf: string,
     _cellphone: string,
     _birthDate: string,
-    _portrait: string,
+    _portrait: string
   ): Promise<void>;
-  signIn(
-    _email: string,
-    _password: string
-  ): Promise<void>;
+  signIn(_email: string, _password: string): Promise<void>;
   signOut(): Promise<void>;
 };
 
 const defaultState = {
   user: undefined,
   loading: true,
-  signUp: async () => { },
-  signIn: async () => { },
-  signOut: async () => { },
-  uploadImage: async () => { },
+  signUp: async () => {},
+  signIn: async () => {},
+  signOut: async () => {},
+  uploadImage: async () => {},
 };
 
 export const AuthContext = createContext<AuthContextProps>(defaultState);
@@ -44,12 +41,17 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     firebaseAuth.onAuthStateChanged((user) => {
       if (user) {
-        AsyncStorage.getItem("user").then(async (result) => {
-          if (result) {
-            let usuario: User = JSON.parse(result);
-            setUser(usuario);
-          }
-        });
+        if (user.emailVerified) {
+          AsyncStorage.getItem("user").then(async (result) => {
+            if (result) {
+              let usuario: User = JSON.parse(result);
+              setUser(usuario);
+            }
+          });
+        } else {
+          alert("Por favor verifique seu [e-mail].");
+          firebaseAuth.signOut();
+        }
       } else {
         firebaseAuth.signOut();
       }
@@ -64,14 +66,14 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     _cpf: string,
     _cellphone: string,
     _birthDate: string,
-    _portrait: string,
+    _portrait: string
   ) => {
     setLoading(true);
-    firebaseAuth
+    await firebaseAuth
       .createUserWithEmailAndPassword(_email, _password)
       .then(async (result) => {
         if (result.user) {
-          _userRegister(
+          await _userRegister(
             result.user.uid,
             _email,
             _password,
@@ -79,12 +81,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             _cpf,
             _cellphone,
             _birthDate,
-            _portrait,
-          )
-          if (!result.user.emailVerified) {
-            firebaseAuth.signOut()
-            alert("Você ainda não verificou seu [e-mail].")
-          }
+            _portrait
+          );
         }
       })
       .catch((error) => {
@@ -96,19 +94,23 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           alert(error);
         }
       });
-    setLoading(false)
   };
 
   const uploadImage = async (_portrait: string) => {
-    const response = await fetch(_portrait)
-    const blob = await response.blob()
-    const filename = _portrait.substring(_portrait.lastIndexOf('/') + 1)
-    // o comando funciona apenas para salvar na storage
-    storage.ref("images").child(filename).put(blob).then(() => {
-      storage.ref("images").getDownloadURL().then((url) => { console.log(url) })
-    })
-    // return storage.refFromURL
-  }
+    const response = await fetch(_portrait);
+    const blob = await response.blob();
+    const filename = _portrait.substring(_portrait.lastIndexOf("/") + 1);
+    let urlImage = "";
+    await storage
+      .ref()
+      .child(`images/${filename}`)
+      .put(blob)
+      .then(async (snapshot) => {
+        urlImage = await snapshot.ref.getDownloadURL();
+      })
+      .catch((error) => console.log(error));
+    return urlImage;
+  };
 
   const _userRegister = async (
     _uid: string,
@@ -118,9 +120,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     _cpf: string,
     _cellphone: string,
     _birthDate: string,
-    _portrait: string,
+    _portrait: string
   ) => {
-    const _portraitURL = uploadImage(_portrait)
+    const _portraitURL = await uploadImage(_portrait);
     await realtime
       .ref("users")
       .child(_uid)
@@ -132,7 +134,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         portrait: _portraitURL,
       })
       .then(() => {
-        let _user: User = { uid: _uid, fullName: _fullName, email: _email, portrait: _portrait };
+        let _user: User = {
+          uid: _uid,
+          fullName: _fullName,
+          email: _email,
+          portrait: _portrait,
+        };
         _storeUser(_user);
       });
   };
@@ -142,17 +149,13 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     firebaseAuth
       .signInWithEmailAndPassword(_email, _password)
       .then(async (result) => {
-        if (result.user && result.user.emailVerified) {
+        if (result.user) {
           _getUserRegister(result.user.uid);
-        } else {
-          firebaseAuth.signOut()
-          alert("Você ainda não verificou seu [e-mail].")
         }
       })
       .catch((error) => {
         alert(error.code);
       });
-    setLoading(false)
   };
 
   const _getUserRegister = async (_uid: string) => {
@@ -174,7 +177,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const _storeUser = async (_user: User) => {
     let jsonUser = JSON.stringify(_user);
     await AsyncStorage.setItem("user", jsonUser);
-    setUser(_user);
   };
 
   const signOut = async () => {
@@ -182,7 +184,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     await firebaseAuth.signOut();
     await AsyncStorage.clear();
     setUser(undefined);
-    setLoading(false);
   };
 
   return (
