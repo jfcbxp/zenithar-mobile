@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import { User } from "../models/user.model";
 import { firebaseAuth, storage, realtime } from "../services/firebase.service";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Alert } from "react-native";
 
 type AuthContextProps = {
   user: User | undefined;
@@ -10,9 +11,6 @@ type AuthContextProps = {
     _email: string,
     _password: string,
     _fullName: string,
-    _cpf: string,
-    _cellphone: string,
-    _birthDate: string,
     _portrait: string
   ): Promise<void>;
   signIn(_email: string, _password: string): Promise<void>;
@@ -22,10 +20,10 @@ type AuthContextProps = {
 const defaultState = {
   user: undefined,
   loading: true,
-  signUp: async () => {},
-  signIn: async () => {},
-  signOut: async () => {},
-  uploadImage: async () => {},
+  signUp: async () => { },
+  signIn: async () => { },
+  signOut: async () => { },
+  uploadImage: async () => { },
 };
 
 export const AuthContext = createContext<AuthContextProps>(defaultState);
@@ -49,7 +47,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             }
           });
         } else {
-          alert("Por favor verifique seu [e-mail].");
+          Alert.alert("E-mail não verificado", "Por favor verifique seu [e-mail].")
           firebaseAuth.signOut();
         }
       } else {
@@ -63,9 +61,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     _email: string,
     _password: string,
     _fullName: string,
-    _cpf: string,
-    _cellphone: string,
-    _birthDate: string,
     _portrait: string
   ) => {
     setLoading(true);
@@ -78,18 +73,15 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             _email,
             _password,
             _fullName,
-            _cpf,
-            _cellphone,
-            _birthDate,
             _portrait
           );
         }
       })
       .catch((error) => {
         if (error.code === "auth/weak-password") {
-          alert("Informe uma senha mais forte.");
+          Alert.alert("Senha fraca", "Informe uma senha mais forte.")
         } else if (error.code === "auth/invalid-email") {
-          alert("E-mail inválido.");
+          Alert.alert("E-mail inválido", "Por favor informe um e-mail válido.")
         } else {
           alert(error);
         }
@@ -117,9 +109,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     _email: string,
     _password: string,
     _fullName: string,
-    _cpf: string,
-    _cellphone: string,
-    _birthDate: string,
     _portrait: string
   ) => {
     const _portraitURL = await uploadImage(_portrait);
@@ -128,9 +117,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .child(_uid)
       .set({
         fullName: _fullName,
-        cpf: _cpf,
-        cellphone: _cellphone,
-        birthDate: _birthDate,
         portrait: _portraitURL,
       })
       .then(() => {
