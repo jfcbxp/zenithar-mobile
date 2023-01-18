@@ -15,15 +15,16 @@ type AuthContextProps = {
   ): Promise<void>;
   signIn(_email: string, _password: string): Promise<void>;
   signOut(): Promise<void>;
+  recoverPassword(_email: string): Promise<void>;
 };
 
 const defaultState = {
   user: undefined,
   loading: true,
-  signUp: async () => {},
-  signIn: async () => {},
-  signOut: async () => {},
-  uploadImage: async () => {},
+  signUp: async () => { },
+  signIn: async () => { },
+  signOut: async () => { },
+  recoverPassword: async () => { },
 };
 
 export const AuthContext = createContext<AuthContextProps>(defaultState);
@@ -186,15 +187,22 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     await AsyncStorage.setItem("user", jsonUser);
   };
 
+  const recoverPassword = async (_email: string) => {
+    await firebaseAuth.sendPasswordResetEmail(_email).catch((error) => {
+      Alert.alert("Erro", `Não foi encontrado um usuário com o endereço de e-mail fornecido. ${error.message}`)
+    })
+  }
+
   const signOut = async () => {
     setLoading(true);
     await firebaseAuth.signOut();
     await AsyncStorage.clear();
     setUser(undefined);
+    setLoading(false)
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut, recoverPassword }}>
       {children}
     </AuthContext.Provider>
   );
