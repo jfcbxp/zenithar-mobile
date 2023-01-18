@@ -20,10 +20,10 @@ type AuthContextProps = {
 const defaultState = {
   user: undefined,
   loading: true,
-  signUp: async () => { },
-  signIn: async () => { },
-  signOut: async () => { },
-  uploadImage: async () => { },
+  signUp: async () => {},
+  signIn: async () => {},
+  signOut: async () => {},
+  uploadImage: async () => {},
 };
 
 export const AuthContext = createContext<AuthContextProps>(defaultState);
@@ -35,29 +35,30 @@ type AuthProviderProps = {
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState<boolean>(true);
-  const [holdUp, isHoldUp] = useState<boolean>(false)
 
   useEffect(() => {
-    if (holdUp == false) {
-      firebaseAuth.onAuthStateChanged((user) => {
-        if (user) {
-          if (user.emailVerified) {
-            AsyncStorage.getItem("user").then(async (result) => {
-              if (result) {
-                let usuario: User = JSON.parse(result);
-                setUser(usuario);
-              }
-            });
-          } else {
-            Alert.alert("E-mail não verificado", "Por favor verifique seu [e-mail].")
-            firebaseAuth.signOut();
-          }
+    firebaseAuth.onAuthStateChanged((user) => {
+      if (user) {
+        if (user.emailVerified) {
+          AsyncStorage.getItem("user").then(async (result) => {
+            if (result) {
+              let usuario: User = JSON.parse(result);
+              setUser(usuario);
+            }
+          });
         } else {
+          Alert.alert(
+            "E-mail não verificado",
+            "Por favor verifique seu [e-mail]."
+          );
+
           firebaseAuth.signOut();
         }
-        setLoading(false);
-      });
-    }
+      } else {
+        firebaseAuth.signOut();
+      }
+      setLoading(false);
+    });
   }, []);
 
   const signUp = async (
@@ -66,33 +67,36 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     _fullName: string,
     _portrait: string
   ) => {
-    isHoldUp(true)
     setLoading(true);
     await firebaseAuth
       .createUserWithEmailAndPassword(_email, _password)
       .then(async (result) => {
         if (result.user != null) {
-          let validate = true
-          firebaseAuth.languageCode = 'pt'
+          let validate = true;
+          firebaseAuth.languageCode = "pt";
           result.user.sendEmailVerification().catch((error) => {
-            validate = false
-            Alert.alert('Erro', `Erro ao enviar o e-mail de verificação. ${error.message}`)
+            validate = false;
+            Alert.alert(
+              "Erro",
+              `Erro ao enviar o e-mail de verificação. ${error.message}`
+            );
           });
-          if (result.user && (validate == true)) {
+          if (result.user && validate == true) {
             await _userRegister(
               result.user.uid,
               _email,
               _password,
               _fullName,
               _portrait
-            )
+            );
           }
         }
-      }).catch((error) => {
+      })
+      .catch((error) => {
         if (error.code === "auth/weak-password") {
-          Alert.alert("Senha fraca", "Informe uma senha mais forte.")
+          Alert.alert("Senha fraca", "Informe uma senha mais forte.");
         } else if (error.code === "auth/invalid-email") {
-          Alert.alert("E-mail inválido", "Por favor informe um e-mail válido.")
+          Alert.alert("E-mail inválido", "Por favor informe um e-mail válido.");
         } else {
           Alert.alert("Erro", `Ocorreu um problema. ${error.message}`);
         }
@@ -138,7 +142,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           portrait: _portrait,
         };
         _storeUser(_user);
-        isHoldUp(false)
       });
   };
 
@@ -153,7 +156,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       })
       .catch((error) => {
         if (error) {
-          Alert.alert("Inválido", "Nenhum usuário encontrado com as credenciais fornecidas.");
+          Alert.alert(
+            "Inválido",
+            "Nenhum usuário encontrado com as credenciais fornecidas."
+          );
         }
         setLoading(false);
       });
