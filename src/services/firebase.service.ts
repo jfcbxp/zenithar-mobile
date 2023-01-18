@@ -2,6 +2,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import "firebase/compat/database";
+import "firebase/compat/storage"
 import {
   API_KEY,
   AUTH_DOMAIN,
@@ -26,6 +27,7 @@ const firebaseConfig = {
   measurementId: MEASUREMENT_ID,
   databaseURL: DATABASE_URL,
 };
+
 const fireApp = firebase.initializeApp(firebaseConfig);
 
 initializeAuth(fireApp, {
@@ -37,5 +39,7 @@ export const firebaseAuth = fireApp.auth();
 export const firestore = fireApp.firestore();
 
 export const realtime = fireApp.database();
+
+export const storage = fireApp.storage();
 
 export default fireApp;

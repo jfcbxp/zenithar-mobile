@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, View, StyleSheet } from "react-native";
 import { TextInput } from "../../components/inputs/text-input";
@@ -8,6 +8,8 @@ import { Dialog } from "../../components/modals/dialog";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { AuthContext } from "../../contexts/auth.provider";
+import * as ImagePicker from 'expo-image-picker';
+import Portrait from "../../components/portrait/portrait";
 
 interface Properties extends StackScreenProps<StackParams, "SignUp"> { }
 
@@ -21,11 +23,24 @@ export default function SignUp({ navigation }: Properties) {
     const [visible, setVisible] = useState(false)
     const authContext = useContext(AuthContext)
 
+    const [portrait, setPortrait] = useState('')
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 0.5,
+        })
+        if (!result.canceled) {
+            setPortrait(result.assets[0].uri)
+        }
+    }
+
     const handleSignUp = () => {
         if (email == '' || password == '' || fullName == '' || cpf == '' || cellphone == '' || birthDate == '') {
             alert('Por favor, preencher todos os campos')
         } else {
-            authContext.signUp(email, password, fullName, cpf, cellphone, birthDate)
+            authContext.signUp(email, password, fullName, cpf, cellphone, birthDate, portrait)
             setVisible(true)
         }
     }
@@ -34,6 +49,9 @@ export default function SignUp({ navigation }: Properties) {
         <SafeAreaView style={styles.container}>
             <View style={{ marginHorizontal: '10%' }}>
                 <View>
+                    <Portrait
+                        source={portrait}
+                        onPress={pickImage} />
                     <TextInput
                         value={fullName}
                         onChangeText={setFullName}
