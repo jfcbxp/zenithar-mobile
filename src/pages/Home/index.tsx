@@ -1,22 +1,34 @@
-import { useContext } from "react";
+import { useState, useEffect } from "react";
 import { StatusBar } from 'expo-status-bar';
 import { StackScreenProps } from "@react-navigation/stack";
 import { SafeAreaView, View, StyleSheet, ScrollView } from "react-native";
-import { Button } from "../../components/buttons/button";
-import { AuthContext } from "../../contexts/auth.provider";
 import { StackParams } from "../../types/stack.params";
 import { Header } from "../../components/headers/header";
 import { NavigationButton } from "../../components/buttons/navigation-button";
+import { User } from "../../models/user.model";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Properties extends StackScreenProps<StackParams, "Home"> { }
 
 export default function Home({ navigation }: Properties) {
-    const authContext = useContext(AuthContext)
+    const [user, setUser] = useState<User>()
+
+    useEffect(() => {
+        AsyncStorage.getItem("user").then(async (result) => {
+            if (result) {
+                let _user: User = JSON.parse(result);
+                setUser(_user);
+            }
+        })
+    }, [])
 
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
-                <Header fullName="William" imageURL="" returnOption={false} />
+                <Header
+                    fullName={user?.fullName}
+                    imageURL={user?.portrait}
+                    returnOption={false} />
             </View>
             <ScrollView
                 horizontal={true}

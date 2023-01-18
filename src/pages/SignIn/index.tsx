@@ -36,6 +36,7 @@ export default function SignIn({ navigation }: Properties) {
             onChangeText={setEmail}
             textContentType="emailAddress"
             keyboardType="email-address"
+            autoCapitalize="none"
             placeholder="E-mail"
             placeholderTextColor="#1F537E"
             maxFontSizeMultiplier={14} />
@@ -44,6 +45,7 @@ export default function SignIn({ navigation }: Properties) {
             onChangeText={setPassword}
             textContentType='password'
             secureTextEntry
+            autoCapitalize="none"
             placeholder='Senha'
             placeholderTextColor='#1F537E' />
           <Button onPress={handleSingIn} title='ENTRAR' />

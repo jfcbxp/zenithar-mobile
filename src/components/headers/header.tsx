@@ -6,7 +6,7 @@ import { MaterialIcons as Icon } from '@expo/vector-icons';
 
 interface Properties {
     imageURL?: string
-    fullName: string
+    fullName?: string
     department?: string
     returnOption: boolean
 }

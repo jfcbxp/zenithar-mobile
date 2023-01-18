@@ -68,6 +68,7 @@ export default function SignUp({ navigation }: Properties) {
             onChangeText={setEmail}
             textContentType="emailAddress"
             keyboardType="email-address"
+            autoCapitalize="none"
             maxFontSizeMultiplier={14}
             placeholder="E-mail"
             placeholderTextColor="#1F537E"
@@ -77,6 +78,7 @@ export default function SignUp({ navigation }: Properties) {
             onChangeText={setPassword}
             textContentType="password"
             secureTextEntry
+            autoCapitalize="none"
             placeholder="Senha"
             placeholderTextColor="#1F537E"
           />
@@ -84,8 +86,8 @@ export default function SignUp({ navigation }: Properties) {
         </View>
       </View>
       <Dialog
-        title="Validação de e-mail"
-        content="Em alguns instantes uma mensagem de e-mail chegará em sua caixa de entrada com as instruções para ativar da sua conta."
+        title="Verificação de e-mail"
+        content={"Aguarde. Um e-mail de verificação foi enviado para: " + email + ". Após a verificação, tente efetuar acesso."}
         visible={visible}
         dismiss={() => {
           setVisible(false)
