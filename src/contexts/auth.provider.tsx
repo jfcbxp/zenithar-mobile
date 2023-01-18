@@ -20,10 +20,10 @@ type AuthContextProps = {
 const defaultState = {
   user: undefined,
   loading: true,
-  signUp: async () => { },
-  signIn: async () => { },
-  signOut: async () => { },
-  uploadImage: async () => { },
+  signUp: async () => {},
+  signIn: async () => {},
+  signOut: async () => {},
+  uploadImage: async () => {},
 };
 
 export const AuthContext = createContext<AuthContextProps>(defaultState);
@@ -47,7 +47,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             }
           });
         } else {
-          Alert.alert("E-mail não verificado", "Por favor verifique seu [e-mail].")
+          Alert.alert(
+            "E-mail não verificado",
+            "Por favor verifique seu [e-mail]."
+          );
+
           firebaseAuth.signOut();
         }
       } else {
@@ -67,23 +71,34 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     await firebaseAuth
       .createUserWithEmailAndPassword(_email, _password)
       .then(async (result) => {
-        if (result.user) {
-          await _userRegister(
-            result.user.uid,
-            _email,
-            _password,
-            _fullName,
-            _portrait
-          );
+        if (result.user != null) {
+          let validate = true;
+          firebaseAuth.languageCode = "pt";
+          result.user.sendEmailVerification().catch((error) => {
+            validate = false;
+            Alert.alert(
+              "Erro",
+              `Erro ao enviar o e-mail de verificação. ${error.message}`
+            );
+          });
+          if (result.user && validate == true) {
+            await _userRegister(
+              result.user.uid,
+              _email,
+              _password,
+              _fullName,
+              _portrait
+            );
+          }
         }
       })
       .catch((error) => {
         if (error.code === "auth/weak-password") {
-          Alert.alert("Senha fraca", "Informe uma senha mais forte.")
+          Alert.alert("Senha fraca", "Informe uma senha mais forte.");
         } else if (error.code === "auth/invalid-email") {
-          Alert.alert("E-mail inválido", "Por favor informe um e-mail válido.")
+          Alert.alert("E-mail inválido", "Por favor informe um e-mail válido.");
         } else {
-          alert(error);
+          Alert.alert("Erro", `Ocorreu um problema. ${error.message}`);
         }
       });
   };
@@ -140,7 +155,13 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         }
       })
       .catch((error) => {
-        alert(error.code);
+        if (error) {
+          Alert.alert(
+            "Inválido",
+            "Nenhum usuário encontrado com as credenciais fornecidas."
+          );
+        }
+        setLoading(false);
       });
   };
 

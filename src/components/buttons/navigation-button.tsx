@@ -10,12 +10,12 @@ export function NavigationButton(properties: Properties) {
     return (
         <Pressable {...properties}
             style={styles.container}>
-            <View>
+            <View style={styles.area}>
                 <Icon
                     name={properties.icon}
-                    size={38}
+                    size={48}
                     color="#123262"
-                    style={{ marginVertical: 16 }} />
+                    style={{alignSelf: 'center'}} />
                 <Text style={styles.text}>{properties.title}</Text>
             </View>
         </Pressable>
@@ -32,12 +32,16 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         alignItems: 'center',
     },
+    area: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+    },
     text: {
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: 'bold',
         color: "#123262",
         textAlign: 'center',
         textAlignVertical: 'center',
-        marginTop: -26
     }
 })

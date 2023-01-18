@@ -11,7 +11,7 @@ import { AuthContext } from "../../contexts/auth.provider";
 import * as ImagePicker from "expo-image-picker";
 import Portrait from "../../components/portrait/portrait";
 
-interface Properties extends StackScreenProps<StackParams, "SignUp"> { }
+interface Properties extends StackScreenProps<StackParams, "SignUp"> {}
 
 export default function SignUp({ navigation }: Properties) {
   const [fullName, setFullName] = useState("");
@@ -34,20 +34,9 @@ export default function SignUp({ navigation }: Properties) {
   };
 
   const handleSignUp = () => {
-    if (
-      email == "" ||
-      password == "" ||
-      fullName == "" ||
-      portrait == ""
-    ) {
+    if (email == "" || password == "" || fullName == "" || portrait == "") {
       alert("Por favor, preencher todos os campos");
     } else {
-      authContext.signUp(
-        email,
-        password,
-        fullName,
-        portrait
-      );
       setVisible(true);
     }
   };
@@ -68,6 +57,7 @@ export default function SignUp({ navigation }: Properties) {
             onChangeText={setEmail}
             textContentType="emailAddress"
             keyboardType="email-address"
+            autoCapitalize="none"
             maxFontSizeMultiplier={14}
             placeholder="E-mail"
             placeholderTextColor="#1F537E"
@@ -77,6 +67,7 @@ export default function SignUp({ navigation }: Properties) {
             onChangeText={setPassword}
             textContentType="password"
             secureTextEntry
+            autoCapitalize="none"
             placeholder="Senha"
             placeholderTextColor="#1F537E"
           />
@@ -84,13 +75,17 @@ export default function SignUp({ navigation }: Properties) {
         </View>
       </View>
       <Dialog
-        title="Validação de e-mail"
-        content="Em alguns instantes uma mensagem de e-mail chegará em sua caixa de entrada com as instruções para ativar da sua conta."
+        title="Verificação de e-mail"
+        content={
+          "Aguarde. Um e-mail de verificação foi enviado para: " +
+          email +
+          ". Após a verificação, tente efetuar acesso."
+        }
         visible={visible}
         dismiss={() => {
-          setVisible(false)
-          authContext.signOut()
-          navigation.navigate("SignIn")
+          setVisible(false);
+          authContext.signUp(email, password, fullName, portrait);
+          navigation.navigate("SignIn");
         }}
       />
       <StatusBar style="light" backgroundColor="silver" />
