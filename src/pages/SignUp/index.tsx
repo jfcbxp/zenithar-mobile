@@ -1,8 +1,6 @@
 import { useContext, useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView, View, StyleSheet } from "react-native";
-import { TextInput } from "../../components/inputs/text-input";
-import { TextInputMask } from "../../components/inputs/text-input-mask";
 import { Button } from "../../components/buttons/button";
 import { Dialog } from "../../components/modals/dialog";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -10,8 +8,11 @@ import { StackParams } from "../../types/stack.params";
 import { AuthContext } from "../../contexts/auth.provider";
 import * as ImagePicker from "expo-image-picker";
 import Portrait from "../../components/portrait/portrait";
+import { EmailInput } from "../../components/inputs/email-input";
+import { PasswordInput } from "../../components/inputs/password-input";
+import { FullNameInput } from "../../components/inputs/fullname-input";
 
-interface Properties extends StackScreenProps<StackParams, "SignUp"> {}
+interface Properties extends StackScreenProps<StackParams, "SignUp"> { }
 
 export default function SignUp({ navigation }: Properties) {
   const [fullName, setFullName] = useState("");
@@ -46,31 +47,16 @@ export default function SignUp({ navigation }: Properties) {
       <View style={{ marginHorizontal: "10%" }}>
         <View>
           <Portrait source={portrait} onPress={pickImage} />
-          <TextInput
+          <FullNameInput
             value={fullName}
             onChangeText={setFullName}
-            placeholder="Nome completo"
-            placeholderTextColor="#1F537E"
           />
-          <TextInput
+          <EmailInput
             value={email}
-            onChangeText={setEmail}
-            textContentType="emailAddress"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            maxFontSizeMultiplier={14}
-            placeholder="E-mail"
-            placeholderTextColor="#1F537E"
-          />
-          <TextInput
+            onChangeText={setEmail} />
+          <PasswordInput
             value={password}
-            onChangeText={setPassword}
-            textContentType="password"
-            secureTextEntry
-            autoCapitalize="none"
-            placeholder="Senha"
-            placeholderTextColor="#1F537E"
-          />
+            onChangeText={setPassword} />
           <Button onPress={handleSignUp} title="CONTINUAR" />
         </View>
       </View>

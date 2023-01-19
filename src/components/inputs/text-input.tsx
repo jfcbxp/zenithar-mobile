@@ -2,11 +2,11 @@ import { StyleSheet, TextInput as ReactNativeTextInput, TextInputProps } from "r
 
 export function TextInput(properties: TextInputProps) {
     return (
-        <ReactNativeTextInput {...properties} style={styles.input} />
+        <ReactNativeTextInput {...properties} style={TextInputStyles.input} />
     )
 }
 
-const styles = StyleSheet.create({
+export const TextInputStyles = StyleSheet.create({
     input: {
         width: '100%',
         height: 40,

@@ -3,10 +3,10 @@ import { SafeAreaView, View, StyleSheet, Alert } from "react-native"
 import { StatusBar } from 'expo-status-bar';
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
-import { TextInput } from "../../components/inputs/text-input";
 import { Button } from "../../components/buttons/button";
 import { Dialog } from "../../components/modals/dialog";
 import { AuthContext } from "../../contexts/auth.provider";
+import { EmailInput } from "../../components/inputs/email-input";
 
 interface Properties extends StackScreenProps<StackParams, "PasswordRecovery"> { }
 
@@ -29,15 +29,9 @@ export default function PasswordRecovery({ navigation }: Properties) {
         <SafeAreaView style={styles.container}>
             <View style={{ marginHorizontal: '10%' }}>
                 <View>
-                    <TextInput
+                    <EmailInput
                         value={email}
-                        onChangeText={setEmail}
-                        textContentType="emailAddress"
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                        placeholder="E-mail"
-                        placeholderTextColor="#1F537E"
-                        maxFontSizeMultiplier={14} />
+                        onChangeText={setEmail} />
                     <Button
                         title='ENVIAR'
                         onPress={() => setVisible(true)} />
