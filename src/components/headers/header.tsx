@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useContext } from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native';
 import { AuthContext } from '../../contexts/auth.provider';
@@ -14,8 +13,7 @@ interface Properties {
 export function Header(properties: Properties) {
     const authContext = useContext(AuthContext)
 
-    const handleSignOut = () => {
-        AsyncStorage.clear()
+    const handleSignOut = async () => {
         authContext.signOut()
     }
 

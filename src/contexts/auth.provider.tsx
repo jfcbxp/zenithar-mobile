@@ -15,6 +15,7 @@ type AuthContextProps = {
   ): Promise<void>;
   signIn(_email: string, _password: string): Promise<void>;
   signOut(): Promise<void>;
+  recoverPassword(_email: string): Promise<void>;
 };
 
 const defaultState = {
@@ -23,7 +24,7 @@ const defaultState = {
   signUp: async () => {},
   signIn: async () => {},
   signOut: async () => {},
-  uploadImage: async () => {},
+  recoverPassword: async () => {},
 };
 
 export const AuthContext = createContext<AuthContextProps>(defaultState);
@@ -37,25 +38,20 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    firebaseAuth.onAuthStateChanged((user) => {
+    firebaseAuth.onAuthStateChanged(async (user) => {
       if (user) {
         if (user.emailVerified) {
-          AsyncStorage.getItem("user").then(async (result) => {
-            if (result) {
-              let usuario: User = JSON.parse(result);
-              setUser(usuario);
-            }
-          });
+          await _getUserRegister(user.uid);
         } else {
           Alert.alert(
             "E-mail não verificado",
             "Por favor verifique seu [e-mail]."
           );
 
-          firebaseAuth.signOut();
+          signOut();
         }
       } else {
-        firebaseAuth.signOut();
+        signOut();
       }
       setLoading(false);
     });
@@ -147,13 +143,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signIn = async (_email: string, _password: string) => {
     setLoading(true);
-    firebaseAuth
+    await firebaseAuth
       .signInWithEmailAndPassword(_email, _password)
-      .then(async (result) => {
-        if (result.user) {
-          _getUserRegister(result.user.uid);
-        }
-      })
       .catch((error) => {
         if (error) {
           Alert.alert(
@@ -170,20 +161,30 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .ref("users")
       .child(_uid)
       .once("value")
-      .then((snapshot) => {
+      .then(async (snapshot) => {
         let _user: User = {
           uid: _uid,
           fullName: snapshot.val().fullName,
           email: snapshot.val().email,
           portrait: snapshot.val().portrait,
         };
-        _storeUser(_user);
+        await _storeUser(_user);
       });
   };
 
   const _storeUser = async (_user: User) => {
     let jsonUser = JSON.stringify(_user);
     await AsyncStorage.setItem("user", jsonUser);
+    setUser(_user);
+  };
+
+  const recoverPassword = async (_email: string) => {
+    await firebaseAuth.sendPasswordResetEmail(_email).catch((error) => {
+      Alert.alert(
+        "Erro",
+        `Não foi encontrado um usuário com o endereço de e-mail fornecido. ${error.message}`
+      );
+    });
   };
 
   const signOut = async () => {
@@ -191,10 +192,13 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     await firebaseAuth.signOut();
     await AsyncStorage.clear();
     setUser(undefined);
+    setLoading(false);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{ user, loading, signUp, signIn, signOut, recoverPassword }}
+    >
       {children}
     </AuthContext.Provider>
   );

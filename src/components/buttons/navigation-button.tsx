@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'space-around',
+        paddingVertical: 16,
     },
     text: {
         fontSize: 16,
