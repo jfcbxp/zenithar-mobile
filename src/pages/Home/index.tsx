@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { StatusBar } from 'expo-status-bar';
 import { StackScreenProps } from "@react-navigation/stack";
 import { SafeAreaView, View, StyleSheet, ScrollView } from "react-native";
@@ -7,11 +7,31 @@ import { Header } from "../../components/headers/header";
 import { NavigationButton } from "../../components/buttons/navigation-button";
 import { User } from "../../models/user.model";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { HomeContainer } from "../../components/containers/home-container";
+import { Historic } from "../../lists/historic";
 
 interface Properties extends StackScreenProps<StackParams, "Home"> { }
 
 export default function Home({ navigation }: Properties) {
     const [user, setUser] = useState<User>()
+    const DATA = [
+        {
+            id: 1,
+            icon: 'check-box',
+            title: 'Liberação orçamento',
+            description: 'DEUSA MARIA COSTA',
+            date: '20 OUT'
+        },
+        {
+            id: 2,
+            icon: 'attach-money',
+            title: 'Desconto orçamento',
+            description: 'R$150,00 (DEUSA MARIA COSTA)',
+            date: '20 OUT'
+        },
+    ]
+    const [containerTitle, setContainerTitle] = useState('Histórico')
+    const [containerChild, setContainerChild] = useState<React.ReactNode>(<Historic data={DATA} />)
 
     useEffect(() => {
         AsyncStorage.getItem("user").then(async (result) => {
@@ -39,14 +59,13 @@ export default function Home({ navigation }: Properties) {
                     title="Desconto"
                     onPress={() => { }} />
                 <View style={{ width: 16 }} />
-                <NavigationButton
-                    icon="shopping-cart"
-                    title="Caixas"
-                    onPress={() => { }} />
+
             </ScrollView>
             <StatusBar style="light" backgroundColor='#212A4D' />
             <View style={styles.field}>
-
+                <HomeContainer title={containerTitle}>
+                    {containerChild}
+                </HomeContainer>
             </View>
         </SafeAreaView>
     )
