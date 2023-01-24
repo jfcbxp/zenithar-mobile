@@ -1,5 +1,5 @@
 import { TextInputMask, TextInputMaskProps } from "react-native-masked-text"
-import { TextInputStyles as styles } from './text-input'
+import { InputStyles as styles } from "./input-styles";
 
 interface Properties extends TextInputMaskProps { }
 

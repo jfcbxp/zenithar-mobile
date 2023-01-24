@@ -13,7 +13,7 @@ interface Properties extends ModalProps {
     dismiss?: ((event: GestureResponderEvent) => void) | undefined
 }
 
-export function Discount(properties: Properties) {
+export function DiscountModal(properties: Properties) {
     const navigation = useNavigation<NavigationParams>()
     const [budget, setBudget] = useState('')
     const [branch, setBranch] = useState<ItemValue>()
@@ -42,7 +42,7 @@ export function Discount(properties: Properties) {
                     </Picker>
                     <SwipeButton
                         title='CONSULTAR'
-                        onSwipeSuccess={() => { }} />
+                        onSwipeSuccess={() => { navigation.navigate("Discount") }} />
                 </View>
             </View>
         </Modal>

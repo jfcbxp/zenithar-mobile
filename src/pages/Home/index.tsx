@@ -9,7 +9,7 @@ import { User } from "../../models/user.model";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HomeContainer } from "../../components/containers/home-container";
 import { Historic } from "../../lists/historic";
-import { Discount } from "../../components/modals/discount";
+import { DiscountModal } from "../../components/modals/discount";
 
 interface Properties extends StackScreenProps<StackParams, "Home"> { }
 
@@ -50,6 +50,8 @@ export default function Home({ navigation }: Properties) {
                 <Header
                     fullName={user?.fullName}
                     imageURL={user?.portrait}
+                    company={user?.company}
+                    department={user?.department}
                     returnOption={false} />
             </View>
             <ScrollView
@@ -66,7 +68,7 @@ export default function Home({ navigation }: Properties) {
                     {containerChild}
                 </HomeContainer>
             </View>
-            <Discount
+            <DiscountModal
                 visible={discount}
                 dismiss={() => { setDiscount(false) }} />
             <StatusBar style="light" backgroundColor='#212A4D' />
@@ -89,7 +91,7 @@ const styles = StyleSheet.create({
         marginHorizontal: '5%',
     },
     field: {
-        flex: 4,
+        flex: 3,
         flexDirection: 'column',
         marginHorizontal: '5%',
     },
