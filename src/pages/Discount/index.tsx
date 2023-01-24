@@ -4,9 +4,9 @@ import { SafeAreaView, View, ScrollView, StyleSheet } from "react-native";
 import { Header } from "../../components/headers/header";
 import { User } from "../../models/user.model";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { HeaderDropdown } from "../../components/dropdowns/header-dropdown";
-import { ItemsDropdown } from "../../components/dropdowns/items-dropdown";
-import { PaymentMethodDropdown } from "../../components/dropdowns/payment-method-dropdown";
+import { HeaderDropdown } from "../../components/dropdowns/discount/header-dropdown";
+import { ItemsDropdown } from "../../components/dropdowns/discount/items-dropdown";
+import { PaymentMethodDropdown } from "../../components/dropdowns/discount/payment-method-dropdown";
 import { StackParams } from "../../types/stack.params";
 import { StackScreenProps } from "@react-navigation/stack";
 
