@@ -74,7 +74,6 @@ export function UserSettings(properties: Properties) {
         currentPassword,
         newPassword
       );
-
       await Updates.reloadAsync();
     }
     handleCancel();

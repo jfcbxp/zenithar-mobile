@@ -7,6 +7,7 @@ import { UserSettings } from '../modals/user-settings';
 interface Properties {
     imageURL?: string
     fullName?: string
+    company?: string
     department?: string
     returnOption: boolean
 }
@@ -32,7 +33,8 @@ export function Header(properties: Properties) {
                         style={styles.image} />
                     <View>
                         <Text style={styles.fullName}>{properties.fullName}</Text>
-                        <Text style={styles.department}>{properties.department ? properties.department : ""}</Text>
+                        <Text style={styles.descriptions}>{properties.company ? properties.company : ""}</Text>
+                        <Text style={styles.descriptions}>{properties.department ? properties.department : ""}</Text>
                     </View>
                     <Icon
                         name='logout'
@@ -79,7 +81,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'white',
     },
-    department: {
+    descriptions: {
         fontSize: 13,
         color: 'white',
     }

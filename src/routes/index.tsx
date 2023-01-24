@@ -13,6 +13,6 @@ export default function Routes() {
       </SafeAreaView>
     )
   } else {
-    return (authContext.user ? <AppRoutes /> : <AuthRoutes />)
+    return (authContext.user && authContext.user.verified ? <AppRoutes /> : <AuthRoutes />)
   }
 }
