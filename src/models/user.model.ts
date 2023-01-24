@@ -3,4 +3,7 @@ export interface User {
   uid: string;
   email: string;
   portrait: string;
+  company: string;
+  department: string;
+  verified: boolean;
 }

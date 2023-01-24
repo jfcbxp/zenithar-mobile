@@ -12,7 +12,8 @@ type AuthContextProps = {
     _email: string,
     _password: string,
     _fullName: string,
-    _portrait: string
+    _portrait: string,
+    _verified: boolean,
   ): Promise<void>;
   signIn(_email: string, _password: string): Promise<void>;
   signOut(): Promise<void>;
@@ -28,11 +29,11 @@ type AuthContextProps = {
 const defaultState = {
   user: undefined,
   loading: true,
-  signUp: async () => {},
-  signIn: async () => {},
-  signOut: async () => {},
-  recoverPassword: async () => {},
-  userUpdate: async () => {},
+  signUp: async () => { },
+  signIn: async () => { },
+  signOut: async () => { },
+  recoverPassword: async () => { },
+  userUpdate: async () => { },
 };
 
 export const AuthContext = createContext<AuthContextProps>(defaultState);
@@ -87,7 +88,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             );
           });
           if (result.user && validate == true) {
-            await _userRegister(result.user.uid, _email, _fullName, _portrait);
+            await _userRegister(result.user.uid, _email, _fullName, false, _portrait);
           }
         }
       })
@@ -142,7 +143,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   ) => {
     setLoading(true);
     let user = firebaseAuth.currentUser!;
-    await _userRegister(user.uid, user.email!, _fullName, _portrait);
+    await _userRegister(user.uid, user.email!, _fullName, true, _portrait);
     if (_currentPassword && _newPassword) {
       await _userUpdatePassword(_currentPassword, _newPassword);
     }
@@ -216,7 +217,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     _uid: string,
     _email: string,
     _fullName: string,
-    _portrait?: string
+    _verified: boolean,
+    _portrait?: string,
   ) => {
     const _portraitURL = _portrait
       ? await _uploadImage(_portrait)
@@ -227,6 +229,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .set({
         fullName: _fullName,
         portrait: _portraitURL,
+        verified: _verified,
       })
       .then(() => {
         let _user: User = {
@@ -234,6 +237,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           fullName: _fullName,
           email: _email,
           portrait: _portraitURL,
+          company: "",
+          department: "",
+          verified: _verified,
         };
         _storeUser(_user);
       });
@@ -250,7 +256,17 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           fullName: snapshot.val().fullName,
           email: snapshot.val().email,
           portrait: snapshot.val().portrait,
+          company: snapshot.val().company,
+          department: snapshot.val().department,
+          verified: snapshot.val().verified,
         };
+        if(!_user.verified) {
+          var currentUser = await firebase.auth().currentUser
+          if(currentUser?.emailVerified) {
+            _user.verified = true
+            await _userRegister(_user.uid, _user.email, _user.fullName, _user.verified, _user.portrait)
+          }
+        }
         await _storeUser(_user);
       });
   };
