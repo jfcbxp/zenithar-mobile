@@ -1,5 +1,5 @@
 import { TextInput, TextInputProps } from "react-native";
-import { TextInputStyles as styles } from "./text-input";
+import { InputStyles as styles } from "./input-styles";
 
 interface Properties extends TextInputProps {
     placeholder?: string

@@ -1,6 +1,7 @@
 export type StackParams = {
     SignIn: undefined
     SignUp: undefined
-    Home: undefined
     PasswordRecovery: undefined
+    Home: undefined
+    Discount: undefined
 }

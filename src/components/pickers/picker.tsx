@@ -1,6 +1,6 @@
 import { StyleSheet, View, Text } from "react-native";
 import { Picker as RNPicker, PickerProps } from "@react-native-picker/picker";
-import { TextInputStyles as styles } from "../inputs/text-input";
+import { InputStyles as styles } from "../inputs/input-styles";
 
 interface Properties extends PickerProps {
     title: string

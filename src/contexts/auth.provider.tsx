@@ -13,7 +13,6 @@ type AuthContextProps = {
     _password: string,
     _fullName: string,
     _portrait: string,
-    _verified: boolean,
   ): Promise<void>;
   signIn(_email: string, _password: string): Promise<void>;
   signOut(): Promise<void>;
