@@ -1,12 +1,22 @@
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, TouchableOpacityProps } from "react-native";
 
 interface Properties extends TouchableOpacityProps {
     title: string
+    disabled?: boolean
 }
 
 export function Button(properties: Properties) {
+    const [opacity, setOpacity] = useState(1)
+    useEffect(() => {
+        if (properties.disabled) {
+            setOpacity(0.5)
+        } else {
+            setOpacity(1)
+        }
+    }, [properties.disabled])
     return (
-        <TouchableOpacity {...properties} style={styles.button}>
+        <TouchableOpacity {...properties} style={[styles.button, { opacity: opacity }]} disabled={properties.disabled}>
             <Text style={styles.text}>{properties.title}</Text>
         </TouchableOpacity>
     )

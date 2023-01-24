@@ -1,7 +1,8 @@
-import { useContext } from 'react';
-import { StyleSheet, View, Text, Image } from 'react-native';
+import { useContext, useState } from 'react';
+import { StyleSheet, View, Text, Image, Pressable } from 'react-native';
 import { AuthContext } from '../../contexts/auth.provider';
 import { MaterialIcons as Icon } from '@expo/vector-icons';
+import { UserSettings } from '../modals/user-settings';
 
 interface Properties {
     imageURL?: string
@@ -12,28 +13,36 @@ interface Properties {
 
 export function Header(properties: Properties) {
     const authContext = useContext(AuthContext)
+    const [visible, setVisible] = useState(false)
 
     const handleSignOut = async () => {
         authContext.signOut()
     }
 
+    const onPress = () => {
+        setVisible(true)
+    }
+
     return (
         <View style={styles.header}>
-            <View style={properties.returnOption === false ? styles.container : styles.containerReturn}>
-                <Image
-                    source={properties.imageURL ? { uri: properties.imageURL } : require('../../../assets/no-user.png')}
-                    style={styles.image} />
-                <View>
-                    <Text style={styles.fullName}>{properties.fullName}</Text>
-                    <Text style={styles.department}>{properties.department ? properties.department : ""}</Text>
+            <Pressable onPress={onPress}>
+                <View style={properties.returnOption === false ? styles.container : styles.containerReturn}>
+                    <Image
+                        source={properties.imageURL ? { uri: properties.imageURL } : require('../../../assets/no-user.png')}
+                        style={styles.image} />
+                    <View>
+                        <Text style={styles.fullName}>{properties.fullName}</Text>
+                        <Text style={styles.department}>{properties.department ? properties.department : ""}</Text>
+                    </View>
+                    <Icon
+                        name='logout'
+                        size={24}
+                        color='white'
+                        onPress={handleSignOut}
+                        style={{ marginLeft: 'auto' }} />
                 </View>
-                <Icon
-                    name='logout'
-                    size={24}
-                    color='white'
-                    onPress={handleSignOut}
-                    style={{ marginLeft: 'auto' }} />
-            </View>
+            </Pressable>
+            <UserSettings visible={visible} dismiss={() => { setVisible(false) }} />
         </View >
     )
 }

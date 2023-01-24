@@ -7,7 +7,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { AuthContext } from "../../contexts/auth.provider";
 import * as ImagePicker from "expo-image-picker";
-import Portrait from "../../components/portrait/portrait";
+import { Portrait } from "../../components/portrait/portrait";
 import { EmailInput } from "../../components/inputs/email-input";
 import { PasswordInput } from "../../components/inputs/password-input";
 import { FullNameInput } from "../../components/inputs/fullname-input";
@@ -50,7 +50,7 @@ export default function SignUp({ navigation }: Properties) {
           <FullNameInput
             value={fullName}
             onChangeText={setFullName}
-          />
+            maxLength={20} />
           <EmailInput
             value={email}
             onChangeText={setEmail} />

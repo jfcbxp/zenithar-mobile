@@ -6,7 +6,7 @@ interface Properties {
     onPress: ((event: GestureResponderEvent) => void)
 }
 
-export default function Portrait(properties: Properties) {
+export function Portrait(properties: Properties) {
     return (
         <View style={styles.container}>
             <Image

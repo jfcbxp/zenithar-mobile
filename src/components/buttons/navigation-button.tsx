@@ -13,7 +13,7 @@ export function NavigationButton(properties: Properties) {
             <View style={styles.area}>
                 <Icon
                     name={properties.icon}
-                    size={48}
+                    size={42}
                     color="#123262"
                     style={{alignSelf: 'center'}} />
                 <Text style={styles.text}>{properties.title}</Text>
@@ -24,8 +24,8 @@ export function NavigationButton(properties: Properties) {
 
 const styles = StyleSheet.create({
     container: {
-        width: 105,
-        height: 105,
+        width: 100,
+        height: 100,
         borderRadius: 18,
         borderWidth: 1,
         borderColor: '#8894ac',
@@ -36,10 +36,10 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'space-around',
-        paddingVertical: 16,
+        paddingVertical: 14,
     },
     text: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'bold',
         color: "#123262",
         textAlign: 'center',
