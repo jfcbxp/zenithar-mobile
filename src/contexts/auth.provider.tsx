@@ -229,6 +229,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .set({
         fullName: _fullName,
         portrait: _portraitURL,
+        company: "",
+        department: "",
         verified: _verified,
       })
       .then(() => {
@@ -260,9 +262,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           department: snapshot.val().department,
           verified: snapshot.val().verified,
         };
-        if(!_user.verified) {
+        if (!_user.verified) {
           var currentUser = await firebase.auth().currentUser
-          if(currentUser?.emailVerified) {
+          if (currentUser?.emailVerified) {
             _user.verified = true
             await _userRegister(_user.uid, _user.email, _user.fullName, _user.verified, _user.portrait)
           }
