@@ -28,7 +28,7 @@ const firebaseConfig = {
   databaseURL: DATABASE_URL,
 };
 
-const fireApp = firebase.initializeApp(firebaseConfig);
+export const fireApp = firebase.initializeApp(firebaseConfig);
 
 initializeAuth(fireApp, {
   persistence: getReactNativePersistence(AsyncStorage),

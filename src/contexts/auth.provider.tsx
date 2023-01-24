@@ -3,6 +3,7 @@ import { User } from "../models/user.model";
 import { firebaseAuth, storage, realtime } from "../services/firebase.service";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
+import firebase from "firebase/compat";
 
 type AuthContextProps = {
   user: User | undefined;
@@ -16,6 +17,12 @@ type AuthContextProps = {
   signIn(_email: string, _password: string): Promise<void>;
   signOut(): Promise<void>;
   recoverPassword(_email: string): Promise<void>;
+  userUpdate(
+    _fullName: string,
+    _portrait?: string,
+    _currentPassword?: string,
+    _newPassword?: string
+  ): Promise<void>;
 };
 
 const defaultState = {
@@ -25,6 +32,7 @@ const defaultState = {
   signIn: async () => {},
   signOut: async () => {},
   recoverPassword: async () => {},
+  userUpdate: async () => {},
 };
 
 export const AuthContext = createContext<AuthContextProps>(defaultState);
@@ -38,16 +46,17 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    firebaseAuth.onAuthStateChanged(async (user) => {
-      if (user) {
-        if (user.emailVerified) {
-          await _getUserRegister(user.uid);
+    firebaseAuth.onAuthStateChanged(async (currentUser) => {
+      if (currentUser) {
+        if (currentUser.emailVerified) {
+          if (!user) {
+            await _getUserRegister(currentUser.uid);
+          }
         } else {
           Alert.alert(
             "E-mail não verificado",
             "Por favor verifique seu [e-mail]."
           );
-
           signOut();
         }
       } else {
@@ -78,13 +87,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             );
           });
           if (result.user && validate == true) {
-            await _userRegister(
-              result.user.uid,
-              _email,
-              _password,
-              _fullName,
-              _portrait
-            );
+            await _userRegister(result.user.uid, _email, _fullName, _portrait);
           }
         }
       })
@@ -99,7 +102,101 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       });
   };
 
-  const uploadImage = async (_portrait: string) => {
+  const signIn = async (_email: string, _password: string) => {
+    setLoading(true);
+    await firebaseAuth
+      .signInWithEmailAndPassword(_email, _password)
+      .catch((error) => {
+        if (error) {
+          Alert.alert(
+            "Inválido",
+            "Nenhum usuário encontrado com as credenciais fornecidas."
+          );
+        }
+        setLoading(false);
+      });
+  };
+
+  const signOut = async () => {
+    setLoading(true);
+    await firebaseAuth.signOut();
+    await AsyncStorage.clear();
+    setUser(undefined);
+    setLoading(false);
+  };
+
+  const recoverPassword = async (_email: string) => {
+    await firebaseAuth.sendPasswordResetEmail(_email).catch((error) => {
+      Alert.alert(
+        "Erro",
+        `Não foi encontrado um usuário com o endereço de e-mail fornecido. ${error.message}`
+      );
+    });
+  };
+
+  const userUpdate = async (
+    _fullName: string,
+    _portrait?: string,
+    _currentPassword?: string,
+    _newPassword?: string
+  ) => {
+    setLoading(true);
+    let user = firebaseAuth.currentUser!;
+    await _userRegister(user.uid, user.email!, _fullName, _portrait);
+    if (_currentPassword && _newPassword) {
+      await _userUpdatePassword(_currentPassword, _newPassword);
+    }
+  };
+
+  const _reauthenticate = async (currentPassword: string) => {
+    var user = firebaseAuth.currentUser!;
+    var credentials = firebase.auth.EmailAuthProvider.credential(
+      user.email!,
+      currentPassword
+    );
+    return await user.reauthenticateWithCredential(credentials);
+  };
+
+  const _userUpdatePassword = async (
+    _currentPassword: string,
+    _newPassword: string
+  ) => {
+    if (_currentPassword && _newPassword) {
+      await _reauthenticate(_currentPassword)
+        .then(async () => {
+          await firebaseAuth.currentUser
+            ?.updatePassword(_newPassword)
+            .then(async () => {
+              await _alertPasswordChange();
+            })
+            .catch((error) => {
+              Alert.alert("Erro", error.message);
+            });
+        })
+        .catch((error) => {
+          Alert.alert("Erro", error.message);
+        });
+    }
+  };
+
+  const _alertPasswordChange = async () =>
+    new Promise((resolve) => {
+      Alert.alert(
+        "Alteração de senha",
+        "Sua senha foi alterada. Efetue acesso novamente.",
+        [
+          {
+            text: "ok",
+            onPress: () => {
+              signOut();
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+    });
+
+  const _uploadImage = async (_portrait: string) => {
     const response = await fetch(_portrait);
     const blob = await response.blob();
     const filename = _portrait.substring(_portrait.lastIndexOf("/") + 1);
@@ -118,11 +215,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const _userRegister = async (
     _uid: string,
     _email: string,
-    _password: string,
     _fullName: string,
-    _portrait: string
+    _portrait?: string
   ) => {
-    const _portraitURL = await uploadImage(_portrait);
+    const _portraitURL = _portrait
+      ? await _uploadImage(_portrait)
+      : user!.portrait!;
     await realtime
       .ref("users")
       .child(_uid)
@@ -135,24 +233,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           uid: _uid,
           fullName: _fullName,
           email: _email,
-          portrait: _portrait,
+          portrait: _portraitURL,
         };
         _storeUser(_user);
-      });
-  };
-
-  const signIn = async (_email: string, _password: string) => {
-    setLoading(true);
-    await firebaseAuth
-      .signInWithEmailAndPassword(_email, _password)
-      .catch((error) => {
-        if (error) {
-          Alert.alert(
-            "Inválido",
-            "Nenhum usuário encontrado com as credenciais fornecidas."
-          );
-        }
-        setLoading(false);
       });
   };
 
@@ -178,26 +261,17 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setUser(_user);
   };
 
-  const recoverPassword = async (_email: string) => {
-    await firebaseAuth.sendPasswordResetEmail(_email).catch((error) => {
-      Alert.alert(
-        "Erro",
-        `Não foi encontrado um usuário com o endereço de e-mail fornecido. ${error.message}`
-      );
-    });
-  };
-
-  const signOut = async () => {
-    setLoading(true);
-    await firebaseAuth.signOut();
-    await AsyncStorage.clear();
-    setUser(undefined);
-    setLoading(false);
-  };
-
   return (
     <AuthContext.Provider
-      value={{ user, loading, signUp, signIn, signOut, recoverPassword }}
+      value={{
+        user,
+        loading,
+        signUp,
+        signIn,
+        signOut,
+        recoverPassword,
+        userUpdate,
+      }}
     >
       {children}
     </AuthContext.Provider>

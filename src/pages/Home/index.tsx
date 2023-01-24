@@ -58,15 +58,13 @@ export default function Home({ navigation }: Properties) {
                     icon="attach-money"
                     title="Desconto"
                     onPress={() => { }} />
-                <View style={{ width: 16 }} />
-
             </ScrollView>
-            <StatusBar style="light" backgroundColor='#212A4D' />
             <View style={styles.field}>
                 <HomeContainer title={containerTitle}>
                     {containerChild}
                 </HomeContainer>
             </View>
+            <StatusBar style="light" backgroundColor='#212A4D' />
         </SafeAreaView>
     )
 }

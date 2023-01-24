@@ -16,7 +16,7 @@ export function HistoricItem({ data }: { data: iHistoricItem }) {
             <View style={styles.container}>
                 <Icon
                     name={data.icon}
-                    size={32}
+                    size={28}
                     color="#123262"
                     style={{ alignSelf: 'center' }} />
                 <View>
@@ -37,12 +37,12 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
     },
     text: {
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: 'bold',
         color: '#123262'
     },
     sub: {
-        fontSize: 12,
+        fontSize: 10,
         color: '#8894ac',
     }
 })

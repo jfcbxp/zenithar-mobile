@@ -14,10 +14,10 @@ export function Dialog(properties: Properties) {
             visible={properties.visible}
             transparent={true}
             animationType="fade">
-            <View style={styles.container}>
-                <View style={styles.field}>
-                    <Text style={styles.title}>{properties.title}</Text>
-                    <Text style={styles.content}>{properties.content}</Text>
+            <View style={DialogStyles.container}>
+                <View style={DialogStyles.field}>
+                    <Text style={DialogStyles.title}>{properties.title}</Text>
+                    <Text style={DialogStyles.content}>{properties.content}</Text>
                     <Button onPress={properties.dismiss} title='CONTINUAR' />
                 </View>
             </View>
@@ -25,7 +25,7 @@ export function Dialog(properties: Properties) {
     )
 }
 
-const styles = StyleSheet.create({
+export const DialogStyles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
