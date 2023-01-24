@@ -9,6 +9,7 @@ import { User } from "../../models/user.model";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HomeContainer } from "../../components/containers/home-container";
 import { Historic } from "../../lists/historic";
+import { Discount } from "../../components/modals/discount";
 
 interface Properties extends StackScreenProps<StackParams, "Home"> { }
 
@@ -32,6 +33,7 @@ export default function Home({ navigation }: Properties) {
     ]
     const [containerTitle, setContainerTitle] = useState('Histórico')
     const [containerChild, setContainerChild] = useState<React.ReactNode>(<Historic data={DATA} />)
+    const [discount, setDiscount] = useState(false)
 
     useEffect(() => {
         AsyncStorage.getItem("user").then(async (result) => {
@@ -57,13 +59,16 @@ export default function Home({ navigation }: Properties) {
                 <NavigationButton
                     icon="attach-money"
                     title="Desconto"
-                    onPress={() => { }} />
+                    onPress={() => { setDiscount(true) }} />
             </ScrollView>
             <View style={styles.field}>
                 <HomeContainer title={containerTitle}>
                     {containerChild}
                 </HomeContainer>
             </View>
+            <Discount
+                visible={discount}
+                dismiss={() => { setDiscount(false) }} />
             <StatusBar style="light" backgroundColor='#212A4D' />
         </SafeAreaView>
     )
