@@ -18,4 +18,5 @@ export const TextInputStyles = StyleSheet.create({
         paddingHorizontal: 16,
         marginBottom: 16
     }
+    
 })
