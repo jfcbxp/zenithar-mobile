@@ -1,5 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import { StyleSheet, GestureResponderEvent, Modal, ModalProps, View, Alert } from "react-native";
+import {
+  StyleSheet,
+  GestureResponderEvent,
+  Modal,
+  ModalProps,
+  View,
+  Alert,
+} from "react-native";
 import { DialogStyles as styles } from "./dialog";
 import { Button } from "../buttons/button";
 import { FullNameInput } from "../inputs/fullname-input";
@@ -8,128 +15,136 @@ import { Portrait } from "../portrait/portrait";
 import * as ImagePicker from "expo-image-picker";
 import { AuthContext } from "../../contexts/auth.provider";
 import { CommandLink } from "../buttons/command-link";
-import * as Updates from 'expo-updates';
+import * as Updates from "expo-updates";
 
 interface Properties extends ModalProps {
-    visible: boolean | undefined
-    dismiss: ((event: GestureResponderEvent) => void) | undefined
+  visible: boolean | undefined;
+  dismiss: ((event: GestureResponderEvent) => void) | undefined;
 }
 
 export function UserSettings(properties: Properties) {
-    const authContext = useContext(AuthContext)
-    const [fullName, setFullName] = useState(authContext.user?.fullName!)
-    const [currentPassword, setCurrentPassword] = useState("")
-    const [newPassword, setNewPassword] = useState("")
-    const [confirmPassword, setConfirmPassword] = useState("")
-    const [portrait, setPortrait] = useState(authContext.user?.portrait!)
-    const [changePassword, setChangePassword] = useState<boolean | undefined>()
-    const [disabled, setDisabled] = useState(false)
+  const authContext = useContext(AuthContext);
+  const [fullName, setFullName] = useState(authContext.user?.fullName!);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [currentPortrait, setCurrentPortrait] = useState(
+    authContext.user?.portrait!
+  );
+  const [newPortrait, setNewportrait] = useState<string | undefined>();
+  const [changePassword, setChangePassword] = useState<boolean | undefined>();
+  const [disabled, setDisabled] = useState(false);
 
-    useEffect(() => {
-        if (changePassword) {
-            if (currentPassword.length > 5 && newPassword.length > 5 && confirmPassword.length > 5) {
-                if (newPassword == confirmPassword) {
-                    setDisabled(false)
-                }
-            } else {
-                setDisabled(true)
-            }
+  useEffect(() => {
+    if (changePassword) {
+      if (
+        currentPassword.length > 5 &&
+        newPassword.length > 5 &&
+        confirmPassword.length > 5
+      ) {
+        if (newPassword == confirmPassword) {
+          setDisabled(false);
         }
-    }, [confirmPassword])
-
-    const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 0.1,
-        })
-        if (!result.canceled) {
-            setPortrait(result.assets[0].uri);
-        }
+      } else {
+        setDisabled(true);
+      }
     }
+  }, [confirmPassword]);
 
-    const handleUpdateUser = () => {
-        if (fullName == "") {
-            Alert.alert("Dados mandatórios", "Por favor, preencher todos os campos");
-        } else {
-            if (changePassword) {
-                if (portrait != authContext.user?.portrait) {
-                    authContext.userUpdate(fullName, portrait, currentPassword, newPassword)
-                } else {
-                    authContext.userUpdate(fullName, currentPassword, newPassword)
-                }
-            } else {
-                if (portrait != authContext.user?.portrait) {
-                    authContext.userUpdate(fullName, portrait)
-                } else {
-                    authContext.userUpdate(fullName)
-                }
-                Updates.reloadAsync()
-            }
-        }
-        handleCancel()
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.1,
+    });
+    if (!result.canceled) {
+      setCurrentPortrait(result.assets[0].uri);
+      setNewportrait(result.assets[0].uri);
     }
+  };
 
-    const handleChangePassword = () => {
-        setDisabled(true)
-        setChangePassword(true)
+  const handleUpdateUser = async () => {
+    if (fullName == "") {
+      Alert.alert("Dados mandatórios", "Por favor, preencher todos os campos");
+    } else {
+      await authContext.userUpdate(
+        fullName,
+        newPortrait,
+        currentPassword,
+        newPassword
+      );
+
+      await Updates.reloadAsync();
     }
+    handleCancel();
+  };
 
-    const handleCancel = () => {
-        setChangePassword(undefined)
-        setDisabled(false)
-        setCurrentPassword("")
-        setNewPassword("")
-        setConfirmPassword("")
-        setFullName(authContext.user?.fullName!)
-        setPortrait(authContext.user?.portrait!)
-    }
+  const handleChangePassword = () => {
+    setDisabled(true);
+    setChangePassword(true);
+  };
 
-    return (
-        <Modal {...properties}
-            visible={properties.visible}
-            transparent={true}
-            animationType="fade">
-            <View style={styles.container}>
-                <View style={styles.field}>
-                    <Portrait source={portrait} onPress={pickImage} />
-                    <FullNameInput
-                        value={fullName}
-                        onChangeText={setFullName}
-                        maxLength={20} />
-                    {!changePassword &&
-                        <CommandLink
-                            onPress={handleChangePassword}
-                            title="Alterar senha" />
-                    }
-                    {changePassword &&
-                        <View>
-                            <PasswordInput
-                                value={currentPassword}
-                                onChangeText={setCurrentPassword}
-                                placeholder="Senha atual" />
-                            <PasswordInput
-                                value={newPassword}
-                                onChangeText={setNewPassword}
-                                placeholder="Nova senha" />
-                            <PasswordInput
-                                value={confirmPassword}
-                                onChangeText={setConfirmPassword}
-                                placeholder="Confirmar nova senha" />
-                        </View>
-                    }
-                    <Button
-                        onPressIn={handleCancel}
-                        onPressOut={properties.dismiss}
-                        title='CANCELAR' />
-                    <Button
-                        disabled={disabled}
-                        onPressIn={handleUpdateUser}
-                        onPressOut={properties.dismiss}
-                        title='CONFIRMAR' />
-                </View>
+  const handleCancel = () => {
+    setChangePassword(undefined);
+    setDisabled(false);
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setFullName(authContext.user?.fullName!);
+    setCurrentPortrait(authContext.user?.portrait!);
+  };
+
+  return (
+    <Modal
+      {...properties}
+      visible={properties.visible}
+      transparent={true}
+      animationType="fade"
+    >
+      <View style={styles.container}>
+        <View style={styles.field}>
+          <Portrait source={currentPortrait} onPress={pickImage} />
+          <FullNameInput
+            value={fullName}
+            onChangeText={setFullName}
+            maxLength={20}
+          />
+          {!changePassword && (
+            <CommandLink onPress={handleChangePassword} title="Alterar senha" />
+          )}
+          {changePassword && (
+            <View>
+              <PasswordInput
+                value={currentPassword}
+                onChangeText={setCurrentPassword}
+                placeholder="Senha atual"
+              />
+              <PasswordInput
+                value={newPassword}
+                onChangeText={setNewPassword}
+                placeholder="Nova senha"
+              />
+              <PasswordInput
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                placeholder="Confirmar nova senha"
+              />
             </View>
-        </Modal>
-    )
+          )}
+          <Button
+            onPressIn={handleCancel}
+            onPressOut={properties.dismiss}
+            title="CANCELAR"
+          />
+          <Button
+            disabled={disabled}
+            onPressIn={handleUpdateUser}
+            onPressOut={properties.dismiss}
+            title="CONFIRMAR"
+          />
+        </View>
+      </View>
+    </Modal>
+  );
 }
