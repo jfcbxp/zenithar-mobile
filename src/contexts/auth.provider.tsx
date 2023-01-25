@@ -7,6 +7,8 @@ import firebase from "firebase/compat";
 
 type AuthContextProps = {
   user: User | undefined;
+  company: string | undefined;
+  department: string | undefined;
   loading: boolean;
   signUp(
     _email: string,
@@ -27,6 +29,8 @@ type AuthContextProps = {
 
 const defaultState = {
   user: undefined,
+  company: undefined,
+  department: undefined,
   loading: true,
   signUp: async () => { },
   signIn: async () => { },
@@ -43,6 +47,8 @@ type AuthProviderProps = {
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User>();
+  const [company, setCompany] = useState<string | undefined>()
+  const [department, setDepartment] = useState<string | undefined>()
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -300,12 +306,42 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     let jsonUser = JSON.stringify(_user);
     await AsyncStorage.setItem("user", jsonUser);
     setUser(_user);
+    _storeCompany(_user.company)
+    _storeDepartment(_user.department)
+  };
+
+  const _storeCompany = async (_company: string) => {
+    await realtime
+      .ref("companies")
+      .child(_company)
+      .once("value")
+      .then(async (snapshot) => {
+        await AsyncStorage.setItem("company", snapshot.val().name)
+          .then(() => {
+            setCompany(snapshot.val().name)
+          });
+      })
+  };
+
+  const _storeDepartment = async (_department: string) => {
+    await realtime
+      .ref("departments")
+      .child(_department)
+      .once("value")
+      .then(async (snapshot) => {
+        await AsyncStorage.setItem("department", snapshot.val())
+          .then(() => {
+            setDepartment(snapshot.val())
+          })
+      })
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
+        company,
+        department,
         loading,
         signUp,
         signIn,

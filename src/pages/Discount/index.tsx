@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { SafeAreaView, View, ScrollView, StyleSheet, StatusBar } from "react-native";
+import { SafeAreaView, View, ScrollView, StyleSheet } from "react-native";
 import { Header } from "../../components/headers/header";
 import { User } from "../../models/user.model";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -29,8 +29,6 @@ export default function Discount({ navigation }: Properties) {
                 <Header
                     fullName={user?.fullName}
                     imageURL={user?.portrait}
-                    company={user?.company}
-                    department={user?.department}
                     returnOption={true} />
             </View>
             <View style={styles.body}>
@@ -40,7 +38,6 @@ export default function Discount({ navigation }: Properties) {
                     <PaymentMethodDropdown />
                 </ScrollView>
             </View>
-            <StatusBar backgroundColor='#212A4D' barStyle={"light-content"} translucent={false} />
         </SafeAreaView>
     )
 }

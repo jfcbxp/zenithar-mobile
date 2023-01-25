@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { StyleSheet, SafeAreaView, View, Image, Text, StatusBar } from "react-native";
+import { StyleSheet, SafeAreaView, View, Image, Text } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { AuthContext } from "../../contexts/auth.provider";
 import { StackParams } from "../../types/stack.params";
@@ -44,7 +44,6 @@ export default function SignIn({ navigation }: Properties) {
         <CommandLink
           onPress={() => { navigation.navigate("PasswordRecovery") }}
           title='Esqueceu sua senha?' />
-        <StatusBar backgroundColor='silver' barStyle={"light-content"} translucent={false} />
       </View>
     </SafeAreaView>
   )
