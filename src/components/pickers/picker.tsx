@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { TextStyle } from 'react-native';
 import RNPickerSelect, { PickerSelectProps } from 'react-native-picker-select';
 
 interface Properties extends PickerSelectProps {
@@ -8,26 +8,21 @@ interface Properties extends PickerSelectProps {
 export function Picker(properties: Properties) {
     return (
         <RNPickerSelect {...properties}
-            pickerProps={{ style: styles.input }}
             placeholder={{
                 label: properties.placeholder,
-                color: '#123262'
             }}
             style={{
-                inputIOS: styles.input,
-                inputAndroid: styles.input
+                inputIOS: styles,
+                inputAndroid: styles
             }} />
     )
 }
 
-export const styles = StyleSheet.create({
-    input: {
-        backgroundColor: 'white',
-        marginBottom: 24,
-        height: 40,
-        color: '#123262',
-        fontSize: 16,
-        fontWeight: 'bold',
-        paddingHorizontal: 16,
-    },
-})
+const styles: TextStyle = {
+    backgroundColor: 'white',
+    marginBottom: 24,
+    height: 40,
+    fontSize: 16,
+    fontWeight: 'bold',
+    paddingHorizontal: 16,
+}
