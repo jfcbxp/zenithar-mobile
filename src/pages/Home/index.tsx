@@ -7,8 +7,8 @@ import { NavigationButton } from "../../components/buttons/navigation-button";
 import { User } from "../../models/user.model";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HomeContainer } from "../../components/containers/home-container";
-import { Historic } from "../../lists/historic";
 import { DiscountModal } from "../../components/modals/discount";
+import { Historic } from "../../components/lists/historic";
 
 interface Properties extends StackScreenProps<StackParams, "Home"> { }
 
@@ -70,7 +70,7 @@ export default function Home({ navigation }: Properties) {
             <DiscountModal
                 visible={discount}
                 dismiss={() => { setDiscount(false) }} />
-            <StatusBar backgroundColor='#212A4D' barStyle={"light-content"} translucent={false}/>
+            <StatusBar backgroundColor='#212A4D' barStyle={"light-content"} translucent={false} />
         </SafeAreaView>
     )
 }
