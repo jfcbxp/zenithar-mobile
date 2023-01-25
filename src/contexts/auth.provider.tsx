@@ -153,6 +153,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     if (_currentPassword && _newPassword) {
       await _userUpdatePassword(_currentPassword, _newPassword);
     }
+    setLoading(false)
   };
 
   const _reauthenticate = async (currentPassword: string) => {
@@ -229,9 +230,15 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     _verified: boolean,
     _portrait?: string,
   ) => {
-    const _portraitURL = _portrait
+    let _portraitURL = ""
+    if (_portrait != user?.portrait) {
+      _portraitURL = await _uploadImage(_portrait!)
+    } else {
+      _portraitURL = _portrait!
+    }
+    /* let _portraitURL = _portrait
       ? await _uploadImage(_portrait)
-      : user!.portrait!;
+      : user!.portrait! */
     await realtime
       .ref("users")
       .child(_uid)

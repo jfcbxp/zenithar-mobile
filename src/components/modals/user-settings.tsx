@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import {
-  StyleSheet,
   GestureResponderEvent,
   Modal,
   ModalProps,
@@ -15,7 +14,6 @@ import { Portrait } from "../portrait/portrait";
 import * as ImagePicker from "expo-image-picker";
 import { AuthContext } from "../../contexts/auth.provider";
 import { CommandLink } from "../buttons/command-link";
-import * as Updates from "expo-updates";
 
 interface Properties extends ModalProps {
   visible: boolean | undefined;
@@ -24,16 +22,18 @@ interface Properties extends ModalProps {
 
 export function UserSettings(properties: Properties) {
   const authContext = useContext(AuthContext);
-  const [fullName, setFullName] = useState(authContext.user?.fullName!);
+  const [fullName, setFullName] = useState<string | undefined>("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [currentPortrait, setCurrentPortrait] = useState(
-    authContext.user?.portrait!
-  );
-  const [newPortrait, setNewportrait] = useState<string | undefined>();
+  const [portrait, setPortrait] = useState<string | undefined>("");
   const [changePassword, setChangePassword] = useState<boolean | undefined>();
   const [disabled, setDisabled] = useState(false);
+
+  useEffect(() => {
+    setFullName(authContext.user?.fullName)
+    setPortrait(authContext.user?.portrait)
+  }, [])
 
   useEffect(() => {
     if (changePassword) {
@@ -59,7 +59,7 @@ export function UserSettings(properties: Properties) {
       quality: 0.1,
     });
     if (!result.canceled) {
-      setNewportrait(result.assets[0].uri);
+      setPortrait(result.assets[0].uri);
     }
   };
 
@@ -67,22 +67,12 @@ export function UserSettings(properties: Properties) {
     if (fullName == "") {
       Alert.alert("Dados mandatórios", "Por favor, preencher todos os campos");
     } else {
-      if (currentPortrait != newPortrait) {
-        await authContext.userUpdate(
-          fullName,
-          newPortrait,
-          currentPassword,
-          newPassword
-        )
-      } else {
-        await authContext.userUpdate(
-          fullName,
-          currentPortrait,
-          currentPassword,
-          newPassword
-        );
-      }
-      await Updates.reloadAsync();
+      await authContext.userUpdate(
+        fullName!,
+        portrait,
+        currentPassword,
+        newPassword
+      );
     }
     handleCancel();
   };
@@ -99,7 +89,7 @@ export function UserSettings(properties: Properties) {
     setNewPassword("");
     setConfirmPassword("");
     setFullName(authContext.user?.fullName!);
-    setCurrentPortrait(authContext.user?.portrait!);
+    setPortrait(authContext.user?.portrait!);
   };
 
   return (
@@ -111,7 +101,7 @@ export function UserSettings(properties: Properties) {
     >
       <View style={styles.container}>
         <View style={styles.field}>
-          <Portrait source={newPortrait ? newPortrait : currentPortrait} onPress={pickImage} />
+          <Portrait source={portrait} onPress={pickImage} />
           <FullNameInput
             value={fullName}
             onChangeText={setFullName}
