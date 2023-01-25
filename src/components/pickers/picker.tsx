@@ -23,6 +23,11 @@ export function Picker(properties: Properties) {
 export const styles = StyleSheet.create({
     input: {
         backgroundColor: 'white',
-        marginBottom: 16,
+        marginBottom: 24,
+        height: 40,
+        color: '#123262',
+        fontSize: 16,
+        fontWeight: 'bold',
+        paddingHorizontal: 16,
     },
 })

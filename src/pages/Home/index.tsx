@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { StatusBar } from 'expo-status-bar';
 import { StackScreenProps } from "@react-navigation/stack";
-import { SafeAreaView, View, StyleSheet, ScrollView } from "react-native";
+import { SafeAreaView, View, StyleSheet, ScrollView, StatusBar } from "react-native";
 import { StackParams } from "../../types/stack.params";
 import { Header } from "../../components/headers/header";
 import { NavigationButton } from "../../components/buttons/navigation-button";
@@ -71,7 +70,7 @@ export default function Home({ navigation }: Properties) {
             <DiscountModal
                 visible={discount}
                 dismiss={() => { setDiscount(false) }} />
-            <StatusBar backgroundColor='#212A4D' translucent={true} style="inverted" />
+            <StatusBar backgroundColor='#212A4D' barStyle={"light-content"} translucent={false}/>
         </SafeAreaView>
     )
 }
