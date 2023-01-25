@@ -23,7 +23,6 @@ type AuthContextProps = {
     _currentPassword?: string,
     _newPassword?: string
   ): Promise<void>;
-  deleteImage(): Promise<void>;
 };
 
 const defaultState = {
@@ -34,7 +33,6 @@ const defaultState = {
   signOut: async () => { },
   recoverPassword: async () => { },
   userUpdate: async () => { },
-  deleteImage: async () => { },
 };
 
 export const AuthContext = createContext<AuthContextProps>(defaultState);
@@ -205,15 +203,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       );
     });
 
-  const deleteImage = async () => {
-    // const filename = _portrait.substring(_portrait.lastIndexOf("/") + 1);
-    /* await storage
-      .ref()
-      .child(`${user?.uid}`)
-      .delete()
-      .catch((error) => console.log(error)); */
-  }
-
   const _uploadImage = async (_portrait: string) => {
     const response = await fetch(_portrait);
     const blob = await response.blob();
@@ -316,7 +305,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         signOut,
         recoverPassword,
         userUpdate,
-        deleteImage,
       }}
     >
       {children}

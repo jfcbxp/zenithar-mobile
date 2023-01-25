@@ -68,19 +68,16 @@ export function UserSettings(properties: Properties) {
       Alert.alert("Dados mandatórios", "Por favor, preencher todos os campos");
     } else {
       if (currentPortrait != newPortrait) {
-        await authContext.deleteImage()
-          .then(async () => {
-            await authContext.userUpdate(
-              fullName,
-              newPortrait,
-              currentPassword,
-              newPassword
-            )
-          })
-      } else {
         await authContext.userUpdate(
           fullName,
           newPortrait,
+          currentPassword,
+          newPassword
+        )
+      } else {
+        await authContext.userUpdate(
+          fullName,
+          currentPortrait,
           currentPassword,
           newPassword
         );
