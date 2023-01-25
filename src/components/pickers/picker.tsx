@@ -9,14 +9,20 @@ export function Picker(properties: Properties) {
     return (
         <RNPickerSelect {...properties}
             pickerProps={{ style: styles.input }}
-            placeholder={{ label: properties.placeholder }} />
+            placeholder={{
+                label: properties.placeholder,
+                color: '#123262'
+            }}
+            style={{
+                inputIOS: styles.input,
+                inputAndroid: styles.input
+            }} />
     )
 }
 
 export const styles = StyleSheet.create({
     input: {
         backgroundColor: 'white',
-        color: '#123262',
-        marginBottom: 16
+        marginBottom: 16,
     },
 })

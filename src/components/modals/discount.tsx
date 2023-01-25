@@ -10,8 +10,8 @@ import { Item } from 'react-native-picker-select'
 import { InputStyles } from '../inputs/input-styles'
 
 interface Properties extends ModalProps {
-    visible?: boolean | undefined
-    dismiss?: ((event: GestureResponderEvent) => void) | undefined
+    visible?: boolean
+    dismiss?: ((event: GestureResponderEvent) => void) | null
 }
 
 export function DiscountModal(properties: Properties) {
@@ -40,7 +40,7 @@ export function DiscountModal(properties: Properties) {
                         value={branch}
                         onValueChange={setBranch}
                         placeholder="Filiais"
-                         />
+                    />
                     <SwipeButton
                         title='CONSULTAR'
                         onSwipeSuccess={() => { navigation.navigate("Discount") }} />
