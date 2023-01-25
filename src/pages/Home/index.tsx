@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { StatusBar } from 'expo-status-bar';
 import { StackScreenProps } from "@react-navigation/stack";
-import { SafeAreaView, View, StyleSheet, ScrollView } from "react-native";
+import { SafeAreaView, View, StyleSheet, ScrollView, StatusBar } from "react-native";
 import { StackParams } from "../../types/stack.params";
 import { Header } from "../../components/headers/header";
 import { NavigationButton } from "../../components/buttons/navigation-button";
 import { User } from "../../models/user.model";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HomeContainer } from "../../components/containers/home-container";
-import { Historic } from "../../lists/historic";
 import { DiscountModal } from "../../components/modals/discount";
+import { Historic } from "../../components/lists/historic";
 
 interface Properties extends StackScreenProps<StackParams, "Home"> { }
 
@@ -46,7 +45,7 @@ export default function Home({ navigation }: Properties) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
+            <View>
                 <Header
                     fullName={user?.fullName}
                     imageURL={user?.portrait}
@@ -71,7 +70,7 @@ export default function Home({ navigation }: Properties) {
             <DiscountModal
                 visible={discount}
                 dismiss={() => { setDiscount(false) }} />
-            <StatusBar style="light" backgroundColor='#212A4D' />
+            <StatusBar backgroundColor='#212A4D' barStyle={"light-content"} translucent={false} />
         </SafeAreaView>
     )
 }
@@ -82,16 +81,13 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: '#F0F2F7',
     },
-    header: {
-        flex: 1,
-    },
     menu: {
         flex: 1,
         marginVertical: '5%',
         marginHorizontal: '5%',
     },
     field: {
-        flex: 3,
+        flex: 4,
         flexDirection: 'column',
         marginHorizontal: '5%',
     },

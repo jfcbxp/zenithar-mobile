@@ -5,18 +5,20 @@ import { TextInput } from '../inputs/text-input'
 import { useNavigation } from '@react-navigation/native'
 import { NavigationParams } from '../../types/navigation.params'
 import { Picker } from '../pickers/picker'
-import { PickerItem } from '../pickers/picker.item'
 import { ItemValue } from '@react-native-picker/picker/typings/Picker'
+import { Item } from 'react-native-picker-select'
+import { InputStyles } from '../inputs/input-styles'
 
 interface Properties extends ModalProps {
-    visible?: boolean | undefined
-    dismiss?: ((event: GestureResponderEvent) => void) | undefined
+    visible?: boolean
+    dismiss?: ((event: GestureResponderEvent) => void) | null
 }
 
 export function DiscountModal(properties: Properties) {
     const navigation = useNavigation<NavigationParams>()
     const [budget, setBudget] = useState('')
     const [branch, setBranch] = useState<ItemValue>()
+    const [branches, setBranches] = useState<Item[]>([])
 
     return (
         <Modal {...properties}
@@ -34,12 +36,11 @@ export function DiscountModal(properties: Properties) {
                         placeholder='Número do Orçamento'
                         placeholderTextColor='#1F537E' />
                     <Picker
-                        title='Filial'
-                        selectedValue={branch}
-                        onValueChange={(itemValue, itemIndex) => setBranch(itemValue)}>
-                        <PickerItem label='Santarém' value='santarem' />
-                        <PickerItem label='Castanhal' value='castanhal' />
-                    </Picker>
+                        items={branches}
+                        value={branch}
+                        onValueChange={setBranch}
+                        placeholder="Filiais"
+                    />
                     <SwipeButton
                         title='CONSULTAR'
                         onSwipeSuccess={() => { navigation.navigate("Discount") }} />

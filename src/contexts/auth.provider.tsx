@@ -87,7 +87,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             );
           });
           if (result.user && validate == true) {
-            await _userRegister(result.user.uid, _email, _fullName, false, _portrait);
+            await _userRegister(result.user.uid, _email, _fullName, "", "", false, _portrait);
           }
         }
       })
@@ -141,8 +141,15 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     _newPassword?: string
   ) => {
     setLoading(true);
-    let user = firebaseAuth.currentUser!;
-    await _userRegister(user.uid, user.email!, _fullName, true, _portrait);
+    let _user = firebaseAuth.currentUser!;
+    await _userRegister(
+      _user.uid,
+      _user.email!,
+      _fullName,
+      user?.company!,
+      user?.department!,
+      true,
+      _portrait);
     if (_currentPassword && _newPassword) {
       await _userUpdatePassword(_currentPassword, _newPassword);
     }
@@ -199,11 +206,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const _uploadImage = async (_portrait: string) => {
     const response = await fetch(_portrait);
     const blob = await response.blob();
-    const filename = _portrait.substring(_portrait.lastIndexOf("/") + 1);
+    const filename = user?.uid
+    // const filename = _portrait.substring(_portrait.lastIndexOf("/") + 1);
     let urlImage = "";
     await storage
       .ref()
-      .child(`images/${filename}`)
+      .child(`${filename}`)
       .put(blob)
       .then(async (snapshot) => {
         urlImage = await snapshot.ref.getDownloadURL();
@@ -216,6 +224,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     _uid: string,
     _email: string,
     _fullName: string,
+    _company: string,
+    _department: string,
     _verified: boolean,
     _portrait?: string,
   ) => {
@@ -228,8 +238,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .set({
         fullName: _fullName,
         portrait: _portraitURL,
-        company: "",
-        department: "",
+        company: _company,
+        department: _department,
         verified: _verified,
       })
       .then(() => {
@@ -238,8 +248,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           fullName: _fullName,
           email: _email,
           portrait: _portraitURL,
-          company: "",
-          department: "",
+          company: _company,
+          department: _department,
           verified: _verified,
         };
         _storeUser(_user);
@@ -265,7 +275,14 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           var currentUser = await firebase.auth().currentUser
           if (currentUser?.emailVerified) {
             _user.verified = true
-            await _userRegister(_user.uid, _user.email, _user.fullName, _user.verified, _user.portrait)
+            await _userRegister(
+              _user.uid,
+              _user.email,
+              _user.fullName,
+              _user.company,
+              _user.department,
+              _user.verified,
+              _user.portrait)
           }
         }
         await _storeUser(_user);

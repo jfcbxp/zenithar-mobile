@@ -1,5 +1,5 @@
 import { StyleSheet, View, Text } from 'react-native';
-import { Divider } from '../components/dividers/divider';
+import { Divider } from '../dividers/divider';
 import { MaterialIcons as Icon } from '@expo/vector-icons';
 
 export interface iHistoricItem {

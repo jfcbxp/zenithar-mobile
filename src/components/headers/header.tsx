@@ -51,21 +51,21 @@ export function Header(properties: Properties) {
 
 const styles = StyleSheet.create({
     header: {
-        width: '100%',
-        height: 120,
         backgroundColor: '#1F2D5A'
     },
     container: {
         flexDirection: 'row',
         alignItems: 'center',
         marginHorizontal: '5%',
-        marginVertical: '10%',
+        marginTop: '2.5%',
+        marginBottom: '2.5%',
     },
     containerReturn: {
         flexDirection: 'row',
         alignItems: 'center',
         marginHorizontal: '5%',
-        marginVertical: '10%',
+        marginTop: '2.5%',
+        marginBottom: '2.5%',
         paddingLeft: '10%',
     },
     image: {

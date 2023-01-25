@@ -1,6 +1,6 @@
 import React from 'react'
 import { Pressable, Text, View } from 'react-native'
-import { DropdownStyles as styles } from './dropdown-styles'
+import { DropdownStyles as styles } from '../dropdown-styles'
 import { Feather as Icon } from "@expo/vector-icons";
 
 interface Properties {

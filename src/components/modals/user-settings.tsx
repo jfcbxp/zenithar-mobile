@@ -59,7 +59,6 @@ export function UserSettings(properties: Properties) {
       quality: 0.1,
     });
     if (!result.canceled) {
-      setCurrentPortrait(result.assets[0].uri);
       setNewportrait(result.assets[0].uri);
     }
   };
@@ -68,12 +67,21 @@ export function UserSettings(properties: Properties) {
     if (fullName == "") {
       Alert.alert("Dados mandatórios", "Por favor, preencher todos os campos");
     } else {
-      await authContext.userUpdate(
-        fullName,
-        newPortrait,
-        currentPassword,
-        newPassword
-      );
+      if (currentPortrait != newPortrait) {
+        await authContext.userUpdate(
+          fullName,
+          newPortrait,
+          currentPassword,
+          newPassword
+        )
+      } else {
+        await authContext.userUpdate(
+          fullName,
+          currentPortrait,
+          currentPassword,
+          newPassword
+        );
+      }
       await Updates.reloadAsync();
     }
     handleCancel();
@@ -103,7 +111,7 @@ export function UserSettings(properties: Properties) {
     >
       <View style={styles.container}>
         <View style={styles.field}>
-          <Portrait source={currentPortrait} onPress={pickImage} />
+          <Portrait source={newPortrait ? newPortrait : currentPortrait} onPress={pickImage} />
           <FullNameInput
             value={fullName}
             onChangeText={setFullName}

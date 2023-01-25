@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, View, ScrollView, StyleSheet } from "react-native";
+import { SafeAreaView, View, ScrollView, StyleSheet, StatusBar } from "react-native";
 import { Header } from "../../components/headers/header";
 import { User } from "../../models/user.model";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -41,7 +40,7 @@ export default function Discount({ navigation }: Properties) {
                     <PaymentMethodDropdown />
                 </ScrollView>
             </View>
-            <StatusBar style="light" backgroundColor='#212A4D' />
+            <StatusBar backgroundColor='#212A4D' barStyle={"light-content"} translucent={false} />
         </SafeAreaView>
     )
 }
