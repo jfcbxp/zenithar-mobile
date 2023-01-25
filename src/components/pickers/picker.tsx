@@ -1,34 +1,22 @@
-import { StyleSheet, View, Text } from "react-native";
-import { Picker as RNPicker, PickerProps } from "@react-native-picker/picker";
-import { InputStyles as styles } from "../inputs/input-styles";
+import { StyleSheet } from "react-native";
+import RNPickerSelect, { PickerSelectProps } from 'react-native-picker-select';
 
-interface Properties extends PickerProps {
-    title: string
-    children?: React.ReactNode
+interface Properties extends PickerSelectProps {
+    placeholder: string
 }
 
 export function Picker(properties: Properties) {
     return (
-        <View style={pickerStyles.container}>
-            <Text style={pickerStyles.title}>{properties.title}</Text>
-            <RNPicker {...properties}
-                style={styles.input}>
-                {properties.children}
-            </RNPicker>
-        </View>
+        <RNPickerSelect {...properties}
+            pickerProps={{ style: styles.input }}
+            placeholder={{ label: properties.placeholder }} />
     )
 }
 
-const pickerStyles = StyleSheet.create({
-    container: {
-        width: '100%',
-        height: 40,
-        marginBottom: 64,
-    },
-    title: {
-        fontSize: 16,
-        fontWeight: 'bold',
+export const styles = StyleSheet.create({
+    input: {
+        backgroundColor: 'white',
         color: '#123262',
-        marginBottom: 8,
+        marginBottom: 16
     },
 })

@@ -41,7 +41,7 @@ export default function Discount({ navigation }: Properties) {
                     <PaymentMethodDropdown />
                 </ScrollView>
             </View>
-            <StatusBar style="light" backgroundColor='#212A4D' />
+            <StatusBar backgroundColor='#212A4D' translucent={true} style="inverted" />
         </SafeAreaView>
     )
 }

@@ -42,7 +42,7 @@ export default function PasswordRecovery({ navigation }: Properties) {
                 content="Em alguns instantes uma mensagem de e-mail chegará em sua caixa de entrada com as instruções para redefinição da sua senha."
                 visible={visible}
                 dismiss={handleRecoverPassword} />
-            <StatusBar style="light" backgroundColor='silver' />
+            <StatusBar backgroundColor='silver' translucent={true} style="inverted" />
         </SafeAreaView>
     )
 }

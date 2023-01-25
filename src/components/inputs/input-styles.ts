@@ -11,6 +11,5 @@ export const InputStyles = StyleSheet.create({
         borderRadius: 18,
         paddingHorizontal: 16,
         marginBottom: 16
-    }
-
+    },
 })

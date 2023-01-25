@@ -74,7 +74,7 @@ export default function SignUp({ navigation }: Properties) {
           navigation.navigate("SignIn");
         }}
       />
-      <StatusBar style="light" backgroundColor="silver" />
+      <StatusBar backgroundColor="silver" translucent={true} style="inverted" />
     </SafeAreaView>
   );
 }

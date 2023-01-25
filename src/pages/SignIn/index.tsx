@@ -45,7 +45,7 @@ export default function SignIn({ navigation }: Properties) {
         <CommandLink
           onPress={() => { navigation.navigate("PasswordRecovery") }}
           title='Esqueceu sua senha?' />
-        <StatusBar style="light" backgroundColor='silver' />
+        <StatusBar backgroundColor='silver' translucent={true} style="inverted" />
       </View>
     </SafeAreaView>
   )

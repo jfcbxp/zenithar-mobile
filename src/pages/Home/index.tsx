@@ -46,7 +46,7 @@ export default function Home({ navigation }: Properties) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
+            <View>
                 <Header
                     fullName={user?.fullName}
                     imageURL={user?.portrait}
@@ -71,7 +71,7 @@ export default function Home({ navigation }: Properties) {
             <DiscountModal
                 visible={discount}
                 dismiss={() => { setDiscount(false) }} />
-            <StatusBar style="light" backgroundColor='#212A4D' />
+            <StatusBar backgroundColor='#212A4D' translucent={true} style="inverted" />
         </SafeAreaView>
     )
 }
@@ -82,16 +82,13 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: '#F0F2F7',
     },
-    header: {
-        flex: 1,
-    },
     menu: {
         flex: 1,
         marginVertical: '5%',
         marginHorizontal: '5%',
     },
     field: {
-        flex: 3,
+        flex: 4,
         flexDirection: 'column',
         marginHorizontal: '5%',
     },
