@@ -9,7 +9,7 @@ export default function Routes() {
   if (authContext.loading) {
     return (
       <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#131313" />
+        <ActivityIndicator size={128} color="white" />
       </SafeAreaView>
     )
   } else {

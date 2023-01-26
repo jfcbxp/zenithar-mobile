@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { SafeAreaView, View, ScrollView, StyleSheet } from "react-native";
+import { StyleSheet, SafeAreaView, View, ScrollView } from "react-native";
 import { Header } from "../../components/headers/header";
 import { User } from "../../models/user.model";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -8,6 +8,7 @@ import { ItemsDropdown } from "../../components/dropdowns/discount/items-dropdow
 import { PaymentMethodDropdown } from "../../components/dropdowns/discount/payment-method-dropdown";
 import { StackParams } from "../../types/stack.params";
 import { StackScreenProps } from "@react-navigation/stack";
+import { StatusBar } from "expo-status-bar";
 
 interface Properties extends StackScreenProps<StackParams, "Discount"> { }
 
@@ -38,6 +39,7 @@ export default function Discount({ navigation }: Properties) {
                     <PaymentMethodDropdown />
                 </ScrollView>
             </View>
+            <StatusBar style="light" translucent={false} backgroundColor="#212A4D" />
         </SafeAreaView>
     )
 }

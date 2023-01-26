@@ -6,4 +6,5 @@ export interface User {
   company: string;
   department: string;
   verified: boolean;
+  branches: any[];
 }

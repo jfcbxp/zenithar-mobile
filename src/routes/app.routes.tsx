@@ -19,6 +19,6 @@ export default function AppRoutes() {
           headerTransparent: true,
           headerTintColor: 'white',
         }} />
-    </Stack.Navigator>
+    </Stack.Navigator >
   )
 }

@@ -1,5 +1,5 @@
-import { TextStyle } from 'react-native';
-import RNPickerSelect, { PickerSelectProps } from 'react-native-picker-select';
+import { TextStyle } from "react-native";
+import RNPickerSelect, { PickerSelectProps } from "react-native-picker-select";
 
 interface Properties extends PickerSelectProps {
     placeholder: string

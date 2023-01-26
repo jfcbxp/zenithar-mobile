@@ -93,7 +93,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             );
           });
           if (result.user && validate == true) {
-            await _userRegister(result.user.uid, _email, _fullName, "", "", false, _portrait);
+            await _userRegister(result.user.uid, _email, _fullName, "", "", false, [], _portrait);
           }
         }
       })
@@ -155,6 +155,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       user?.company!,
       user?.department!,
       true,
+      user?.branches!,
       _portrait);
     if (_currentPassword && _newPassword) {
       await _userUpdatePassword(_currentPassword, _newPassword);
@@ -234,6 +235,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     _company: string,
     _department: string,
     _verified: boolean,
+    _branches: any[],
     _portrait?: string,
   ) => {
     let _portraitURL = ""
@@ -264,6 +266,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           company: _company,
           department: _department,
           verified: _verified,
+          branches: _branches,
         };
         _storeUser(_user);
       });
@@ -283,6 +286,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           company: snapshot.val().company,
           department: snapshot.val().department,
           verified: snapshot.val().verified,
+          branches: snapshot.child("branches").val()
         };
         if (!_user.verified) {
           var currentUser = await firebase.auth().currentUser
@@ -295,6 +299,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
               _user.company,
               _user.department,
               _user.verified,
+              _user.branches,
               _user.portrait)
           }
         }

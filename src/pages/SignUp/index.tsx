@@ -1,5 +1,5 @@
-import { useContext, useState, useEffect } from "react";
-import { SafeAreaView, View, StyleSheet } from "react-native";
+import { useContext, useState } from "react";
+import { StyleSheet, SafeAreaView, View } from "react-native";
 import { Button } from "../../components/buttons/button";
 import { Dialog } from "../../components/modals/dialog";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -10,6 +10,7 @@ import { Portrait } from "../../components/portrait/portrait";
 import { EmailInput } from "../../components/inputs/email-input";
 import { PasswordInput } from "../../components/inputs/password-input";
 import { FullNameInput } from "../../components/inputs/fullname-input";
+import { StatusBar } from "expo-status-bar";
 
 interface Properties extends StackScreenProps<StackParams, "SignUp"> { }
 
@@ -71,8 +72,8 @@ export default function SignUp({ navigation }: Properties) {
           setVisible(false);
           authContext.signUp(email, password, fullName, portrait);
           navigation.navigate("SignIn");
-        }}
-      />
+        }} />
+      <StatusBar style="light" translucent={false} backgroundColor="silver" />
     </SafeAreaView>
   );
 }

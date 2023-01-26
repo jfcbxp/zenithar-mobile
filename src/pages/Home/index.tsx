@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StackScreenProps } from "@react-navigation/stack";
-import { SafeAreaView, View, StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, SafeAreaView, View, ScrollView } from "react-native";
 import { StackParams } from "../../types/stack.params";
 import { Header } from "../../components/headers/header";
 import { NavigationButton } from "../../components/buttons/navigation-button";
@@ -9,6 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HomeContainer } from "../../components/containers/home-container";
 import { DiscountModal } from "../../components/modals/discount";
 import { Historic } from "../../components/lists/historic";
+import { StatusBar } from "expo-status-bar";
 
 interface Properties extends StackScreenProps<StackParams, "Home"> { }
 
@@ -68,6 +69,7 @@ export default function Home({ navigation }: Properties) {
             <DiscountModal
                 visible={discount}
                 dismiss={() => { setDiscount(false) }} />
+            <StatusBar style="light" translucent={false} backgroundColor="#212A4D" />
         </SafeAreaView>
     )
 }

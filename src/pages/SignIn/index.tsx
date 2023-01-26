@@ -7,6 +7,7 @@ import { Button } from "../../components/buttons/button";
 import { CommandLink } from "../../components/buttons/command-link";
 import { EmailInput } from "../../components/inputs/email-input";
 import { PasswordInput } from "../../components/inputs/password-input";
+import { StatusBar } from "expo-status-bar";
 
 interface Properties extends StackScreenProps<StackParams, "SignIn"> { }
 
@@ -45,6 +46,7 @@ export default function SignIn({ navigation }: Properties) {
           onPress={() => { navigation.navigate("PasswordRecovery") }}
           title='Esqueceu sua senha?' />
       </View>
+      <StatusBar style="light" translucent={false} backgroundColor="silver" />
     </SafeAreaView>
   )
 }

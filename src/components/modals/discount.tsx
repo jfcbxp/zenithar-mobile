@@ -1,13 +1,23 @@
 import { useState, useEffect, useContext } from 'react'
-import { StyleSheet, Modal, ModalProps, View, Text, GestureResponderEvent, Pressable, Alert } from 'react-native'
+import {
+    StyleSheet,
+    Modal,
+    ModalProps,
+    View,
+    Text,
+    GestureResponderEvent,
+    Pressable,
+    Keyboard,
+    Platform
+} from 'react-native'
 import { SwipeButton } from '../buttons/swipe-button'
 import { TextInput } from '../inputs/text-input'
 import { useNavigation } from '@react-navigation/native'
 import { NavigationParams } from '../../types/navigation.params'
 import { Picker } from '../pickers/picker'
-import { ItemValue } from '@react-native-picker/picker/typings/Picker'
-import { Item } from 'react-native-picker-select'
 import { AuthContext } from '../../contexts/auth.provider'
+import { Item } from 'react-native-picker-select'
+import { Button } from '../buttons/button'
 
 interface Properties extends ModalProps {
     visible?: boolean
@@ -18,12 +28,29 @@ export function DiscountModal(properties: Properties) {
     const authContext = useContext(AuthContext)
     const navigation = useNavigation<NavigationParams>()
     const [budget, setBudget] = useState('')
-    const [branch, setBranch] = useState<ItemValue>()
-    const [branches, setBranches] = useState<Item[]>([])
+    const [branch, setBranch] = useState('')
+    const [branches, setBranches] = useState<Item[]>()
 
     useEffect(() => {
+        let data = authContext.user?.branches!
+        let array: Item[] = []
+        Object.entries(data).forEach(([key, value]) => {
+            array = [...array, {
+                key: key,
+                value: value,
+                label: value,
+                color: "#123262"
+            }]
+        })
+        setBranches(array)
     }, [])
-    
+
+    useEffect(() => {
+        if (budget.length == 6) {
+            Keyboard.dismiss()
+        }
+    }, [budget])
+
     return (
         <Modal {...properties}
             transparent={true}
@@ -38,16 +65,20 @@ export function DiscountModal(properties: Properties) {
                         onChangeText={setBudget}
                         keyboardType='numeric'
                         placeholder='Número do Orçamento'
+                        maxLength={6}
                         placeholderTextColor='#1F537E' />
                     <Picker
-                        items={branches}
+                        items={branches!}
                         value={branch}
                         onValueChange={setBranch}
-                        placeholder="Filiais"
-                    />
-                    <SwipeButton
-                        title='CONSULTAR'
-                        onSwipeSuccess={() => { navigation.navigate("Discount") }} />
+                        placeholder='Filiais' />
+                    {Platform.OS == "web"
+                        ? <Button title='CONTINUAR'
+                            onPress={() => { navigation.navigate("Discount") }} />
+                        : <SwipeButton
+                            title='CONSULTAR'
+                            onSwipeSuccess={() => { navigation.navigate("Discount") }} />
+                    }
                 </View>
             </View>
         </Modal>

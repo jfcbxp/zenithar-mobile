@@ -1,11 +1,12 @@
 import { useState, useContext } from "react";
-import { SafeAreaView, View, StyleSheet, Alert } from "react-native"
+import { StyleSheet, SafeAreaView, View, Alert } from "react-native"
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { Button } from "../../components/buttons/button";
 import { Dialog } from "../../components/modals/dialog";
 import { AuthContext } from "../../contexts/auth.provider";
 import { EmailInput } from "../../components/inputs/email-input";
+import { StatusBar } from "expo-status-bar";
 
 interface Properties extends StackScreenProps<StackParams, "PasswordRecovery"> { }
 
@@ -41,6 +42,7 @@ export default function PasswordRecovery({ navigation }: Properties) {
                 content="Em alguns instantes uma mensagem de e-mail chegará em sua caixa de entrada com as instruções para redefinição da sua senha."
                 visible={visible}
                 dismiss={handleRecoverPassword} />
+            <StatusBar style="light" translucent={false} backgroundColor="silver" />
         </SafeAreaView>
     )
 }
