@@ -21,7 +21,7 @@ export const DropdownStyles = StyleSheet.create({
         backgroundColor: 'white',
     },
     text: {
-        fontSize: 24,
+        fontSize: 20,
     },
     subText: {
         fontSize: 13,

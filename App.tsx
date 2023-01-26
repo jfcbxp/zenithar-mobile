@@ -7,14 +7,14 @@ import { NavigationContainer } from "@react-navigation/native";
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <NavigationContainer>
         <AuthProvider>
           <Routes />
           <StatusBar style="light" translucent={false} />
         </AuthProvider>
-      </SafeAreaView>
-    </NavigationContainer>
+      </NavigationContainer>
+    </SafeAreaView>
   )
 }
 
