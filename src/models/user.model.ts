@@ -1,3 +1,5 @@
+import { UserBranch } from "./user.branch.model";
+
 export interface User {
   fullName: string;
   uid: string;
@@ -6,5 +8,5 @@ export interface User {
   company: string;
   department: string;
   verified: boolean;
-  branches: any[];
+  branches: UserBranch[];
 }

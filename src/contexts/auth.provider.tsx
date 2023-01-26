@@ -4,6 +4,7 @@ import { firebaseAuth, storage, realtime } from "../services/firebase.service";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
 import firebase from "firebase/compat";
+import { UserBranch } from "../models/user.branch.model";
 
 type AuthContextProps = {
   user: User | undefined;
@@ -14,7 +15,7 @@ type AuthContextProps = {
     _email: string,
     _password: string,
     _fullName: string,
-    _portrait: string,
+    _portrait: string
   ): Promise<void>;
   signIn(_email: string, _password: string): Promise<void>;
   signOut(): Promise<void>;
@@ -32,11 +33,11 @@ const defaultState = {
   company: undefined,
   department: undefined,
   loading: true,
-  signUp: async () => { },
-  signIn: async () => { },
-  signOut: async () => { },
-  recoverPassword: async () => { },
-  userUpdate: async () => { },
+  signUp: async () => {},
+  signIn: async () => {},
+  signOut: async () => {},
+  recoverPassword: async () => {},
+  userUpdate: async () => {},
 };
 
 export const AuthContext = createContext<AuthContextProps>(defaultState);
@@ -47,8 +48,8 @@ type AuthProviderProps = {
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User>();
-  const [company, setCompany] = useState<string | undefined>()
-  const [department, setDepartment] = useState<string | undefined>()
+  const [company, setCompany] = useState<string | undefined>();
+  const [department, setDepartment] = useState<string | undefined>();
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -93,7 +94,16 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             );
           });
           if (result.user && validate == true) {
-            await _userRegister(result.user.uid, _email, _fullName, "", "", false, [], _portrait);
+            await _userRegister(
+              result.user.uid,
+              _email,
+              _fullName,
+              "",
+              "",
+              false,
+              [],
+              _portrait
+            );
           }
         }
       })
@@ -156,11 +166,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       user?.department!,
       true,
       user?.branches!,
-      _portrait);
+      _portrait
+    );
     if (_currentPassword && _newPassword) {
       await _userUpdatePassword(_currentPassword, _newPassword);
     }
-    setLoading(false)
+    setLoading(false);
   };
 
   const _reauthenticate = async (currentPassword: string) => {
@@ -214,7 +225,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const _uploadImage = async (_portrait: string) => {
     const response = await fetch(_portrait);
     const blob = await response.blob();
-    const filename = user?.uid
+    const filename = user?.uid;
     // const filename = _portrait.substring(_portrait.lastIndexOf("/") + 1);
     let urlImage = "";
     await storage
@@ -235,14 +246,14 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     _company: string,
     _department: string,
     _verified: boolean,
-    _branches: any[],
-    _portrait?: string,
+    _branches: UserBranch[],
+    _portrait?: string
   ) => {
-    let _portraitURL = ""
+    let _portraitURL = "";
     if (_portrait != user?.portrait) {
-      _portraitURL = await _uploadImage(_portrait!)
+      _portraitURL = await _uploadImage(_portrait!);
     } else {
-      _portraitURL = _portrait!
+      _portraitURL = _portrait!;
     }
     /* let _portraitURL = _portrait
       ? await _uploadImage(_portrait)
@@ -286,12 +297,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           company: snapshot.val().company,
           department: snapshot.val().department,
           verified: snapshot.val().verified,
-          branches: snapshot.child("branches").val()
+          branches: snapshot.child("branches").val(),
         };
         if (!_user.verified) {
-          var currentUser = await firebase.auth().currentUser
+          var currentUser = await firebase.auth().currentUser;
           if (currentUser?.emailVerified) {
-            _user.verified = true
+            _user.verified = true;
             await _userRegister(
               _user.uid,
               _user.email,
@@ -300,7 +311,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
               _user.department,
               _user.verified,
               _user.branches,
-              _user.portrait)
+              _user.portrait
+            );
           }
         }
         await _storeUser(_user);
@@ -311,8 +323,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     let jsonUser = JSON.stringify(_user);
     await AsyncStorage.setItem("user", jsonUser);
     setUser(_user);
-    _storeCompany(_user.company)
-    _storeDepartment(_user.department)
+    _storeCompany(_user.company);
+    _storeDepartment(_user.department);
   };
 
   const _storeCompany = async (_company: string) => {
@@ -321,11 +333,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .child(_company)
       .once("value")
       .then(async (snapshot) => {
-        await AsyncStorage.setItem("company", snapshot.val().name)
-          .then(() => {
-            setCompany(snapshot.val().name)
-          });
-      })
+        await AsyncStorage.setItem("company", snapshot.val().name).then(() => {
+          setCompany(snapshot.val().name);
+        });
+      });
   };
 
   const _storeDepartment = async (_department: string) => {
@@ -334,11 +345,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .child(_department)
       .once("value")
       .then(async (snapshot) => {
-        await AsyncStorage.setItem("department", snapshot.val())
-          .then(() => {
-            setDepartment(snapshot.val())
-          })
-      })
+        await AsyncStorage.setItem("department", snapshot.val()).then(() => {
+          setDepartment(snapshot.val());
+        });
+      });
   };
 
   return (
