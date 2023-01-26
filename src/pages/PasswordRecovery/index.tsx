@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { SafeAreaView, View, StyleSheet, Alert, StatusBar } from "react-native"
+import { SafeAreaView, View, StyleSheet, Alert } from "react-native"
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { Button } from "../../components/buttons/button";
@@ -41,7 +41,6 @@ export default function PasswordRecovery({ navigation }: Properties) {
                 content="Em alguns instantes uma mensagem de e-mail chegará em sua caixa de entrada com as instruções para redefinição da sua senha."
                 visible={visible}
                 dismiss={handleRecoverPassword} />
-            <StatusBar backgroundColor='silver' barStyle={"light-content"} translucent={false} />
         </SafeAreaView>
     )
 }

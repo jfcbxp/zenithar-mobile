@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from "react";
-import { SafeAreaView, View, StyleSheet, StatusBar } from "react-native";
+import { SafeAreaView, View, StyleSheet } from "react-native";
 import { Button } from "../../components/buttons/button";
 import { Dialog } from "../../components/modals/dialog";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -73,7 +73,6 @@ export default function SignUp({ navigation }: Properties) {
           navigation.navigate("SignIn");
         }}
       />
-      <StatusBar backgroundColor="silver" barStyle={"light-content"} translucent={false} />
     </SafeAreaView>
   );
 }

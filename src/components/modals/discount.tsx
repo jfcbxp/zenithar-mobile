@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { StyleSheet, Modal, ModalProps, View, Text, GestureResponderEvent, Pressable } from 'react-native'
+import { useState, useEffect, useContext } from 'react'
+import { StyleSheet, Modal, ModalProps, View, Text, GestureResponderEvent, Pressable, Alert } from 'react-native'
 import { SwipeButton } from '../buttons/swipe-button'
 import { TextInput } from '../inputs/text-input'
 import { useNavigation } from '@react-navigation/native'
@@ -7,7 +7,7 @@ import { NavigationParams } from '../../types/navigation.params'
 import { Picker } from '../pickers/picker'
 import { ItemValue } from '@react-native-picker/picker/typings/Picker'
 import { Item } from 'react-native-picker-select'
-import { InputStyles } from '../inputs/input-styles'
+import { AuthContext } from '../../contexts/auth.provider'
 
 interface Properties extends ModalProps {
     visible?: boolean
@@ -15,11 +15,15 @@ interface Properties extends ModalProps {
 }
 
 export function DiscountModal(properties: Properties) {
+    const authContext = useContext(AuthContext)
     const navigation = useNavigation<NavigationParams>()
     const [budget, setBudget] = useState('')
     const [branch, setBranch] = useState<ItemValue>()
     const [branches, setBranches] = useState<Item[]>([])
 
+    useEffect(() => {
+    }, [])
+    
     return (
         <Modal {...properties}
             transparent={true}

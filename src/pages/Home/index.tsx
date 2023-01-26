@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StackScreenProps } from "@react-navigation/stack";
-import { SafeAreaView, View, StyleSheet, ScrollView, StatusBar } from "react-native";
+import { SafeAreaView, View, StyleSheet, ScrollView } from "react-native";
 import { StackParams } from "../../types/stack.params";
 import { Header } from "../../components/headers/header";
 import { NavigationButton } from "../../components/buttons/navigation-button";
@@ -49,8 +49,6 @@ export default function Home({ navigation }: Properties) {
                 <Header
                     fullName={user?.fullName}
                     imageURL={user?.portrait}
-                    company={user?.company}
-                    department={user?.department}
                     returnOption={false} />
             </View>
             <ScrollView
@@ -70,7 +68,6 @@ export default function Home({ navigation }: Properties) {
             <DiscountModal
                 visible={discount}
                 dismiss={() => { setDiscount(false) }} />
-            <StatusBar backgroundColor='#212A4D' barStyle={"light-content"} translucent={false} />
         </SafeAreaView>
     )
 }
