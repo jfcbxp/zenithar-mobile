@@ -10,7 +10,11 @@ export default function AppRoutes() {
       <Stack.Screen
         name="Home"
         component={Home}
-        options={{ headerShown: false }} />
+        options={{
+          title: '',
+          headerTintColor: 'white',
+          headerShown: false
+        }} />
       <Stack.Screen
         name="Discount"
         component={Discount}
