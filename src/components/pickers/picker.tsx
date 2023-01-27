@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet } from "react-native";
 import DropDownPicker, { DropDownPickerProps } from "react-native-dropdown-picker";
 
 export function Picker(properties: DropDownPickerProps<any>) {
