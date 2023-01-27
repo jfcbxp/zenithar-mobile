@@ -4,9 +4,8 @@ import {
   Modal,
   ModalProps,
   View,
-  Alert,
 } from "react-native";
-import { DialogStyles as styles } from "./dialog";
+import { Dialog, DialogStyles as styles } from "./dialog";
 import { Button } from "../buttons/button";
 import { FullNameInput } from "../inputs/fullname-input";
 import { PasswordInput } from "../inputs/password-input";
@@ -29,6 +28,9 @@ export function UserSettings(properties: Properties) {
   const [portrait, setPortrait] = useState<string | undefined>("");
   const [changePassword, setChangePassword] = useState<boolean | undefined>();
   const [disabled, setDisabled] = useState(false);
+  const [title, setTitle] = useState('')
+  const [content, setContent] = useState('')
+  const [visible, setVisible] = useState(false)
 
   useEffect(() => {
     setFullName(authContext.user?.fullName)
@@ -65,7 +67,7 @@ export function UserSettings(properties: Properties) {
 
   const handleUpdateUser = async () => {
     if (fullName == "") {
-      Alert.alert("Dados mandatórios", "Por favor, preencher todos os campos");
+      Alert("Dados mandatórios", "Por favor, preencher todos os campos")
     } else {
       await authContext.userUpdate(
         fullName!,
@@ -91,6 +93,15 @@ export function UserSettings(properties: Properties) {
     setFullName(authContext.user?.fullName!);
     setPortrait(authContext.user?.portrait!);
   };
+
+  const Alert = (
+    title: string,
+    content: string,
+  ) => {
+    setTitle(title)
+    setContent(content)
+    setVisible(true)
+  }
 
   return (
     <Modal
@@ -142,6 +153,11 @@ export function UserSettings(properties: Properties) {
           />
         </View>
       </View>
+      <Dialog
+        title={title}
+        content={content}
+        visible={visible}
+        dismiss={() => { setVisible(false) }} />
     </Modal>
   );
 }

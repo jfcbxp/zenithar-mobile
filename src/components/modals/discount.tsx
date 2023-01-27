@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import {
   StyleSheet,
   Modal,
@@ -8,20 +8,19 @@ import {
   GestureResponderEvent,
   Pressable,
   Keyboard,
-  Platform,
+  Animated,
 } from "react-native";
-import { SwipeButton } from "../buttons/swipe-button";
 import { TextInput } from "../inputs/text-input";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationParams } from "../../types/navigation.params";
-import { Picker } from "../pickers/picker";
 import { AuthContext } from "../../contexts/auth.provider";
-import { Item } from "react-native-picker-select";
 import { Button } from "../buttons/button";
+import { Picker } from "../pickers/picker";
+import { ItemType } from "react-native-dropdown-picker";
 
 interface Properties extends ModalProps {
   visible?: boolean;
-  dismiss?: ((event: GestureResponderEvent) => void) | null;
+  dismiss?: (event: GestureResponderEvent) => void | null;
 }
 
 export function DiscountModal(properties: Properties) {
@@ -29,19 +28,19 @@ export function DiscountModal(properties: Properties) {
   const navigation = useNavigation<NavigationParams>();
   const [budget, setBudget] = useState("");
   const [branch, setBranch] = useState("");
-  const [branches, setBranches] = useState<Item[]>();
+  const [branches, setBranches] = useState<ItemType<any>[]>();
+  const translation = useRef(new Animated.Value(400)).current;
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
     let data = authContext.user?.branches!;
-    let array: Item[] = [];
+    let array: ItemType<any>[] = [];
     Object.entries(data).forEach(([key, value]) => {
       array = [
         ...array,
         {
-          key: key,
           value: value.id,
           label: `${value.id} - ${value.name}`,
-          color: "#123262",
         },
       ];
     });
@@ -56,17 +55,23 @@ export function DiscountModal(properties: Properties) {
 
   return (
     <Modal
-      {...properties}
       transparent={true}
       visible={properties.visible}
       animationType="fade"
-    >
+      onShow={() => {
+        Animated.timing(translation, {
+          toValue: 1, duration: 500, useNativeDriver: true
+        }).start()
+      }}>
       <View style={styles.container}>
         <Pressable
-          onPress={properties.dismiss}
-          style={StyleSheet.absoluteFillObject}
-        />
-        <View style={styles.field}>
+          onPressIn={() => {
+            translation.setValue(400)
+            setOpen(false)
+          }}
+          onPressOut={properties.dismiss}
+          style={StyleSheet.absoluteFillObject} />
+        <Animated.View style={[{ transform: [{ translateY: translation }] }, styles.field]}>
           <Text style={styles.title}>Desconto</Text>
           <TextInput
             value={budget}
@@ -74,30 +79,23 @@ export function DiscountModal(properties: Properties) {
             keyboardType="numeric"
             placeholder="Número do Orçamento"
             maxLength={6}
-            placeholderTextColor="#1F537E"
-          />
+            placeholderTextColor="#1F537E" />
           <Picker
             items={branches!}
             value={branch}
-            onValueChange={setBranch}
-            placeholder="Filiais"
-          />
-          {Platform.OS == "web" ? (
-            <Button
-              title="CONTINUAR"
-              onPress={() => {
-                navigation.navigate("Discount");
-              }}
-            />
-          ) : (
-            <SwipeButton
-              title="CONSULTAR"
-              onSwipeSuccess={() => {
-                navigation.navigate("Discount");
-              }}
-            />
-          )}
-        </View>
+            setValue={setBranch}
+            open={open}
+            setOpen={setOpen}
+            placeholder="Filiais" />
+          <Button
+            title="CONTINUAR"
+            onPressIn={() => {
+              translation.setValue(400)
+              setOpen(false)
+              navigation.navigate("Discount")
+            }}
+            onPressOut={properties.dismiss} />
+        </Animated.View>
       </View>
     </Modal>
   );
@@ -106,16 +104,19 @@ export function DiscountModal(properties: Properties) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    justifyContent: 'flex-end',
+    backgroundColor: `rgba(0, 0, 0, 0.8)`,
   },
   field: {
+    position: 'absolute',
+    width: "100%",
     height: "50%",
     alignItems: "center",
     paddingHorizontal: "5%",
     backgroundColor: "#F0F2F7",
     borderTopLeftRadius: 18,
     borderTopRightRadius: 18,
+    zIndex: 99
   },
   title: {
     fontSize: 24,
