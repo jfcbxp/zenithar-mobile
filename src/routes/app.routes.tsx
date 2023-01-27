@@ -6,23 +6,13 @@ import Discount from "../pages/Discount";
 export default function AppRoutes() {
   const Stack = createStackNavigator<StackParams>();
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name="Home"
-        component={Home}
-        options={{
-          title: '',
-          headerTintColor: 'white',
-          headerShown: false
-        }} />
+        component={Home} />
       <Stack.Screen
         name="Discount"
-        component={Discount}
-        options={{
-          title: '',
-          headerTransparent: true,
-          headerTintColor: 'white',
-        }} />
+        component={Discount} />
     </Stack.Navigator >
   )
 }

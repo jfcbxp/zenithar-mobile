@@ -1,28 +1,28 @@
-import { TextStyle } from "react-native";
-import RNPickerSelect, { PickerSelectProps } from "react-native-picker-select";
+import { StyleSheet, View, Text } from "react-native";
+import DropDownPicker, { DropDownPickerProps } from "react-native-dropdown-picker";
 
-interface Properties extends PickerSelectProps {
-    placeholder: string
-}
-
-export function Picker(properties: Properties) {
+export function Picker(properties: DropDownPickerProps<any>) {
     return (
-        <RNPickerSelect {...properties}
-            placeholder={{
-                label: properties.placeholder,
-            }}
-            style={{
-                inputIOS: styles,
-                inputAndroid: styles
-            }} />
+        <DropDownPicker {...properties}
+            style={styles.picker}
+            textStyle={styles.font}
+            labelStyle={styles.font}
+        />
     )
 }
 
-const styles: TextStyle = {
-    backgroundColor: 'white',
-    marginBottom: 24,
-    height: 40,
-    fontSize: 16,
-    fontWeight: 'bold',
-    paddingHorizontal: 16,
-}
+const styles = StyleSheet.create({
+    picker: {
+        backgroundColor: 'white',
+        marginBottom: 24,
+        height: 40,
+        paddingHorizontal: 16,
+        borderWidth: 0,
+        borderRadius: 18,
+    },
+    font: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#123262',
+    }
+})

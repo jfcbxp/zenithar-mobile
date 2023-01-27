@@ -13,10 +13,10 @@ import {
 import { TextInput } from "../inputs/text-input";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationParams } from "../../types/navigation.params";
-import { Picker } from "../pickers/picker";
 import { AuthContext } from "../../contexts/auth.provider";
-import { Item } from "react-native-picker-select";
 import { Button } from "../buttons/button";
+import { Picker } from "../pickers/picker";
+import { ItemType } from "react-native-dropdown-picker";
 
 interface Properties extends ModalProps {
   visible?: boolean;
@@ -28,20 +28,19 @@ export function DiscountModal(properties: Properties) {
   const navigation = useNavigation<NavigationParams>();
   const [budget, setBudget] = useState("");
   const [branch, setBranch] = useState("");
-  const [branches, setBranches] = useState<Item[]>();
+  const [branches, setBranches] = useState<ItemType<any>[]>();
   const translation = useRef(new Animated.Value(400)).current;
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
     let data = authContext.user?.branches!;
-    let array: Item[] = [];
+    let array: ItemType<any>[] = [];
     Object.entries(data).forEach(([key, value]) => {
       array = [
         ...array,
         {
-          key: key,
           value: value.id,
           label: `${value.id} - ${value.name}`,
-          color: "#123262",
         },
       ];
     });
@@ -61,13 +60,14 @@ export function DiscountModal(properties: Properties) {
       animationType="fade"
       onShow={() => {
         Animated.timing(translation, {
-          toValue: 1, useNativeDriver: true
+          toValue: 1, duration: 500, useNativeDriver: true
         }).start()
       }}>
       <View style={styles.container}>
         <Pressable
           onPressIn={() => {
             translation.setValue(400)
+            setOpen(false)
           }}
           onPressOut={properties.dismiss}
           style={StyleSheet.absoluteFillObject} />
@@ -83,12 +83,15 @@ export function DiscountModal(properties: Properties) {
           <Picker
             items={branches!}
             value={branch}
-            onValueChange={setBranch}
+            setValue={setBranch}
+            open={open}
+            setOpen={setOpen}
             placeholder="Filiais" />
           <Button
             title="CONTINUAR"
             onPressIn={() => {
               translation.setValue(400)
+              setOpen(false)
               navigation.navigate("Discount")
             }}
             onPressOut={properties.dismiss} />

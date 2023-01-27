@@ -1,9 +1,9 @@
-import { StyleSheet, GestureResponderEvent, Modal, ModalProps, Text, View } from "react-native";
+import { StyleSheet, GestureResponderEvent, Modal, Text, View } from "react-native";
 import { Button } from "../buttons/button";
 
-interface Properties extends ModalProps {
-    visible?: boolean | undefined
-    dismiss?: ((event: GestureResponderEvent) => void) | undefined
+interface Properties {
+    visible: boolean | undefined
+    dismiss: ((event: GestureResponderEvent) => void) | undefined
     title: string
     content: string
 }

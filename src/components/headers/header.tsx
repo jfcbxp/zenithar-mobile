@@ -3,6 +3,8 @@ import { StyleSheet, View, Text, Image, Pressable } from 'react-native';
 import { AuthContext } from '../../contexts/auth.provider';
 import { MaterialIcons as Icon } from '@expo/vector-icons';
 import { UserSettings } from '../modals/user-settings';
+import { useNavigation } from '@react-navigation/native';
+import { NavigationParams } from '../../types/navigation.params';
 
 interface Properties {
     imageURL?: string
@@ -12,6 +14,7 @@ interface Properties {
 
 export function Header(properties: Properties) {
     const authContext = useContext(AuthContext)
+    const navigation = useNavigation<NavigationParams>();
     const [visible, setVisible] = useState(false)
 
     const handleSignOut = async () => {
@@ -26,6 +29,14 @@ export function Header(properties: Properties) {
         <View style={styles.header}>
             <Pressable onPress={onPress}>
                 <View style={properties.returnOption === false ? styles.container : styles.containerReturn}>
+                    {properties.returnOption &&
+                        <Icon
+                            name='keyboard-arrow-left'
+                            size={48}
+                            color='white'
+                            onPress={() => { navigation.navigate("Home") }}
+                            style={{ marginLeft: -60 }} />
+                    }
                     <Image
                         source={properties.imageURL ? { uri: properties.imageURL } : require('../../../assets/no-user.png')}
                         style={styles.image} />
@@ -36,7 +47,7 @@ export function Header(properties: Properties) {
                     </View>
                     <Icon
                         name='logout'
-                        size={24}
+                        size={32}
                         color='white'
                         onPress={handleSignOut}
                         style={{ marginLeft: 'auto' }} />

@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { StyleSheet, SafeAreaView, View, Alert } from "react-native"
+import { StyleSheet, SafeAreaView, View } from "react-native"
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { Button } from "../../components/buttons/button";
@@ -14,15 +14,26 @@ export default function PasswordRecovery({ navigation }: Properties) {
     const authContext = useContext(AuthContext)
     const [email, setEmail] = useState<string>('')
     const [visible, setVisible] = useState<boolean>(false)
+    const [title, setTitle] = useState("Recuperação de senha")
+    const [content, setContent] = useState("Em alguns instantes uma mensagem de e-mail chegará em sua caixa de entrada com as instruções para redefinição da sua senha.")
 
     const handleRecoverPassword = () => {
         if (email != '') {
             authContext.recoverPassword(email)
-            setVisible(false)
             navigation.navigate("SignIn")
         } else {
-            Alert.alert("Dado mandatório", "Por favor, forneça o seu e-mail para recuperar sua senha.")
+            Alert("Dado mandatório", "Por favor, forneça o seu e-mail para recuperar sua senha.")
         }
+        setVisible(false)
+    }
+
+    const Alert = (
+        title: string,
+        content: string,
+    ) => {
+        setTitle(title)
+        setContent(content)
+        setVisible(true)
     }
 
     return (
@@ -38,8 +49,8 @@ export default function PasswordRecovery({ navigation }: Properties) {
                 </View>
             </View>
             <Dialog
-                title="Recuperação de senha"
-                content="Em alguns instantes uma mensagem de e-mail chegará em sua caixa de entrada com as instruções para redefinição da sua senha."
+                title={title}
+                content={content}
                 visible={visible}
                 dismiss={handleRecoverPassword} />
             <StatusBar style="light" translucent={false} backgroundColor="silver" />
