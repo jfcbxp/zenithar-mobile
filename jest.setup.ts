@@ -3,3 +3,5 @@ jest.mock("@react-native-async-storage/async-storage", () =>
 );
 
 jest.mock("@react-navigation/native");
+
+jest.mock("./src/services/firebase.service");
