@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StyleSheet, SafeAreaView, View, ScrollView } from "react-native";
 import { StackParams } from "../../types/stack.params";
@@ -28,10 +28,8 @@ export default function Home({ navigation }: Properties) {
       date: "20 OUT",
     },
   ];
-  const [containerTitle, setContainerTitle] = useState("Histórico");
-  const [containerChild, setContainerChild] = useState<React.ReactNode>(
-    <Historic data={DATA} />
-  );
+  const [containerTitle] = useState("Histórico");
+  const [containerChild] = useState<React.ReactNode>(<Historic data={DATA} />);
   const [discount, setDiscount] = useState(false);
 
   return (

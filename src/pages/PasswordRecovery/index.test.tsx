@@ -9,15 +9,25 @@ import { Button } from "../../components/buttons/button";
 import { EmailInput } from "../../components/inputs/email-input";
 import { Dialog } from "../../components/modals/dialog";
 
-const navigation =
-  useNavigation<StackNavigationProp<StackParams, "PasswordRecovery">>();
+let mockNavigation: StackScreenProps<
+  StackParams,
+  "PasswordRecovery",
+  undefined
+>;
 
-const route = useNavigation<RouteProp<StackParams, "PasswordRecovery">>();
+let route: RouteProp<StackParams, "PasswordRecovery">;
 
-const mockNavigation: StackScreenProps<StackParams, "PasswordRecovery"> = {
-  navigation: navigation,
-  route: route,
-};
+beforeAll(() => {
+  let navigation =
+    useNavigation<StackNavigationProp<StackParams, "PasswordRecovery">>();
+
+  route = useNavigation<RouteProp<StackParams, "PasswordRecovery">>();
+
+  mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
+});
 
 it("PasswordRecovery renders without crashing", () => {
   const rendered = renderer
