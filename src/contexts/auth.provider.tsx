@@ -5,6 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import firebase from "firebase/compat/app";
 import { UserBranch } from "../models/user.branch.model";
 import { Dialog } from "../components/modals/dialog";
+import { UserLogs } from "../models/user.logs.model";
 
 type AuthContextProps = {
   user: User | undefined;
@@ -102,6 +103,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
               "",
               false,
               [],
+              [],
               _portrait
             );
           }
@@ -175,6 +177,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           department: user?.department!,
           verified: user?.verified!,
           branches: user?.branches!,
+          logs: user?.logs!,
         };
         _storeUser(_user);
       });
@@ -255,6 +258,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     _department: string,
     _verified: boolean,
     _branches: UserBranch[],
+    _logs: UserLogs[],
     _portrait?: string
   ) => {
     let _portraitURL = "";
@@ -276,6 +280,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         department: _department,
         verified: _verified,
         branches: user?.branches,
+        logs: user?.logs,
       })
       .then(() => {
         let _user: User = {
@@ -287,6 +292,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           department: _department,
           verified: _verified,
           branches: _branches,
+          logs: _logs
         };
         _storeUser(_user);
       });
@@ -307,6 +313,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           department: snapshot.val().department,
           verified: snapshot.val().verified,
           branches: snapshot.child("branches").val(),
+          logs: snapshot.child("logs").val(),
         };
         if (!_user.verified) {
           var currentUser = await firebase.auth().currentUser;
@@ -320,6 +327,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
               _user.department,
               _user.verified,
               _user.branches,
+              _user.logs,
               _user.portrait
             );
           }

@@ -17,6 +17,7 @@ import { AuthContext } from "../../contexts/auth.provider";
 import { Button } from "../buttons/button";
 import { Picker } from "../pickers/picker";
 import { ItemType } from "react-native-dropdown-picker";
+import { UserBranch } from "../../models/user.branch.model";
 
 interface Properties extends ModalProps {
   visible?: boolean;
@@ -28,7 +29,7 @@ export function DiscountModal(properties: Properties) {
   const navigation = useNavigation<NavigationParams>();
   const [budget, setBudget] = useState("");
   const [branch, setBranch] = useState("");
-  const [branches, setBranches] = useState<ItemType<any>[]>();
+  const [branches, setBranches] = useState<ItemType<UserBranch>[]>();
   const translation = useRef(new Animated.Value(400)).current;
   const [open, setOpen] = useState(false)
   const [disabled, setDisabled] = useState(false)
@@ -71,6 +72,8 @@ export function DiscountModal(properties: Properties) {
         <Pressable
           onPressIn={() => {
             translation.setValue(400)
+            setBranch("")
+            setBudget("")
             setOpen(false)
           }}
           onPressOut={properties.dismiss}
@@ -96,6 +99,8 @@ export function DiscountModal(properties: Properties) {
             onPressIn={() => {
               translation.setValue(400)
               setOpen(false)
+              setBranch("")
+              setBudget("")
               navigation.navigate("Discount")
             }}
             onPressOut={properties.dismiss} 

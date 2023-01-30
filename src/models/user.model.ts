@@ -1,4 +1,5 @@
 import { UserBranch } from "./user.branch.model";
+import { UserLogs } from "./user.logs.model";
 
 export interface User {
   fullName: string;
@@ -9,4 +10,5 @@ export interface User {
   department: string;
   verified: boolean;
   branches: UserBranch[];
+  logs: UserLogs[];
 }
