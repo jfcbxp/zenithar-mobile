@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { StyleSheet, SafeAreaView, View } from "react-native"
+import { StyleSheet, SafeAreaView, View, Platform } from "react-native"
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { Button } from "../../components/buttons/button";
@@ -53,7 +53,7 @@ export default function PasswordRecovery({ navigation }: Properties) {
                 content={content}
                 visible={visible}
                 dismiss={handleRecoverPassword} />
-            <StatusBar style="light" translucent={false} backgroundColor="silver" />
+            <StatusBar style="light" translucent={Platform.OS == "web" ? undefined : false} backgroundColor="silver" />
         </SafeAreaView>
     )
 }

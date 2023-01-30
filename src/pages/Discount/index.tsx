@@ -1,4 +1,4 @@
-import { StyleSheet, SafeAreaView, View, ScrollView } from "react-native";
+import { StyleSheet, SafeAreaView, View, ScrollView, Platform } from "react-native";
 import { Header } from "../../components/headers/header";
 import { HeaderDropdown } from "../../components/dropdowns/discount/header-dropdown";
 import { ItemsDropdown } from "../../components/dropdowns/discount/items-dropdown";
@@ -7,7 +7,7 @@ import { StackParams } from "../../types/stack.params";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
 
-interface Properties extends StackScreenProps<StackParams, "Discount"> {}
+interface Properties extends StackScreenProps<StackParams, "Discount"> { }
 
 export default function Discount({ navigation }: Properties) {
   return (
@@ -22,7 +22,7 @@ export default function Discount({ navigation }: Properties) {
           <PaymentMethodDropdown />
         </ScrollView>
       </View>
-      <StatusBar style="light" translucent={false} backgroundColor="#212A4D" />
+      <StatusBar style="light" translucent={Platform.OS == "web" ? undefined : false} backgroundColor="#212A4D" />
     </SafeAreaView>
   );
 }

@@ -38,6 +38,20 @@ export function UserSettings(properties: Properties) {
   }, [])
 
   useEffect(() => {
+    if (!changePassword) {
+      if (
+        (portrait == authContext.user?.portrait)
+        &&
+        (fullName == authContext.user?.fullName)
+      ) {
+        setDisabled(true)
+      } else {
+        setDisabled(false)
+      }
+    }
+  }, [portrait, fullName])
+
+  useEffect(() => {
     if (changePassword) {
       if (
         currentPassword.length > 5 &&

@@ -31,6 +31,7 @@ export function DiscountModal(properties: Properties) {
   const [branches, setBranches] = useState<ItemType<any>[]>();
   const translation = useRef(new Animated.Value(400)).current;
   const [open, setOpen] = useState(false)
+  const [disabled, setDisabled] = useState(false)
 
   useEffect(() => {
     let data = authContext.user?.branches!;
@@ -48,10 +49,13 @@ export function DiscountModal(properties: Properties) {
   }, []);
 
   useEffect(() => {
-    if (budget.length == 6) {
+    if (budget.length == 6 && branch != "") {
       Keyboard.dismiss();
+      setDisabled(false)
+    } else {
+      setDisabled(true)
     }
-  }, [budget]);
+  }, [budget, branch]);
 
   return (
     <Modal
@@ -94,7 +98,8 @@ export function DiscountModal(properties: Properties) {
               setOpen(false)
               navigation.navigate("Discount")
             }}
-            onPressOut={properties.dismiss} />
+            onPressOut={properties.dismiss} 
+            disabled={disabled}/>
         </Animated.View>
       </View>
     </Modal>
