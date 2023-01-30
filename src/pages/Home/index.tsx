@@ -1,38 +1,24 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { StackScreenProps } from "@react-navigation/stack";
-import { StyleSheet, SafeAreaView, View, ScrollView, Platform } from "react-native";
+import { StyleSheet, View, ScrollView } from "react-native";
 import { StackParams } from "../../types/stack.params";
 import { Header } from "../../components/headers/header";
 import { NavigationButton } from "../../components/buttons/navigation-button";
 import { HomeContainer } from "../../components/containers/home-container";
 import { DiscountModal } from "../../components/modals/discount";
-import { Historic } from "../../components/lists/historic";
+import { Logs } from "../../components/lists/logs";
 import { StatusBar } from "expo-status-bar";
 import { AuthContext } from "../../contexts/auth.provider";
 import { Dialog } from "../../components/modals/dialog";
+import { UserLogs } from "../../models/user.logs.model";
 
 interface Properties extends StackScreenProps<StackParams, "Home"> { }
 
 export default function Home({ navigation }: Properties) {
   const authContext = useContext(AuthContext)
-  const DATA = [
-    {
-      id: 1,
-      icon: "check-box",
-      title: "Liberação orçamento",
-      description: "DEUSA MARIA COSTA",
-      date: "20 OUT",
-    },
-    {
-      id: 2,
-      icon: "attach-money",
-      title: "Desconto orçamento",
-      description: "R$150,00 (DEUSA MARIA COSTA)",
-      date: "20 OUT",
-    },
-  ];
+  const [data, setData] = useState<UserLogs[]>(authContext.user?.logs!)
   const [containerTitle] = useState("Histórico");
-  const [containerChild] = useState<React.ReactNode>(<Historic data={DATA} />);
+  const [containerChild] = useState<React.ReactNode>(<Logs data={data} />);
   const [discount, setDiscount] = useState(false);
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -56,7 +42,7 @@ export default function Home({ navigation }: Properties) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View>
         <Header returnOption={false} />
       </View>
@@ -85,8 +71,8 @@ export default function Home({ navigation }: Properties) {
         content={content}
         visible={visible}
         dismiss={() => { setVisible(false) }} />
-      <StatusBar style="light" translucent={Platform.OS == "web" ? undefined : false} backgroundColor="#212A4D" />
-    </SafeAreaView>
+      <StatusBar style="light" translucent={false} backgroundColor="#212A4D" />
+    </View>
   );
 }
 

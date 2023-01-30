@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { StyleSheet, SafeAreaView, View, Platform } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Button } from "../../components/buttons/button";
 import { Dialog } from "../../components/modals/dialog";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -43,7 +43,7 @@ export default function SignUp({ navigation }: Properties) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={{ marginHorizontal: "10%" }}>
         <View>
           <Portrait source={portrait} onPress={pickImage} />
@@ -73,8 +73,8 @@ export default function SignUp({ navigation }: Properties) {
           authContext.signUp(email, password, fullName, portrait);
           navigation.navigate("SignIn");
         }} />
-      <StatusBar style="light" translucent={Platform.OS == "web" ? undefined : false} backgroundColor="silver" />
-    </SafeAreaView>
+      <StatusBar style="light" translucent={false} backgroundColor="silver" />
+    </View>
   );
 }
 
