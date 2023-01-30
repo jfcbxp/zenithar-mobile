@@ -72,6 +72,8 @@ export function DiscountModal(properties: Properties) {
         <Pressable
           onPressIn={() => {
             translation.setValue(400)
+            setBranch("")
+            setBudget("")
             setOpen(false)
           }}
           onPressOut={properties.dismiss}
