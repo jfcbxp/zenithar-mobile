@@ -16,7 +16,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "jest",
-    "testWithCoverage": "jest --verbose --updateSnapshot --watch --coverage && open ./coverage/lcov-report/index.html"
+    "testWithCoverage": "jest --verbose --coverage",
+    "completeTestWithCoverage": "jest --verbose --updateSnapshot --watch --coverage && open ./coverage/lcov-report/index.html"
   },
   "dependencies": {
     "@expo/webpack-config": "^0.17.2",
