@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StyleSheet, View, ScrollView } from "react-native";
 import { StackParams } from "../../types/stack.params";
@@ -16,7 +16,7 @@ interface Properties extends StackScreenProps<StackParams, "Home"> { }
 
 export default function Home({ navigation }: Properties) {
   const authContext = useContext(AuthContext)
-  const [data, setData] = useState<UserLogs[]>(authContext.user?.logs!)
+  const [data] = useState<UserLogs[]>(authContext.user?.logs!)
   const [containerTitle] = useState("Histórico");
   const [containerChild] = useState<React.ReactNode>(<Logs data={data} />);
   const [discount, setDiscount] = useState(false);
