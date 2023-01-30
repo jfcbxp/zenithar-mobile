@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import { User } from "../models/user.model";
 import { firebaseAuth, storage, realtime } from "../services/firebase.service";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import { UserBranch } from "../models/user.branch.model";
 import { Dialog } from "../components/modals/dialog";
 
@@ -33,11 +33,11 @@ const defaultState = {
   company: undefined,
   department: undefined,
   loading: true,
-  signUp: async () => { },
-  signIn: async () => { },
-  signOut: async () => { },
-  recoverPassword: async () => { },
-  userUpdate: async () => { },
+  signUp: async () => {},
+  signIn: async () => {},
+  signOut: async () => {},
+  recoverPassword: async () => {},
+  userUpdate: async () => {},
 };
 
 export const AuthContext = createContext<AuthContextProps>(defaultState);
@@ -51,9 +51,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [company, setCompany] = useState<string | undefined>();
   const [department, setDepartment] = useState<string | undefined>();
   const [loading, setLoading] = useState<boolean>(true);
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
-  const [visible, setVisible] = useState(false)
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     firebaseAuth.onAuthStateChanged(async (currentUser) => {
@@ -63,7 +63,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             await _getUserRegister(currentUser.uid);
           }
         } else {
-          Alert("E-mail não verificado", "Por favor verifique seu [e-mail].")
+          Alert("E-mail não verificado", "Por favor verifique seu [e-mail].");
           signOut();
         }
       } else {
@@ -88,7 +88,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           firebaseAuth.languageCode = "pt";
           result.user.sendEmailVerification().catch((error) => {
             validate = false;
-            Alert("Erro", `Erro ao enviar o e-mail de verificação. ${error.message}`)
+            Alert(
+              "Erro",
+              `Erro ao enviar o e-mail de verificação. ${error.message}`
+            );
           });
           if (result.user && validate == true) {
             await _userRegister(
@@ -106,11 +109,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       })
       .catch((error) => {
         if (error.code === "auth/weak-password") {
-          Alert("Senha fraca", "Informe uma senha mais forte.")
+          Alert("Senha fraca", "Informe uma senha mais forte.");
         } else if (error.code === "auth/invalid-email") {
-          Alert("E-mail inválido", "Por favor informe um e-mail válido.")
+          Alert("E-mail inválido", "Por favor informe um e-mail válido.");
         } else {
-          Alert("Erro", `Ocorreu um problema. ${error.message}`)
+          Alert("Erro", `Ocorreu um problema. ${error.message}`);
         }
       });
   };
@@ -121,7 +124,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .signInWithEmailAndPassword(_email, _password)
       .catch((error) => {
         if (error) {
-          Alert("Inválido", "Nenhum usuário encontrado com as credenciais fornecidas.")
+          Alert(
+            "Inválido",
+            "Nenhum usuário encontrado com as credenciais fornecidas."
+          );
         }
         setLoading(false);
       });
@@ -137,7 +143,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const recoverPassword = async (_email: string) => {
     await firebaseAuth.sendPasswordResetEmail(_email).catch((error) => {
-      Alert("Erro", `Não foi encontrado um usuário com o endereço de e-mail fornecido. ${error.message}`)
+      Alert(
+        "Erro",
+        `Não foi encontrado um usuário com o endereço de e-mail fornecido. ${error.message}`
+      );
     });
   };
 
@@ -187,29 +196,29 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
               await _alertPasswordChange();
             })
             .catch((error) => {
-              Alert("Erro", error.message)
+              Alert("Erro", error.message);
             });
         })
         .catch((error) => {
-          Alert("Erro", error.message)
+          Alert("Erro", error.message);
         });
     }
   };
 
   const _alertPasswordChange = async () =>
     new Promise((resolve) => {
-      Alert("Alteração de senha", "Sua senha foi alterada. Efetue acesso novamente.")
-      signOut()
+      Alert(
+        "Alteração de senha",
+        "Sua senha foi alterada. Efetue acesso novamente."
+      );
+      signOut();
     });
 
-  const Alert = (
-    title: string,
-    content: string,
-  ) => {
-    setTitle(title)
-    setContent(content)
-    setVisible(true)
-  }
+  const Alert = (title: string, content: string) => {
+    setTitle(title);
+    setContent(content);
+    setVisible(true);
+  };
 
   const _uploadImage = async (_portrait: string) => {
     const response = await fetch(_portrait);
@@ -358,7 +367,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         title={title}
         content={content}
         visible={visible}
-        dismiss={() => { setVisible(false) }} />
+        dismiss={() => {
+          setVisible(false);
+        }}
+      />
       {children}
     </AuthContext.Provider>
   );
