@@ -50,8 +50,10 @@ export function DiscountModal(properties: Properties) {
   }, []);
 
   useEffect(() => {
-    if (budget.length == 6 && branch != "") {
+    if (budget.length == 6) {
       Keyboard.dismiss();
+    }
+    if (budget.length == 6 && branch != "") {
       setDisabled(false)
     } else {
       setDisabled(true)
@@ -103,8 +105,8 @@ export function DiscountModal(properties: Properties) {
               setBudget("")
               navigation.navigate("Discount")
             }}
-            onPressOut={properties.dismiss} 
-            disabled={disabled}/>
+            onPressOut={properties.dismiss}
+            disabled={disabled} />
         </Animated.View>
       </View>
     </Modal>

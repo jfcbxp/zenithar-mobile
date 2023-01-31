@@ -6,6 +6,7 @@ import { PaymentMethodDropdown } from "../../components/dropdowns/discount/payme
 import { StackParams } from "../../types/stack.params";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
+import { Button } from "../../components/buttons/button";
 
 interface Properties extends StackScreenProps<StackParams, "Discount"> { }
 
@@ -21,6 +22,11 @@ export default function Discount({ navigation }: Properties) {
           <ItemsDropdown />
           <PaymentMethodDropdown />
         </ScrollView>
+        <View style={styles.footer}>
+          <Button
+            title="CONCEDER DESCONTO"
+            onPress={() => { navigation.navigate("DiscountConfirmation") }} />
+        </View>
       </View>
       <StatusBar style="light" translucent={false} backgroundColor="#212A4D" />
     </View>
@@ -37,6 +43,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   body: {
-    flex: 5,
+    flex: 6,
   },
+  footer: {
+    marginHorizontal: "5%",
+    marginVertical: "5%",
+  }
 });

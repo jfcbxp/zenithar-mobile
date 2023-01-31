@@ -4,4 +4,5 @@ export type StackParams = {
     PasswordRecovery: undefined
     Home: undefined
     Discount: undefined
+    DiscountConfirmation: undefined
 }
