@@ -41,7 +41,8 @@ export function Header(properties: Properties) {
               onPress={() => {
                 navigation.navigate("Home");
               }}
-              style={{ marginLeft: -60 }} />
+              style={{ marginLeft: -60 }}
+            />
           )}
           <Image
             source={
@@ -49,7 +50,8 @@ export function Header(properties: Properties) {
                 ? { uri: authContext.user?.portrait }
                 : require("../../../assets/no-user.png")
             }
-            style={styles.image} />
+            style={styles.image}
+          />
           <View>
             <Text style={styles.fullName}>{authContext.user?.fullName}</Text>
             <Text style={styles.descriptions}>{authContext.company}</Text>
@@ -64,12 +66,14 @@ export function Header(properties: Properties) {
           />
         </View>
       </Pressable>
-      <UserSettings
-        visible={visible}
-        dismiss={() => {
-          setVisible(false);
-        }}
-      />
+      {visible && (
+        <UserSettings
+          visible={visible}
+          dismiss={() => {
+            setVisible(false);
+          }}
+        />
+      )}
     </View>
   );
 }

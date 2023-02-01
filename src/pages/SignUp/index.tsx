@@ -63,9 +63,7 @@ export default function SignUp({ navigation }: Properties) {
       <Dialog
         title="Verificação de e-mail"
         content={
-          "Aguarde. Um e-mail de verificação foi enviado para: " +
-          email +
-          ". Após a verificação, tente efetuar acesso."
+          "Aguarde. Um e-mail de verificação foi enviado para sua caixa de entrada. Após a verificação, tente efetuar acesso."
         }
         visible={visible}
         dismiss={() => {

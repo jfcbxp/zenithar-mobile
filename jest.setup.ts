@@ -18,3 +18,7 @@ jest.mock("firebase/compat/app", () => {
 });
 
 jest.mock("firebase/auth");
+
+jest.mock("@expo/vector-icons");
+
+jest.mock("react-native-dropdown-picker");
