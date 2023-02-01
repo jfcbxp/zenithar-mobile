@@ -1,5 +1,5 @@
 import React from "react";
-import renderer, { act } from "react-test-renderer";
+import renderer from "react-test-renderer";
 
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { StackParams } from "../../../types/stack.params";
