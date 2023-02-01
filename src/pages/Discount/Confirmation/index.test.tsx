@@ -7,28 +7,31 @@ import { RouteProp, useNavigation } from "@react-navigation/native";
 import DiscountConfirmation from ".";
 
 let mockNavigation: StackScreenProps<
-    StackParams,
-    "DiscountConfirmation",
-    undefined
+  StackParams,
+  "DiscountConfirmation",
+  undefined
 >;
 
 let route: RouteProp<StackParams, "DiscountConfirmation">;
 
 beforeAll(() => {
-    let navigation =
-        useNavigation<StackNavigationProp<StackParams, "DiscountConfirmation">>();
-    route = useNavigation<RouteProp<StackParams, "DiscountConfirmation">>();
-    mockNavigation = {
-        navigation: navigation,
-        route: route,
-    };
+  let navigation =
+    useNavigation<StackNavigationProp<StackParams, "DiscountConfirmation">>();
+  route = useNavigation<RouteProp<StackParams, "DiscountConfirmation">>();
+  mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
 });
 
 it("DiscountConfirmation renders without crashing", async () => {
-    const rendered = renderer.create(
-        <DiscountConfirmation
-            navigation={mockNavigation.navigation}
-            route={mockNavigation.route} />
-    ).toJSON()
-    expect(rendered).toBeTruthy()
-})
+  const rendered = renderer
+    .create(
+      <DiscountConfirmation
+        navigation={mockNavigation.navigation}
+        route={mockNavigation.route}
+      />
+    )
+    .toJSON();
+  expect(rendered).toBeTruthy();
+});
