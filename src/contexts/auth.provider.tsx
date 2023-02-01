@@ -52,8 +52,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [company, setCompany] = useState<string | undefined>("");
   const [department, setDepartment] = useState<string | undefined>("");
   const [loading, setLoading] = useState<boolean>(true);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [dialog, setDialog] = useState({ title: "", content: "" })
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -228,8 +227,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     });
 
   const Alert = (title: string, content: string) => {
-    setTitle(title);
-    setContent(content);
+    setDialog({ title: title, content: content })
     setVisible(true);
   };
 
@@ -387,8 +385,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       }}
     >
       <Dialog
-        title={title}
-        content={content}
+        title={dialog.title}
+        content={dialog.content}
         visible={visible}
         dismiss={() => {
           setVisible(false);

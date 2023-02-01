@@ -20,8 +20,7 @@ export default function Home({ navigation }: Properties) {
   const [containerTitle] = useState("Histórico");
   const [containerChild] = useState<React.ReactNode>(<Logs data={data} />);
   const [discount, setDiscount] = useState(false);
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
+  const [dialog, setDialog] = useState({ title: "", content: "" })
   const [visible, setVisible] = useState(false)
 
   const NavigationButtonOnPress = () => {
@@ -36,8 +35,7 @@ export default function Home({ navigation }: Properties) {
     title: string,
     content: string,
   ) => {
-    setTitle(title)
-    setContent(content)
+    setDialog({ title: title, content: content })
     setVisible(true)
   }
 
@@ -67,8 +65,8 @@ export default function Home({ navigation }: Properties) {
         }}
       />
       <Dialog
-        title={title}
-        content={content}
+        title={dialog.title}
+        content={dialog.content}
         visible={visible}
         dismiss={() => { setVisible(false) }} />
       <StatusBar style="light" translucent={false} backgroundColor="#212A4D" />
