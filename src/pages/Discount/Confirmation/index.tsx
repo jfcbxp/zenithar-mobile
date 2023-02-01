@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, ScrollView, Text } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParams } from "../../../types/stack.params";
 import { MaterialIcons as Icon } from "@expo/vector-icons";
@@ -9,7 +9,7 @@ interface Properties extends StackScreenProps<StackParams, "DiscountConfirmation
 
 export default function DiscountConfirmation({ navigation }: Properties) {
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container} scrollEnabled={false}>
             <View style={styles.topField}>
                 <View style={styles.header}>
                     <Icon
@@ -45,7 +45,7 @@ export default function DiscountConfirmation({ navigation }: Properties) {
                     underlayTitle="CONFIRMAR DESCONTO" />
             </View>
             <StatusBar style="light" translucent={false} backgroundColor="#212A4D" />
-        </View>
+        </ScrollView>
     )
 }
 

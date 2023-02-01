@@ -53,7 +53,7 @@ export function DiscountModal(properties: Properties) {
     if (budget.length == 6) {
       Keyboard.dismiss();
     }
-    if (budget.length == 6 && branch != "") {
+    if (budget.length == 6 && branch) {
       setDisabled(false)
     } else {
       setDisabled(true)

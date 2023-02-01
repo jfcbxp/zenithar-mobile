@@ -28,8 +28,7 @@ export function UserSettings(properties: Properties) {
   const [portrait, setPortrait] = useState<string | undefined>("");
   const [changePassword, setChangePassword] = useState<boolean | undefined>();
   const [disabled, setDisabled] = useState(false);
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
+  const [dialog, setDialog] = useState({ title: "", content: "" })
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -112,8 +111,7 @@ export function UserSettings(properties: Properties) {
     title: string,
     content: string,
   ) => {
-    setTitle(title)
-    setContent(content)
+    setDialog({ title: title, content: content })
     setVisible(true)
   }
 
@@ -168,8 +166,8 @@ export function UserSettings(properties: Properties) {
         </View>
       </View>
       <Dialog
-        title={title}
-        content={content}
+        title={dialog.title}
+        content={dialog.content}
         visible={visible}
         dismiss={() => { setVisible(false) }} />
     </Modal>

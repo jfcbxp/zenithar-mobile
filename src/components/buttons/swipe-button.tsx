@@ -1,5 +1,4 @@
 import { StyleSheet } from "react-native";
-// yarn add react-native-expo-swipe-button expo-linear-gradient
 import { SwipeButton as RNExpoSwipeButton } from 'react-native-expo-swipe-button';
 import { MaterialIcons as Icon } from '@expo/vector-icons';
 
