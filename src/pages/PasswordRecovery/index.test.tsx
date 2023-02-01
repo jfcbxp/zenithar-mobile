@@ -36,17 +36,15 @@ it("PasswordRecovery renders without crashing", () => {
         navigation={mockNavigation.navigation}
         route={mockNavigation.route}
       />
-    )
-    .toJSON();
+    ).toJSON();
   expect(rendered).toBeTruthy();
 });
 
-it("PasswordRecovery test button", async () => {
+it("PasswordRecovery test Button", async () => {
   const rendered = renderer.create(
     <PasswordRecovery
       navigation={mockNavigation.navigation}
-      route={mockNavigation.route}
-    />
+      route={mockNavigation.route} />
   );
 
   const button = rendered.root.findByType(Button);
@@ -62,15 +60,14 @@ it("PasswordRecovery test EmailInput", async () => {
   const rendered = renderer.create(
     <PasswordRecovery
       navigation={mockNavigation.navigation}
-      route={mockNavigation.route}
-    />
+      route={mockNavigation.route} />
   );
 
   const emailInput = rendered.root.findByType(EmailInput);
 
-  await act(() => emailInput.props.onChangeText("teste@teste.com.br"));
+  await act(() => emailInput.props.onChangeText("test@email.com"));
 
-  expect(emailInput.props.value).toBe("teste@teste.com.br");
+  expect(emailInput.props.value).toBe("test@email.com");
 });
 
 it("PasswordRecovery test Dialog", async () => {
