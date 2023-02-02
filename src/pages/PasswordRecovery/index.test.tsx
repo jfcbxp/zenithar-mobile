@@ -47,13 +47,13 @@ it("PasswordRecovery test Button", async () => {
       route={mockNavigation.route} />
   );
 
-  const button = rendered.root.findByType(Button);
-  expect(button.props.title).toBe("ENVIAR");
+  const button = rendered.root.findByType(Button); //busco o botao na tela pelo tipo do componente
+  expect(button.props.title).toBe("ENVIAR"); //verifico se o titulo do botao esta escrito enviar
 
-  await act(() => button.props.onPress());
+  await act(() => button.props.onPress()); //simulo um cllique
 
-  const dialog = rendered.root.findByType(Dialog);
-  expect(dialog.props.visible).toBe(true);
+  const dialog = rendered.root.findByType(Dialog); //encontro o dialog na tela
+  expect(dialog.props.visible).toBe(true); //verifico se o dialog ficou visivel
 });
 
 it("PasswordRecovery test EmailInput", async () => {
@@ -63,11 +63,11 @@ it("PasswordRecovery test EmailInput", async () => {
       route={mockNavigation.route} />
   );
 
-  const emailInput = rendered.root.findByType(EmailInput);
+  const emailInput = rendered.root.findByType(EmailInput); //encontro o componente dentro da tela
 
-  await act(() => emailInput.props.onChangeText("test@email.com"));
+  await act(() => emailInput.props.onChangeText("test@email.com")); //usando o onChangeText, su simulo como se eu tivesse digitando dentro do app mesmo
 
-  expect(emailInput.props.value).toBe("test@email.com");
+  expect(emailInput.props.value).toBe("test@email.com"); //verifico se uq eu "digitei" ta na variavel value do componente
 });
 
 it("PasswordRecovery test Dialog", async () => {

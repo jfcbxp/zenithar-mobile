@@ -299,7 +299,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           logs: snapshot.child("logs").val(),
         };
         if (!_user.verified) {
-          var currentUser = await firebase.auth().currentUser;
+          let currentUser = await firebase.auth().currentUser;
           if (currentUser?.emailVerified) {
             _user.verified = true;
             await _userRegister(_user);

@@ -35,18 +35,20 @@ export function DiscountModal(properties: Properties) {
   const [disabled, setDisabled] = useState(false)
 
   useEffect(() => {
-    let data = authContext.user?.branches!;
-    let array: ItemType<any>[] = [];
-    Object.entries(data).forEach(([key, value]) => {
-      array = [
-        ...array,
-        {
-          value: value.id,
-          label: `${value.id} - ${value.name}`,
-        },
-      ];
-    });
-    setBranches(array);
+    let data = authContext.user?.branches;
+    if (data) {
+      let array: ItemType<any>[] = [];
+      Object.entries(data).forEach(([key, value]) => {
+        array = [
+          ...array,
+          {
+            value: value.id,
+            label: `${value.id} - ${value.name}`,
+          },
+        ];
+      });
+      setBranches(array);
+    }
   }, []);
 
   useEffect(() => {

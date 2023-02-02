@@ -12,7 +12,7 @@ export function PaymentMethodDropdown(properties: Properties) {
     const [visible, setVisible] = React.useState(false)
 
     const expand = () => {
-        setVisible(current => (!current ? true : false))
+        setVisible(current => !current)
     }
 
     return (
