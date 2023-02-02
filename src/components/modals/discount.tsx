@@ -36,7 +36,7 @@ export function DiscountModal(properties: Properties) {
 
   useEffect(() => {
     let data = authContext.user?.branches;
-    if (data != null) {
+    if (data) {
       let array: ItemType<any>[] = [];
       Object.entries(data).forEach(([key, value]) => {
         array = [
