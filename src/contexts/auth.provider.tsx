@@ -3,9 +3,7 @@ import { User } from "../models/user.model";
 import { firebaseAuth, storage, realtime } from "../services/firebase.service";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import firebase from "firebase/compat/app";
-import { UserBranch } from "../models/user.branch.model";
 import { Dialog } from "../components/modals/dialog";
-import { UserLogs } from "../models/user.logs.model";
 
 type AuthContextProps = {
   user: User | undefined;
