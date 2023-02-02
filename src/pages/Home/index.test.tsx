@@ -19,7 +19,7 @@ beforeAll(() => {
   };
 });
 
-it("Home renders without crashing", async () => {
+it("Home renders without crashing", () => {
   const rendered = renderer
     .create(
       <Home

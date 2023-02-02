@@ -30,7 +30,7 @@ beforeAll(() => {
     };
 });
 
-it("SignUp renders without crashing", async () => {
+it("SignUp renders without crashing", () => {
     const rendered = renderer.create(
         <SignUp
             navigation={mockNavigation.navigation}

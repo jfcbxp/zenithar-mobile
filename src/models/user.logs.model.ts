@@ -2,6 +2,6 @@ export interface UserLogs {
     id: string;
     date: string;
     title: string;
-    description: string,
+    description: string;
     type: string;
 }

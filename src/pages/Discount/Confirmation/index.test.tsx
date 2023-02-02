@@ -24,7 +24,7 @@ beforeAll(() => {
   };
 });
 
-it("DiscountConfirmation renders without crashing", async () => {
+it("DiscountConfirmation renders without crashing", () => {
   const rendered = renderer
     .create(
       <DiscountConfirmation
