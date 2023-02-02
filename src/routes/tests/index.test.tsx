@@ -1,4 +1,4 @@
-import renderer, { act } from "react-test-renderer";
+import renderer from "react-test-renderer";
 import Routes from "..";
 
 it("Routes renders without crashing", () => {
