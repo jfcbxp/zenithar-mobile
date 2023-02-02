@@ -21,27 +21,29 @@ interface Properties extends ModalProps {
 
 export function UserSettings(properties: Properties) {
   const authContext = useContext(AuthContext);
-  const [fullName, setFullName] = useState<string | undefined>("");
+  const FULLNAME = authContext.user?.fullName
+  const PORTRAIT = authContext.user?.portrait
+  const [fullName, setFullName] = useState<string | undefined>(FULLNAME);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [portrait, setPortrait] = useState<string | undefined>("");
+  const [portrait, setPortrait] = useState<string | undefined>(PORTRAIT);
   const [changePassword, setChangePassword] = useState<boolean | undefined>();
   const [disabled, setDisabled] = useState(false);
   const [dialog, setDialog] = useState({ title: "", content: "" })
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    setFullName(authContext.user?.fullName)
-    setPortrait(authContext.user?.portrait)
+    setFullName(FULLNAME)
+    setPortrait(PORTRAIT)
   }, [])
 
   useEffect(() => {
     if (!changePassword) {
       if (
-        (portrait == authContext.user?.portrait)
+        (portrait == PORTRAIT)
         &&
-        (fullName == authContext.user?.fullName)
+        (fullName == FULLNAME)
       ) {
         setDisabled(true)
       } else {
@@ -103,8 +105,8 @@ export function UserSettings(properties: Properties) {
     setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");
-    setFullName(authContext.user?.fullName!);
-    setPortrait(authContext.user?.portrait!);
+    setFullName(FULLNAME);
+    setPortrait(PORTRAIT);
   };
 
   const Alert = (

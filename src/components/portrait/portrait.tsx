@@ -1,4 +1,4 @@
-import { StyleSheet, View, Image, GestureResponderEvent, ImageSourcePropType } from "react-native";
+import { StyleSheet, View, Image, GestureResponderEvent } from "react-native";
 import { Button } from "../buttons/button";
 
 interface Properties {

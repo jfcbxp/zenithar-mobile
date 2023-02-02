@@ -31,7 +31,6 @@ it("DiscountConfirmation renders without crashing", async () => {
         navigation={mockNavigation.navigation}
         route={mockNavigation.route}
       />
-    )
-    .toJSON();
+    ).toJSON();
   expect(rendered).toBeTruthy();
 });

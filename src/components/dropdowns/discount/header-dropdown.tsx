@@ -12,7 +12,7 @@ export function HeaderDropdown(properties: Properties) {
     const [visible, setVisible] = React.useState(false)
 
     const expand = () => {
-        setVisible(current => (current === false ? current = true : current = false))
+        setVisible(current => (current == false ? true : false))
     }
 
     return (

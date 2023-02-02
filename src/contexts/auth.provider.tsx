@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import { User } from "../models/user.model";
 import { firebaseAuth, storage, realtime } from "../services/firebase.service";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -93,18 +93,19 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
               `Erro ao enviar o e-mail de verificação. ${error.message}`
             );
           });
-          if (result.user && validate == true) {
-            await _userRegister(
-              result.user.uid,
-              _email,
-              _fullName,
-              "",
-              "",
-              false,
-              [],
-              [],
-              _portrait
-            );
+          if (result.user && validate) {
+            let _user: User = {
+              uid: result.user.uid,
+              email: _email,
+              fullName: _fullName,
+              company: "",
+              department: "",
+              verified: false,
+              branches: [],
+              logs: [],
+              portrait: _portrait
+            }
+            await _userRegister(_user);
           }
         }
       })
@@ -187,8 +188,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const _reauthenticate = async (currentPassword: string) => {
-    var user = firebaseAuth.currentUser!;
-    var credentials = firebase.auth.EmailAuthProvider.credential(
+    const user = firebaseAuth.currentUser!;
+    const credentials = firebase.auth.EmailAuthProvider.credential(
       user.email!,
       currentPassword
     );
@@ -235,7 +236,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     const response = await fetch(_portrait);
     const blob = await response.blob();
     const filename = user?.uid;
-    // const filename = _portrait.substring(_portrait.lastIndexOf("/") + 1);
     let urlImage = "";
     await storage
       .ref()
@@ -248,51 +248,38 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     return urlImage;
   };
 
-  const _userRegister = async (
-    _uid: string,
-    _email: string,
-    _fullName: string,
-    _company: string,
-    _department: string,
-    _verified: boolean,
-    _branches: UserBranch[],
-    _logs: UserLogs[],
-    _portrait?: string
-  ) => {
+  const _userRegister = async (_user: User) => {
     let _portraitURL = "";
-    if (_portrait != user?.portrait) {
-      _portraitURL = await _uploadImage(_portrait!);
+    if (_user.portrait != user?.portrait) {
+      _portraitURL = await _uploadImage(_user.portrait);
     } else {
-      _portraitURL = _portrait!;
+      _portraitURL = _user.portrait;
     }
-    /* let _portraitURL = _portrait
-      ? await _uploadImage(_portrait)
-      : user!.portrait! */
     await realtime
       .ref("users")
-      .child(_uid)
+      .child(_user.uid)
       .set({
-        fullName: _fullName,
+        fullName: _user.fullName,
         portrait: _portraitURL,
-        company: _company,
-        department: _department,
-        verified: _verified,
+        company: _user.company,
+        department: _user.department,
+        verified: _user.verified,
         branches: user?.branches,
         logs: user?.logs,
       })
       .then(() => {
-        let _user: User = {
-          uid: _uid,
-          fullName: _fullName,
-          email: _email,
+        let _user_: User = {
+          uid: _user.uid,
+          fullName: _user.fullName,
+          email: _user.email,
           portrait: _portraitURL,
-          company: _company,
-          department: _department,
-          verified: _verified,
-          branches: _branches,
-          logs: _logs
+          company: _user.company,
+          department: _user.department,
+          verified: _user.verified,
+          branches: _user.branches,
+          logs: _user.logs
         };
-        _storeUser(_user);
+        _storeUser(_user_);
       });
   };
 
@@ -317,17 +304,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           var currentUser = await firebase.auth().currentUser;
           if (currentUser?.emailVerified) {
             _user.verified = true;
-            await _userRegister(
-              _user.uid,
-              _user.email,
-              _user.fullName,
-              _user.company,
-              _user.department,
-              _user.verified,
-              _user.branches,
-              _user.logs,
-              _user.portrait
-            );
+            await _userRegister(_user);
           }
         }
         await _storeUser(_user);
@@ -370,19 +347,31 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  const contextValue = useMemo(() => ({
+    user,
+    company,
+    department,
+    loading,
+    signUp,
+    signIn,
+    signOut,
+    recoverPassword,
+    userUpdate,
+  }), [
+    user,
+    company,
+    department,
+    loading,
+    signUp,
+    signIn,
+    signOut,
+    recoverPassword,
+    userUpdate,
+  ])
+
   return (
     <AuthContext.Provider
-      value={{
-        user,
-        company,
-        department,
-        loading,
-        signUp,
-        signIn,
-        signOut,
-        recoverPassword,
-        userUpdate,
-      }}
+      value={contextValue}
     >
       <Dialog
         title={dialog.title}
