@@ -3,7 +3,7 @@ import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../contexts/auth.provider";
 import { realtime } from "./firebase.service";
 
-export default function api() {
+export default function APICompany() {
     const authContext = useContext(AuthContext)
     const company = authContext.user?.company
     const [baseURL, setBaseURL] = useState("")
