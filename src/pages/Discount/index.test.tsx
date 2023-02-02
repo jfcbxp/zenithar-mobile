@@ -20,7 +20,7 @@ beforeAll(() => {
   };
 });
 
-it("Discount renders without crashing", async () => {
+it("Discount renders without crashing", () => {
   const rendered = renderer
     .create(
       <Discount

@@ -24,14 +24,13 @@ beforeAll(() => {
   };
 });
 
-it("DiscountConfirmation renders without crashing", async () => {
+it("DiscountConfirmation renders without crashing", () => {
   const rendered = renderer
     .create(
       <DiscountConfirmation
         navigation={mockNavigation.navigation}
         route={mockNavigation.route}
       />
-    )
-    .toJSON();
+    ).toJSON();
   expect(rendered).toBeTruthy();
 });
