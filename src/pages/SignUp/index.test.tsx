@@ -10,6 +10,8 @@ import { EmailInput } from "../../components/inputs/email-input";
 import { PasswordInput } from "../../components/inputs/password-input";
 import { FullNameInput } from "../../components/inputs/fullname-input";
 import { Dialog } from "../../components/modals/dialog";
+import { StatusBar } from "expo-status-bar";
+import { View } from "react-native";
 
 let mockNavigation: StackScreenProps<
     StackParams,
@@ -39,12 +41,21 @@ it("SignUp renders without crashing", () => {
     expect(rendered).toBeTruthy()
 })
 
+it("SignUp how many Views", () => {
+    const rendered = renderer.create(
+        <SignUp
+            navigation={mockNavigation.navigation}
+            route={mockNavigation.route} />
+    )
+    const view = rendered.root.findAllByType(View).length
+    expect(view).toBe(6)
+})
+
 it("SignUp test FullNameInput", async () => {
     const rendered = renderer.create(
         <SignUp
             navigation={mockNavigation.navigation}
-            route={mockNavigation.route}
-        />
+            route={mockNavigation.route} />
     );
     const fullNameInput = rendered.root.findByType(FullNameInput);
     await act(() => fullNameInput.props.onChangeText("Bruce Wayne"));
@@ -55,8 +66,7 @@ it("SignUp test EmailInput", async () => {
     const rendered = renderer.create(
         <SignUp
             navigation={mockNavigation.navigation}
-            route={mockNavigation.route}
-        />
+            route={mockNavigation.route} />
     );
     const emailInput = rendered.root.findByType(EmailInput);
     await act(() => emailInput.props.onChangeText("test@email.com"));
@@ -67,8 +77,7 @@ it("SignUp test PasswordInput", async () => {
     const rendered = renderer.create(
         <SignUp
             navigation={mockNavigation.navigation}
-            route={mockNavigation.route}
-        />
+            route={mockNavigation.route} />
     );
     const passwordInput = rendered.root.findByType(PasswordInput);
     await act(() => passwordInput.props.onChangeText("965874"));
@@ -89,8 +98,7 @@ it("SignUp test Dialog", async () => {
     const rendered = renderer.create(
         <SignUp
             navigation={mockNavigation.navigation}
-            route={mockNavigation.route}
-        />
+            route={mockNavigation.route} />
     );
 
     const dialog = rendered.root.findByType(Dialog);
@@ -100,3 +108,16 @@ it("SignUp test Dialog", async () => {
         "Aguarde. Um e-mail de verificação foi enviado para sua caixa de entrada. Após a verificação, tente efetuar acesso."
     );
 });
+
+it("SignUp test StatusBar", () => {
+    const rendered = renderer.create(
+        <SignUp
+            navigation={mockNavigation.navigation}
+            route={mockNavigation.route} />
+    );
+
+    const statusBar = rendered.root.findByType(StatusBar)
+    expect(statusBar.props.style).toBe("light")
+    expect(statusBar.props.translucent).toBe(false)
+    expect(statusBar.props.backgroundColor).toBe("silver")
+})

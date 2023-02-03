@@ -11,9 +11,8 @@ it("LogsItem renders without crashing", () => {
         description: "Test",
         type: "Test"
     }
-    const rendered = renderer
-        .create(
-            <LogsItem data={DATA} />
-        ).toJSON();
+    const rendered = renderer.create(
+        <LogsItem data={DATA} />
+    ).toJSON();
     expect(rendered).toBeTruthy();
 });
