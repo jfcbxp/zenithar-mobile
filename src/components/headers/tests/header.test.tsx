@@ -10,65 +10,87 @@ import { PasswordInput } from "../../inputs/password-input";
 import { Button } from "../../buttons/button";
 
 it("Header renders without crashing", () => {
-    const rendered = renderer.create(
-        <Header returnOption={false} />
-    ).toJSON();
-    expect(rendered).toBeTruthy();
+  const rendered = renderer.create(<Header returnOption={false} />).toJSON();
+  expect(rendered).toBeTruthy();
 });
 
 it("Header test UserSettings", async () => {
-    const rendered = renderer.create(
-        <Header returnOption={false} />
-    )
+  jest.mock("expo-image-picker", () => {
+    return jest.fn().mockImplementation(() => {
+      return {
+        launchImageLibraryAsync: async () => {
+          return {
+            canceled: true,
+            assets: [{ uri: "teste" }],
+          };
+        },
+      };
+    });
+  });
 
-    const pressable = rendered.root.findByType(Pressable)
-    await act(() => pressable.props.onPress())
+  jest.spyOn(React, "useContext").mockImplementation(() => ({
+    userUpdate: () => jest.fn(),
+    user: {
+      branches: [
+        {
+          id: "1",
+          name: "Test",
+        },
+      ],
+    },
+  }));
 
-    const userSettings = rendered.root.findByType(UserSettings)
-    expect(userSettings.props.visible).toBe(true)
+  const rendered = renderer.create(<Header returnOption={false} />);
 
-    const modal = rendered.root.findByType(Modal)
-    expect(modal.props.visible).toBe(true)
+  const pressable = rendered.root.findByType(Pressable);
+  await act(() => pressable.props.onPress());
 
-    const portrait = rendered.root.findByType(Portrait)
-    expect(portrait.props.source).toBeUndefined()
+  const userSettings = rendered.root.findByType(UserSettings);
+  expect(userSettings.props.visible).toBe(true);
 
-    const fullNameInput = rendered.root.findByType(FullNameInput)
-    await act(() => fullNameInput.props.onChangeText("Bruce Wayne"))
-    expect(fullNameInput.props.value).toBe("Bruce Wayne")
+  const modal = rendered.root.findByType(Modal);
+  expect(modal.props.visible).toBe(true);
 
-    const commandLink = rendered.root.findByType(CommandLink)
-    await act(() => commandLink.props.onPress())
+  const portrait = rendered.root.findByType(Portrait);
+  expect(portrait.props.source).toBeUndefined();
 
-    const passwordInput = rendered.root.findAllByType(PasswordInput).length
-    expect(passwordInput).toBe(3)
+  const fullNameInput = rendered.root.findByType(FullNameInput);
+  await act(() => fullNameInput.props.onChangeText("Bruce Wayne"));
+  expect(fullNameInput.props.value).toBe("Bruce Wayne");
 
-    const _passwordInput = rendered.root.findAllByType(PasswordInput)
+  const commandLink = rendered.root.findByType(CommandLink);
+  await act(() => commandLink.props.onPress());
 
-    const password1 = _passwordInput[0]
-    await act(() => password1.props.onChangeText("965874"))
-    expect(password1.props.value).toBe("965874")
+  const passwordInput = rendered.root.findAllByType(PasswordInput).length;
+  expect(passwordInput).toBe(3);
 
-    const password2 = _passwordInput[1]
-    await act(() => password2.props.onChangeText("965874"))
-    expect(password2.props.value).toBe("965874")
+  const _passwordInput = rendered.root.findAllByType(PasswordInput);
 
-    const password3 = _passwordInput[2]
-    await act(() => password3.props.onChangeText("965874"))
-    expect(password3.props.value).toBe("965874")
+  const password1 = _passwordInput[0];
+  await act(() => password1.props.onChangeText("965874"));
+  expect(password1.props.value).toBe("965874");
 
-    const button = rendered.root.findAllByType(Button).length
-    expect(button).toBe(3)
+  const password2 = _passwordInput[1];
+  await act(() => password2.props.onChangeText("965874"));
+  expect(password2.props.value).toBe("965874");
 
-    const _button = rendered.root.findAllByType(Button)
+  const password3 = _passwordInput[2];
+  await act(() => password3.props.onChangeText("965874"));
+  expect(password3.props.value).toBe("965874");
 
-    const button1 = _button[0]
-    expect(button1.props.title).toBe("SELECIONAR")
+  const button = rendered.root.findAllByType(Button).length;
+  expect(button).toBe(3);
 
-    const button2 = _button[1]
-    expect(button2.props.title).toBe("CANCELAR")
+  const _button = rendered.root.findAllByType(Button);
 
-    const button3 = _button[2]
-    expect(button3.props.title).toBe("CONFIRMAR")
-    expect(button3.props.disabled).toBe(false)
-})
+  const button1 = _button[0];
+  expect(button1.props.title).toBe("SELECIONAR");
+
+  const button2 = _button[1];
+  expect(button2.props.title).toBe("CANCELAR");
+
+  const button3 = _button[2];
+  await act(() => button3.props.onPressIn());
+  expect(button3.props.title).toBe("CONFIRMAR");
+  expect(button3.props.disabled).toBe(true);
+});
