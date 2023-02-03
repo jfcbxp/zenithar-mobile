@@ -36,7 +36,8 @@ it("PasswordRecovery renders without crashing", () => {
         navigation={mockNavigation.navigation}
         route={mockNavigation.route}
       />
-    ).toJSON();
+    )
+    .toJSON();
   expect(rendered).toBeTruthy();
 });
 
@@ -44,30 +45,33 @@ it("PasswordRecovery test Button", async () => {
   const rendered = renderer.create(
     <PasswordRecovery
       navigation={mockNavigation.navigation}
-      route={mockNavigation.route} />
+      route={mockNavigation.route}
+    />
   );
 
-  const button = rendered.root.findByType(Button); //busco o botao na tela pelo tipo do componente
-  expect(button.props.title).toBe("ENVIAR"); //verifico se o titulo do botao esta escrito enviar
+  const button = rendered.root.findByType(Button);
 
-  await act(() => button.props.onPress()); //simulo um cllique
+  await act(() => button.props.onPress());
 
-  const dialog = rendered.root.findByType(Dialog); //encontro o dialog na tela
-  expect(dialog.props.visible).toBe(true); //verifico se o dialog ficou visivel
+  const dialog = rendered.root.findByType(Dialog);
+
+  expect(button.props.title).toBe("ENVIAR");
+  expect(dialog.props.visible).toBe(true);
 });
 
 it("PasswordRecovery test EmailInput", async () => {
   const rendered = renderer.create(
     <PasswordRecovery
       navigation={mockNavigation.navigation}
-      route={mockNavigation.route} />
+      route={mockNavigation.route}
+    />
   );
 
-  const emailInput = rendered.root.findByType(EmailInput); //encontro o componente dentro da tela
+  const emailInput = rendered.root.findByType(EmailInput);
 
-  await act(() => emailInput.props.onChangeText("test@email.com")); //usando o onChangeText, su simulo como se eu tivesse digitando dentro do app mesmo
+  await act(() => emailInput.props.onChangeText("test@email.com"));
 
-  expect(emailInput.props.value).toBe("test@email.com"); //verifico se uq eu "digitei" ta na variavel value do componente
+  expect(emailInput.props.value).toBe("test@email.com");
 });
 
 it("PasswordRecovery test Dialog", async () => {

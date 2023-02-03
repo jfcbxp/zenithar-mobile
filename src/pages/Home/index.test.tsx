@@ -10,6 +10,11 @@ import { DiscountModal } from "../../components/modals/discount";
 import { Modal } from "react-native";
 import { TextInput } from "../../components/inputs/text-input";
 import { Button } from "../../components/buttons/button";
+import { HomeContainer } from "../../components/containers/home-container";
+import { Logs } from "../../components/lists/logs";
+import { LogsItem } from "../../components/lists/logs-item";
+import { MaterialIcons as Icon } from '@expo/vector-icons';
+import { Picker } from "../../components/pickers/picker";
 
 let mockNavigation: StackScreenProps<StackParams, "Home", undefined>;
 
@@ -25,24 +30,53 @@ beforeAll(() => {
 });
 
 it("Home renders without crashing", () => {
-  const rendered = renderer
-    .create(
-      <Home
-        navigation={mockNavigation.navigation}
-        route={mockNavigation.route}
-      />
-    ).toJSON();
+  const rendered = renderer.create(
+    <Home
+      navigation={mockNavigation.navigation}
+      route={mockNavigation.route} />
+  ).toJSON();
   expect(rendered).toBeTruthy();
 });
 
+it("Home test HomeContainer, Logs, LogsItem", () => {
+  const rendered = renderer.create(
+    <Home
+      navigation={mockNavigation.navigation}
+      route={mockNavigation.route} />
+  )
+
+  const homeContainer = rendered.root.findByType(HomeContainer)
+  expect(homeContainer.props.title).toBe("Histórico")
+  expect(homeContainer.props.children).toBeDefined()
+
+  const DATA: Array<any> = [{
+    id: "1",
+    date: "Test",
+    title: "Test",
+    description: "Test",
+    type: "LIBERACAO_ORCAMENTO"
+  }]
+
+  const _rendered = renderer.create(
+    <Logs data={DATA} />
+  )
+
+  const logs = _rendered.root.findByType(Logs)
+  expect(logs.props.data).toBeDefined()
+
+  const logsItem = _rendered.root.findByType(LogsItem)
+  expect(logsItem.props.data).toBeDefined()
+
+  const icon = _rendered.root.findByType(Icon)
+  expect(icon.props.name).toBe("")
+})
+
 it("Home test DiscountModal", async () => {
-  const rendered = renderer
-    .create(
-      <Home
-        navigation={mockNavigation.navigation}
-        route={mockNavigation.route}
-      />
-    )
+  const rendered = renderer.create(
+    <Home
+      navigation={mockNavigation.navigation}
+      route={mockNavigation.route} />
+  )
 
   const navigationButton = rendered.root.findByType(NavigationButton)
   await act(() => navigationButton.props.onPress())
@@ -57,8 +91,12 @@ it("Home test DiscountModal", async () => {
   const textInput = rendered.root.findByType(TextInput)
   await act(() => textInput.props.onChangeText("965874"))
   expect(textInput.props.value).toBe("965874")
-  
+
   const button = rendered.root.findByType(Button)
   expect(button.props.title).toBe("CONTINUAR")
   expect(button.props.disabled).toBe(true)
+
+  const picker = rendered.root.findByType(Picker)
+  await act(()=> picker.props.setValue(""))
+  expect(picker.props.value).toBe("")
 })

@@ -8,7 +8,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
 import { Button } from "../../components/buttons/button";
 
-interface Properties extends StackScreenProps<StackParams, "Discount"> { }
+interface Properties extends StackScreenProps<StackParams, "Discount"> {}
 
 export default function Discount({ navigation }: Properties) {
   return (
@@ -25,7 +25,10 @@ export default function Discount({ navigation }: Properties) {
         <View style={styles.footer}>
           <Button
             title="CONCEDER DESCONTO"
-            onPress={() => { navigation.navigate("DiscountConfirmation") }} />
+            onPress={() => {
+              navigation && navigation.navigate("DiscountConfirmation");
+            }}
+          />
         </View>
       </View>
       <StatusBar style="light" translucent={false} backgroundColor="#212A4D" />
@@ -48,5 +51,5 @@ const styles = StyleSheet.create({
   footer: {
     marginHorizontal: "5%",
     marginVertical: "5%",
-  }
+  },
 });

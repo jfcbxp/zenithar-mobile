@@ -1,6 +1,5 @@
 import React from "react";
-import renderer from "react-test-renderer";
-
+import renderer, { act } from "react-test-renderer";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { StackParams } from "../../../types/stack.params";
 import { RouteProp, useNavigation } from "@react-navigation/native";
@@ -31,6 +30,19 @@ it("DiscountConfirmation renders without crashing", () => {
         navigation={mockNavigation.navigation}
         route={mockNavigation.route}
       />
-    ).toJSON();
+    )
+    .toJSON();
   expect(rendered).toBeTruthy();
+});
+
+it("DiscountConfirmation tests", async () => {
+  const rendered = renderer.create(
+    <DiscountConfirmation
+      navigation={mockNavigation.navigation}
+      route={mockNavigation.route}
+    />
+  );
+  const icon = rendered.root.findAllByProps({ testID: "icon" })[0];
+
+  await act(() => icon.props.onPress());
 });

@@ -12,7 +12,7 @@ import { PasswordInput } from "../../components/inputs/password-input";
 import { FullNameInput } from "../../components/inputs/fullname-input";
 import { StatusBar } from "expo-status-bar";
 
-interface Properties extends StackScreenProps<StackParams, "SignUp"> { }
+interface Properties extends StackScreenProps<StackParams, "SignUp"> {}
 
 export default function SignUp({ navigation }: Properties) {
   const [fullName, setFullName] = useState("");
@@ -29,6 +29,7 @@ export default function SignUp({ navigation }: Properties) {
       aspect: [1, 1],
       quality: 0.1,
     });
+
     if (!result.canceled) {
       setPortrait(result.assets[0].uri);
     }
@@ -50,14 +51,11 @@ export default function SignUp({ navigation }: Properties) {
           <FullNameInput
             value={fullName}
             onChangeText={setFullName}
-            maxLength={20} />
-          <EmailInput
-            value={email}
-            onChangeText={setEmail} />
-          <PasswordInput
-            value={password}
-            onChangeText={setPassword} />
-          <Button onPress={handleSignUp} title="CONTINUAR" />
+            maxLength={20}
+          />
+          <EmailInput value={email} onChangeText={setEmail} />
+          <PasswordInput value={password} onChangeText={setPassword} />
+          <Button testID="continuar" onPress={handleSignUp} title="CONTINUAR" />
         </View>
       </View>
       <Dialog
@@ -69,8 +67,9 @@ export default function SignUp({ navigation }: Properties) {
         dismiss={() => {
           setVisible(false);
           authContext.signUp(email, password, fullName, portrait);
-          navigation.navigate("SignIn");
-        }} />
+          navigation && navigation.navigate("SignIn");
+        }}
+      />
       <StatusBar style="light" translucent={false} backgroundColor="silver" />
     </View>
   );
