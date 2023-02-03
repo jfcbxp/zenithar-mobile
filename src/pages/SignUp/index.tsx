@@ -67,7 +67,7 @@ export default function SignUp({ navigation }: Properties) {
         dismiss={() => {
           setVisible(false);
           authContext.signUp(email, password, fullName, portrait);
-          navigation.navigate("SignIn");
+          navigation && navigation.navigate("SignIn");
         }}
       />
       <StatusBar style="light" translucent={false} backgroundColor="silver" />
