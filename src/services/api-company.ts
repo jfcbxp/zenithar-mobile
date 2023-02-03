@@ -9,16 +9,18 @@ export default function APICompany() {
     const [baseURL, setBaseURL] = useState("")
 
     useEffect(() => {
-        async () => {
-            await realtime
-                .ref("companies")
-                .child(company!)
-                .once("value")
-                .then(async (snapshot) => {
-                    setBaseURL(snapshot.val().urlBackend)
-                })
-        }
+        getBaseURL()
     }, [])
+
+    const getBaseURL = async () => {
+        await realtime
+            .ref("companies")
+            .child(company!)
+            .once("value")
+            .then(async (snapshot) => {
+                setBaseURL(snapshot.val().urlBackend)
+            })
+    }
 
     return axios.create({
         baseURL: baseURL

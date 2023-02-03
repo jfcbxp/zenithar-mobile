@@ -7,6 +7,9 @@ import { RouteProp, useNavigation } from "@react-navigation/native";
 import Home from ".";
 import { NavigationButton } from "../../components/buttons/navigation-button";
 import { DiscountModal } from "../../components/modals/discount";
+import { Modal } from "react-native";
+import { TextInput } from "../../components/inputs/text-input";
+import { Button } from "../../components/buttons/button";
 
 let mockNavigation: StackScreenProps<StackParams, "Home", undefined>;
 
@@ -46,4 +49,16 @@ it("Home test DiscountModal", async () => {
 
   const discountModal = rendered.root.findByType(DiscountModal)
   expect(discountModal.props.visible).toBe(true)
+
+  const modal = rendered.root.findAllByType(Modal)
+  const modal1 = modal[0]
+  expect(modal1.props.visible).toBe(true)
+
+  const textInput = rendered.root.findByType(TextInput)
+  await act(() => textInput.props.onChangeText("965874"))
+  expect(textInput.props.value).toBe("965874")
+  
+  const button = rendered.root.findByType(Button)
+  expect(button.props.title).toBe("CONTINUAR")
+  expect(button.props.disabled).toBe(true)
 })

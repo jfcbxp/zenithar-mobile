@@ -63,7 +63,6 @@ export default function Home({ navigation }: Properties) {
           }}
         />
       )}
-
       <Dialog
         title={dialog.title}
         content={dialog.content}
