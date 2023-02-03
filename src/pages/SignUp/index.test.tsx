@@ -133,6 +133,7 @@ it("SignUp test Button Success", async () => {
   const emailInput = rendered.root.findByType(EmailInput);
 
   const button = rendered.root.findAllByProps({ testID: "continuar" })[0];
+  const dialog = rendered.root.findByType(Dialog);
 
   await act(() => {
     fullNameInput.props.onChangeText("Bruce Wayne");
@@ -142,6 +143,7 @@ it("SignUp test Button Success", async () => {
   });
   await act(() => {
     button.props.onPress();
+    dialog.props.dismiss();
   });
 
   expect(button.props.title).toBe("CONTINUAR");
