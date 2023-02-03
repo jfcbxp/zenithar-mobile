@@ -11,6 +11,7 @@ npm-debug.*
 web-build/
 .env
 coverage/
+.scannerwork/
 .vscode/
 # macOS
 .DS_Store
