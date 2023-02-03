@@ -50,11 +50,12 @@ it("PasswordRecovery test Button", async () => {
   );
 
   const button = rendered.root.findByType(Button);
-  expect(button.props.title).toBe("ENVIAR");
 
   await act(() => button.props.onPress());
 
   const dialog = rendered.root.findByType(Dialog);
+
+  expect(button.props.title).toBe("ENVIAR");
   expect(dialog.props.visible).toBe(true);
 });
 

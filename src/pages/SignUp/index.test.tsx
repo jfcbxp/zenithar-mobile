@@ -144,8 +144,6 @@ it("SignUp test Button Success", async () => {
     button.props.onPress();
   });
 
-  const dialog = rendered.root.findByType(Dialog);
-
   expect(button.props.title).toBe("CONTINUAR");
 });
 
