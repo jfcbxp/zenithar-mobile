@@ -1,14 +1,13 @@
-name: GitHub Pages
+name: CD build
 
 on:
-  push:
-    branches:
-      - develop
-  pull_request:
+  workflow_run:
+    workflows: ["CI build"]
+    types:
+      - completed
 
 jobs:
   deploy:
-    needs: sonarcloud
     runs-on: ubuntu-latest
     permissions:
       contents: write
