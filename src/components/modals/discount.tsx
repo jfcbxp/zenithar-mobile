@@ -31,8 +31,8 @@ export function DiscountModal(properties: Properties) {
   const [branch, setBranch] = useState("");
   const [branches, setBranches] = useState<ItemType<UserBranch>[]>();
   const translation = useRef(new Animated.Value(400)).current;
-  const [open, setOpen] = useState(false)
-  const [disabled, setDisabled] = useState(false)
+  const [open, setOpen] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
     let data = authContext.user?.branches;
@@ -56,9 +56,9 @@ export function DiscountModal(properties: Properties) {
       Keyboard.dismiss();
     }
     if (budget.length == 6 && branch) {
-      setDisabled(false)
+      setDisabled(false);
     } else {
-      setDisabled(true)
+      setDisabled(true);
     }
   }, [budget, branch]);
 
@@ -69,20 +69,26 @@ export function DiscountModal(properties: Properties) {
       animationType="fade"
       onShow={() => {
         Animated.timing(translation, {
-          toValue: 1, duration: 500, useNativeDriver: true
-        }).start()
-      }}>
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }).start();
+      }}
+    >
       <View style={styles.container}>
         <Pressable
           onPressIn={() => {
-            translation.setValue(400)
-            setBranch("")
-            setBudget("")
-            setOpen(false)
+            translation.setValue(400);
+            setBranch("");
+            setBudget("");
+            setOpen(false);
           }}
           onPressOut={properties.dismiss}
-          style={StyleSheet.absoluteFillObject} />
-        <Animated.View style={[{ transform: [{ translateY: translation }] }, styles.field]}>
+          style={StyleSheet.absoluteFillObject}
+        />
+        <Animated.View
+          style={[{ transform: [{ translateY: translation }] }, styles.field]}
+        >
           <Text style={styles.title}>Desconto</Text>
           <TextInput
             value={budget}
@@ -90,25 +96,28 @@ export function DiscountModal(properties: Properties) {
             keyboardType="numeric"
             placeholder="Número do Orçamento"
             maxLength={6}
-            placeholderTextColor="#1F537E" />
+            placeholderTextColor="#1F537E"
+          />
           <Picker
             items={branches!}
             value={branch}
             setValue={setBranch}
             open={open}
             setOpen={setOpen}
-            placeholder="Filiais" />
+            placeholder="Filiais"
+          />
           <Button
             title="CONTINUAR"
             onPressIn={() => {
-              translation.setValue(400)
-              setOpen(false)
-              setBranch("")
-              setBudget("")
-              navigation.navigate("Discount")
+              translation.setValue(400);
+              setOpen(false);
+              setBranch("");
+              setBudget("");
+              navigation.navigate("Discount");
             }}
             onPressOut={properties.dismiss}
-            disabled={disabled} />
+            disabled={disabled}
+          />
         </Animated.View>
       </View>
     </Modal>
@@ -118,11 +127,11 @@ export function DiscountModal(properties: Properties) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end",
     backgroundColor: `rgba(0, 0, 0, 0.8)`,
   },
   field: {
-    position: 'absolute',
+    position: "absolute",
     width: "100%",
     height: "50%",
     alignItems: "center",
@@ -130,7 +139,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F0F2F7",
     borderTopLeftRadius: 18,
     borderTopRightRadius: 18,
-    zIndex: 99
+    zIndex: 99,
   },
   title: {
     fontSize: 24,

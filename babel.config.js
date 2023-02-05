@@ -3,11 +3,11 @@ module.exports = function (api) {
   return {
     presets: [
       'babel-preset-expo',
-      ['@babel/preset-env', { targets: { node: 'current' } }],
       '@babel/preset-typescript',
     ],
-    plugins: [
-      'module:react-native-dotenv',
+    plugins: 
+    [
+      'inline-dotenv',
       ["@babel/plugin-proposal-private-property-in-object", { "loose": true }],
     ],
   };
