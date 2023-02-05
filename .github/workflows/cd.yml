@@ -38,6 +38,20 @@ jobs:
         uses: expo/expo-github-action@v7
         with:
           expo-version: latest
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_API_KEY=: ${{ secrets.API_KEY }}
+          envkey_AUTH_DOMAIN: ${{ secrets.AUTH_DOMAIN }}
+          envkey_DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          envkey_PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          envkey_STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
+          envkey_MESSAGING_SENDER_ID: ${{ secrets.MESSAGING_SENDER_ID }}
+          envkey_APP_ID: ${{ secrets.APP_ID }}
+          envkey_MEASUREMENT_ID: ${{ secrets.MEASUREMENT_ID }}
+
+          file_name: .env
+          fail_on_empty: false
       - name: 🚀 Build Web Project
         run: expo build:web
       - name: Deploy
