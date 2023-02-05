@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 0 
+          fetch-depth: 0
       - name: Install dependencies
         run: npm install
       - name: Test and coverage
@@ -23,6 +23,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   publish:
+    needs: sonarcloud
     runs-on: ubuntu-latest
     steps:
       - name: 🏗 Setup repo
@@ -40,7 +41,7 @@ jobs:
       - name: 📦 Install dependencies
         run: yarn install
       - name: 🚀 Build Web Project
-        run: npx expo export:web
+        run: expo build:web
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
