@@ -1,0 +1,58 @@
+name: CD build
+
+on:
+  push:
+    branches:
+      - develop
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.15.0
+
+      - name: Get yarn cache
+        id: yarn-cache
+        run: echo "YARN_CACHE_DIR=$(yarn cache dir)" >> "${GITHUB_OUTPUT}"
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.yarn-cache.outputs.YARN_CACHE_DIR }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - run: yarn install --frozen-lockfile
+      - name: 🏗 Setup Expo
+        uses: expo/expo-github-action@v7
+        with:
+          expo-version: latest
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_API_KEY: ${{ secrets.API_KEY }}
+          envkey_AUTH_DOMAIN: ${{ secrets.AUTH_DOMAIN }}
+          envkey_DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          envkey_PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          envkey_STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
+          envkey_MESSAGING_SENDER_ID: ${{ secrets.MESSAGING_SENDER_ID }}
+          envkey_APP_ID: ${{ secrets.APP_ID }}
+          envkey_MEASUREMENT_ID: ${{ secrets.MEASUREMENT_ID }}
+          file_name: .env
+          fail_on_empty: false
+      - name: 🚀 Build Web Project
+        run: expo build:web
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./web-build
