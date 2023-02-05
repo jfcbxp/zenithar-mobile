@@ -22,28 +22,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  publish:
-    needs: sonarcloud
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: 🏗 Setup repo
-        uses: actions/checkout@v3
-      - name: 🏗 Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: "16"
-      - name: 🏗 Setup Expo
-        uses: expo/expo-github-action@v7
-        with:
-          expo-version: latest
-      - name: 📦 Install dependencies
-        run: npm install
-      - name: 🚀 Build Web Project
-        run: expo build:web
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./web-build
