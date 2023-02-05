@@ -33,15 +33,13 @@ jobs:
       - name: 🏗 Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 16.x
-          cache: yarn
+          node-version: "16"
       - name: 🏗 Setup Expo
         uses: expo/expo-github-action@v7
         with:
           expo-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
       - name: 📦 Install dependencies
-        run: yarn install
+        run: npm install
       - name: 🚀 Build Web Project
         run: expo build:web
       - name: Deploy
