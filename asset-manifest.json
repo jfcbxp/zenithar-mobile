@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.js": "/zenithar-mobile/static/js/main.d26763e1.js",
+    "main.js": "/zenithar-mobile/static/js/main.96d7e0ab.js",
     "static/js/963.d5bdbef6.js": "/zenithar-mobile/static/js/963.d5bdbef6.js",
     "static/media/adaptive-icon.png": "/zenithar-mobile/static/media/adaptive-icon.9c43d51e89f0c53b7e5d.png",
     "static/media/MaterialIcons.ttf": "/zenithar-mobile/static/media/MaterialIcons.120b4c7bbd155bd0a04d.ttf",
@@ -16,11 +16,11 @@
     "favicon-16.png": "/zenithar-mobile/favicon-16.png",
     "manifest.json": "/zenithar-mobile/manifest.json",
     "serve.json": "/zenithar-mobile/serve.json",
-    "main.d26763e1.js.map": "/zenithar-mobile/static/js/main.d26763e1.js.map",
+    "main.96d7e0ab.js.map": "/zenithar-mobile/static/js/main.96d7e0ab.js.map",
     "963.d5bdbef6.js.map": "/zenithar-mobile/static/js/963.d5bdbef6.js.map"
   },
   "entrypoints": [
     "static/js/963.d5bdbef6.js",
-    "static/js/main.d26763e1.js"
+    "static/js/main.96d7e0ab.js"
   ]
 }
