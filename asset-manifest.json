@@ -1,26 +1,26 @@
 {
   "files": {
-    "main.js": "/static/js/main.641a83d9.js",
-    "static/js/963.1f231c1e.js": "/static/js/963.1f231c1e.js",
-    "static/media/adaptive-icon.png": "/static/media/adaptive-icon.9c43d51e89f0c53b7e5d.png",
-    "static/media/MaterialIcons.ttf": "/static/media/MaterialIcons.120b4c7bbd155bd0a04d.ttf",
-    "static/media/Feather.ttf": "/static/media/Feather.0f5d9cede2e831f3fc80.ttf",
-    "static/media/tick.png": "/static/media/tick.32cb45231ee117d499e2.png",
-    "static/media/arrow-up.png": "/static/media/arrow-up.0b0d1af9a5b464b93fde.png",
-    "static/media/close.png": "/static/media/close.b65df71afd6c8e422619.png",
-    "static/media/arrow-down.png": "/static/media/arrow-down.772a5382a31866c9198e.png",
-    "favicon.ico": "/favicon.ico",
-    "static/media/no-user.png": "/static/media/no-user.4a33880eba1cfcca5feb.png",
-    "index.html": "/index.html",
-    "favicon-32.png": "/favicon-32.png",
-    "favicon-16.png": "/favicon-16.png",
-    "manifest.json": "/manifest.json",
-    "serve.json": "/serve.json",
-    "main.641a83d9.js.map": "/static/js/main.641a83d9.js.map",
-    "963.1f231c1e.js.map": "/static/js/963.1f231c1e.js.map"
+    "main.js": "/zenithar-mobile/static/js/main.1c1c80ad.js",
+    "static/js/963.d5bdbef6.js": "/zenithar-mobile/static/js/963.d5bdbef6.js",
+    "static/media/adaptive-icon.png": "/zenithar-mobile/static/media/adaptive-icon.9c43d51e89f0c53b7e5d.png",
+    "static/media/MaterialIcons.ttf": "/zenithar-mobile/static/media/MaterialIcons.120b4c7bbd155bd0a04d.ttf",
+    "static/media/Feather.ttf": "/zenithar-mobile/static/media/Feather.0f5d9cede2e831f3fc80.ttf",
+    "static/media/tick.png": "/zenithar-mobile/static/media/tick.32cb45231ee117d499e2.png",
+    "static/media/arrow-up.png": "/zenithar-mobile/static/media/arrow-up.0b0d1af9a5b464b93fde.png",
+    "static/media/close.png": "/zenithar-mobile/static/media/close.b65df71afd6c8e422619.png",
+    "static/media/arrow-down.png": "/zenithar-mobile/static/media/arrow-down.772a5382a31866c9198e.png",
+    "favicon.ico": "/zenithar-mobile/favicon.ico",
+    "static/media/no-user.png": "/zenithar-mobile/static/media/no-user.4a33880eba1cfcca5feb.png",
+    "index.html": "/zenithar-mobile/index.html",
+    "favicon-32.png": "/zenithar-mobile/favicon-32.png",
+    "favicon-16.png": "/zenithar-mobile/favicon-16.png",
+    "manifest.json": "/zenithar-mobile/manifest.json",
+    "serve.json": "/zenithar-mobile/serve.json",
+    "main.1c1c80ad.js.map": "/zenithar-mobile/static/js/main.1c1c80ad.js.map",
+    "963.d5bdbef6.js.map": "/zenithar-mobile/static/js/963.d5bdbef6.js.map"
   },
   "entrypoints": [
-    "static/js/963.1f231c1e.js",
-    "static/js/main.641a83d9.js"
+    "static/js/963.d5bdbef6.js",
+    "static/js/main.1c1c80ad.js"
   ]
 }
