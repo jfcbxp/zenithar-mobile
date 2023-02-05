@@ -5,7 +5,9 @@ module.exports = function (api) {
       'babel-preset-expo',
       '@babel/preset-typescript',
     ],
-    plugins: [
+    plugins: 
+    [
+      'inline-dotenv',
       ["@babel/plugin-proposal-private-property-in-object", { "loose": true }],
     ],
   };
