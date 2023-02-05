@@ -2,8 +2,8 @@
   "background_color": "#1F2D5A",
   "display": "standalone",
   "lang": "en",
-  "name": "zenithar-mobile",
-  "short_name": "zenithar-mobile",
-  "start_url": "/?utm_source=web_app_manifest",
+  "name": "Zenithar",
+  "short_name": "Zenithar",
+  "start_url": "/zenithar-mobile/?utm_source=web_app_manifest",
   "orientation": "portrait"
 }
