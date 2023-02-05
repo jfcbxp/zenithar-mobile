@@ -5,18 +5,6 @@ on:
       - develop
   pull_request:
     types: [opened, synchronize, reopened]
-
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow one concurrent deployment
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
 jobs:
   sonarcloud:
     name: SonarCloud
@@ -37,6 +25,8 @@ jobs:
   publish:
     needs: sonarcloud
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: 🏗 Setup repo
         uses: actions/checkout@v3
