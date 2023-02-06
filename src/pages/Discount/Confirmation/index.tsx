@@ -6,7 +6,7 @@ import { MaterialIcons as Icon } from "@expo/vector-icons";
 import { SwipeButton } from "../../../components/buttons/swipe-button";
 
 interface Properties
-  extends StackScreenProps<StackParams, "DiscountConfirmation"> {}
+  extends StackScreenProps<StackParams, "DiscountConfirmation"> { }
 
 export default function DiscountConfirmation({ navigation }: Properties) {
   return (
@@ -19,7 +19,7 @@ export default function DiscountConfirmation({ navigation }: Properties) {
             size={48}
             color="white"
             onPress={() => {
-              navigation && navigation.navigate("Home");
+              navigation && navigation.navigate("Discount");
             }}
           />
           <Text style={styles.headerText}>Desconto</Text>
@@ -44,7 +44,7 @@ export default function DiscountConfirmation({ navigation }: Properties) {
           </Text>
         </View>
         <SwipeButton
-          onComplete={() => {}}
+          onComplete={() => { }}
           title="EFETUAR DESCONTO"
           underlayTitle="CONFIRMAR DESCONTO"
         />

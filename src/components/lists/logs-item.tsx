@@ -17,22 +17,24 @@ export function LogsItem({ data }: { data: UserLogs }) {
   return (
     <View>
       <View style={styles.container}>
-        <Icon
-          testID="icon"
-          name={name}
-          size={28}
-          color="#123262"
-          style={{ alignSelf: "center" }}
-        />
-        <View>
-          <Text testID="title" style={styles.text}>
-            {data.title + " " + data.id}
-          </Text>
-          <Text testID="description" style={styles.sub}>
-            {data.description}
-          </Text>
+        <View style={{ flexDirection: "row" }}>
+          <Icon
+            testID="icon"
+            name={name}
+            size={28}
+            color="#123262"
+            style={{ alignSelf: "center" }}
+          />
+          <View>
+            <Text testID="title" style={styles.text}>
+              {data.title + " " + data.id}
+            </Text>
+            <Text testID="description" style={styles.sub}>
+              {data.description}
+            </Text>
+          </View>
         </View>
-        <Text testID="date">{data.date}</Text>
+        <Text testID="date" style={styles.sub}>{data.date}</Text>
       </View>
       <Divider />
     </View>
@@ -43,6 +45,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     paddingVertical: 12,
   },
   text: {
