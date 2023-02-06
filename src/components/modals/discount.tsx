@@ -113,7 +113,7 @@ export function DiscountModal(properties: Properties) {
               setOpen(false);
               setBranch("");
               setBudget("");
-              navigation.navigate("Discount");
+              navigation && navigation.navigate("Discount");
             }}
             onPressOut={properties.dismiss}
             disabled={disabled}

@@ -35,6 +35,7 @@ export function Header(properties: Properties) {
         >
           {properties.returnOption && (
             <Icon
+              testID="icon"
               name="keyboard-arrow-left"
               size={48}
               color="white"
