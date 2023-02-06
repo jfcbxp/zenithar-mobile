@@ -9,30 +9,13 @@ import { Button } from "../../components/buttons/button";
 import { EmailInput } from "../../components/inputs/email-input";
 import { Dialog } from "../../components/modals/dialog";
 
-it("PasswordRecovery renders without crashing", () => {
-  let navigation =
-    useNavigation<StackNavigationProp<StackParams, "PasswordRecovery">>();
-  let route = useNavigation<RouteProp<StackParams, "PasswordRecovery">>();
-  let mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
-  const rendered = renderer
-    .create(
-      <PasswordRecovery
-        navigation={mockNavigation.navigation}
-        route={mockNavigation.route}
-      />
-    )
-    .toJSON();
-  expect(rendered).toBeTruthy();
-});
+describe("PasswordRecovery test", () => {
+  const TEST_EMAIL = "test@email.com";
 
-it("PasswordRecovery test Button", async () => {
-  let navigation =
+  const navigation =
     useNavigation<StackNavigationProp<StackParams, "PasswordRecovery">>();
-  let route = useNavigation<RouteProp<StackParams, "PasswordRecovery">>();
-  let mockNavigation = {
+  const route = useNavigation<RouteProp<StackParams, "PasswordRecovery">>();
+  const mockNavigation = {
     navigation: navigation,
     route: route,
   };
@@ -43,59 +26,33 @@ it("PasswordRecovery test Button", async () => {
     />
   );
 
-  const button = rendered.root.findByType(Button);
+  it("test PasswordRecovery Button", async () => {
+    const button = rendered.root.findByType(Button);
 
-  await act(() => button.props.onPress());
+    await act(() => button.props.onPress());
 
-  const dialog = rendered.root.findByType(Dialog);
+    const dialog = rendered.root.findByType(Dialog);
 
-  expect(button.props.title).toBe("ENVIAR");
-  expect(dialog.props.visible).toBe(true);
-});
+    expect(button.props.title).toBe("ENVIAR");
+    expect(dialog.props.visible).toBe(true);
+  });
 
-it("PasswordRecovery test EmailInput", async () => {
-  let navigation =
-    useNavigation<StackNavigationProp<StackParams, "PasswordRecovery">>();
-  let route = useNavigation<RouteProp<StackParams, "PasswordRecovery">>();
-  let mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
-  const rendered = renderer.create(
-    <PasswordRecovery
-      navigation={mockNavigation.navigation}
-      route={mockNavigation.route}
-    />
-  );
+  it("test PasswordRecovery EmailInput", async () => {
+    const emailInput = rendered.root.findByType(EmailInput);
 
-  const emailInput = rendered.root.findByType(EmailInput);
+    await act(() => emailInput.props.onChangeText(TEST_EMAIL));
 
-  await act(() => emailInput.props.onChangeText("test@email.com"));
+    expect(emailInput.props.value).toBe(TEST_EMAIL);
+  });
 
-  expect(emailInput.props.value).toBe("test@email.com");
-});
+  it("test PasswordRecovery PasswordRecovery Dialog", async () => {
+    const dialog = rendered.root.findByType(Dialog);
 
-it("PasswordRecovery test Dialog", async () => {
-  let navigation =
-    useNavigation<StackNavigationProp<StackParams, "PasswordRecovery">>();
-  let route = useNavigation<RouteProp<StackParams, "PasswordRecovery">>();
-  let mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
-  const rendered = renderer.create(
-    <PasswordRecovery
-      navigation={mockNavigation.navigation}
-      route={mockNavigation.route}
-    />
-  );
-
-  const dialog = rendered.root.findByType(Dialog);
-
-  expect(dialog.props.title).toBe("Recuperação de senha");
-  expect(dialog.props.content).toBe(
-    "Em alguns instantes uma mensagem de e-mail chegará em sua caixa de entrada com as instruções para redefinição da sua senha."
-  );
-  await act(() => dialog.props.dismiss());
-  expect(dialog.props.visible).toBe(false);
+    expect(dialog.props.title).toBe("Recuperação de senha");
+    expect(dialog.props.content).toBe(
+      "Em alguns instantes uma mensagem de e-mail chegará em sua caixa de entrada com as instruções para redefinição da sua senha."
+    );
+    await act(() => dialog.props.dismiss());
+    expect(dialog.props.visible).toBe(false);
+  });
 });

@@ -10,138 +10,69 @@ import { EmailInput } from "../../components/inputs/email-input";
 import { PasswordInput } from "../../components/inputs/password-input";
 import { Image, Text } from "react-native";
 
-it("SignIn renders without crashing", () => {
-  let navigation = useNavigation<StackNavigationProp<StackParams, "SignIn">>();
-  let route = useNavigation<RouteProp<StackParams, "SignIn">>();
-  let mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
-  const rendered = renderer
-    .create(
-      <SignIn
-        navigation={mockNavigation.navigation}
-        route={mockNavigation.route}
-      />
-    )
-    .toJSON();
-  expect(rendered).toBeTruthy();
-});
+describe("SignIn test", () => {
+  const TEST_EMAIL = "test@email.com";
+  const TEST_PASSWORD = "test";
 
-it("SignIn test EmailInput", async () => {
-  let navigation = useNavigation<StackNavigationProp<StackParams, "SignIn">>();
-  let route = useNavigation<RouteProp<StackParams, "SignIn">>();
-  let mockNavigation = {
+  const navigation =
+    useNavigation<StackNavigationProp<StackParams, "SignIn">>();
+  const route = useNavigation<RouteProp<StackParams, "SignIn">>();
+  const mockNavigation = {
     navigation: navigation,
     route: route,
   };
+
   const rendered = renderer.create(
     <SignIn
       navigation={mockNavigation.navigation}
       route={mockNavigation.route}
     />
   );
-  const emailInput = rendered.root.findByType(EmailInput);
-  await act(() => emailInput.props.onChangeText("test@email.com"));
-  expect(emailInput.props.value).toBe("test@email.com");
-});
 
-it("SignIn test PasswordInput", async () => {
-  let navigation = useNavigation<StackNavigationProp<StackParams, "SignIn">>();
-  let route = useNavigation<RouteProp<StackParams, "SignIn">>();
-  let mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
-  const rendered = renderer.create(
-    <SignIn
-      navigation={mockNavigation.navigation}
-      route={mockNavigation.route}
-    />
-  );
-  const passwordInput = rendered.root.findByType(PasswordInput);
-  await act(() => passwordInput.props.onChangeText("965874"));
-  expect(passwordInput.props.value).toBe("965874");
-});
-
-it("SignIn test Button", async () => {
-  let navigation = useNavigation<StackNavigationProp<StackParams, "SignIn">>();
-  let route = useNavigation<RouteProp<StackParams, "SignIn">>();
-  let mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
-  const rendered = renderer.create(
-    <SignIn
-      navigation={mockNavigation.navigation}
-      route={mockNavigation.route}
-    />
-  );
-  const button = rendered.root.findByType(Button);
-  await act(() => {
-    button.props.onPress();
+  it("test SignIn EmailInput", async () => {
+    const emailInput = rendered.root.findByType(EmailInput);
+    await act(() => emailInput.props.onChangeText(TEST_EMAIL));
+    expect(emailInput.props.value).toBe(TEST_EMAIL);
   });
-  expect(button.props.title).toBe("ENTRAR");
-});
 
-it("SignIn test CommandLink", async () => {
-  let navigation = useNavigation<StackNavigationProp<StackParams, "SignIn">>();
-  let route = useNavigation<RouteProp<StackParams, "SignIn">>();
-  let mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
-  const rendered = renderer.create(
-    <SignIn
-      navigation={mockNavigation.navigation}
-      route={mockNavigation.route}
-    />
-  );
-
-  const cadastrar = rendered.root.findAllByProps({
-    testID: "link-cadastrar",
-  })[0];
-
-  const recuperar = rendered.root.findAllByProps({
-    testID: "link-recuperar-senha",
-  })[0];
-
-  await act(() => {
-    cadastrar.props.onPress();
-    recuperar.props.onPress();
+  it("test SignIn PasswordInput", async () => {
+    const passwordInput = rendered.root.findByType(PasswordInput);
+    await act(() => passwordInput.props.onChangeText(TEST_PASSWORD));
+    expect(passwordInput.props.value).toBe(TEST_PASSWORD);
   });
-});
 
-it("SignIn test Text", async () => {
-  let navigation = useNavigation<StackNavigationProp<StackParams, "SignIn">>();
-  let route = useNavigation<RouteProp<StackParams, "SignIn">>();
-  let mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
-  const rendered = renderer.create(
-    <SignIn
-      navigation={mockNavigation.navigation}
-      route={mockNavigation.route}
-    />
-  );
-  const text = rendered.root.findAllByType(Text).length;
-  expect(text).toBe(5);
-});
+  it("test SignIn Button", async () => {
+    const button = rendered.root.findByType(Button);
+    await act(() => {
+      button.props.onPress();
+    });
+    expect(button.props.title).toBe("ENTRAR");
+  });
 
-it("SignIn test Image", async () => {
-  let navigation = useNavigation<StackNavigationProp<StackParams, "SignIn">>();
-  let route = useNavigation<RouteProp<StackParams, "SignIn">>();
-  let mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
-  const rendered = renderer.create(
-    <SignIn
-      navigation={mockNavigation.navigation}
-      route={mockNavigation.route}
-    />
-  );
-  const image = rendered.root.findByType(Image);
-  expect(image.props.source).toBe(require("../../../assets/adaptive-icon.png"));
+  it("test SignIn CommandLink", async () => {
+    const cadastrar = rendered.root.findAllByProps({
+      testID: "link-cadastrar",
+    })[0];
+
+    const recuperar = rendered.root.findAllByProps({
+      testID: "link-recuperar-senha",
+    })[0];
+
+    await act(() => {
+      cadastrar.props.onPress();
+      recuperar.props.onPress();
+    });
+  });
+
+  it("test SignIn Text", async () => {
+    const text = rendered.root.findAllByType(Text).length;
+    expect(text).toBe(5);
+  });
+
+  it("test SignIn Image", async () => {
+    const image = rendered.root.findByType(Image);
+    expect(image.props.source).toBe(
+      require("../../../assets/adaptive-icon.png")
+    );
+  });
 });

@@ -22,6 +22,7 @@ import { CommandLink } from "../../components/buttons/command-link";
 import { PasswordInput } from "../../components/inputs/password-input";
 import { AuthContext } from "../../contexts/auth.provider";
 import { User } from "../../models/user.model";
+import { Dialog } from "../../components/modals/dialog";
 
 const company = "companyTest";
 const department = "departmentTest";
@@ -63,47 +64,13 @@ const user: User = {
   ],
 };
 
-it("Home renders without crashing", () => {
-  let navigation = useNavigation<StackNavigationProp<StackParams, "Home">>();
-  let route = useNavigation<RouteProp<StackParams, "Home">>();
-  let mockNavigation = {
+describe("Home test", () => {
+  const navigation = useNavigation<StackNavigationProp<StackParams, "Home">>();
+  const route = useNavigation<RouteProp<StackParams, "Home">>();
+  const mockNavigation = {
     navigation: navigation,
     route: route,
   };
-
-  const rendered = renderer
-    .create(
-      <AuthContext.Provider
-        value={{
-          user,
-          company,
-          department,
-          loading,
-          signUp,
-          signIn,
-          signOut,
-          recoverPassword,
-          userUpdate,
-        }}
-      >
-        <Home
-          navigation={mockNavigation.navigation}
-          route={mockNavigation.route}
-        />
-      </AuthContext.Provider>
-    )
-    .toJSON();
-  expect(rendered).toBeTruthy();
-});
-
-it("Home test Header", async () => {
-  let navigation = useNavigation<StackNavigationProp<StackParams, "Home">>();
-  let route = useNavigation<RouteProp<StackParams, "Home">>();
-  let mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
-
   const rendered = renderer.create(
     <AuthContext.Provider
       value={{
@@ -125,159 +92,136 @@ it("Home test Header", async () => {
     </AuthContext.Provider>
   );
 
-  const header = rendered.root.findByType(Header);
+  it("test Home Header", async () => {
+    const header = rendered.root.findByType(Header);
 
-  const pressable = header.findByType(Pressable);
-  await act(() => pressable.props.onPress());
+    const pressable = header.findByType(Pressable);
+    await act(() => pressable.props.onPress());
 
-  const userSettings = header.findByType(UserSettings);
-  expect(userSettings.props.visible).toBe(true);
+    const userSettings = header.findByType(UserSettings);
+    expect(userSettings.props.visible).toBe(true);
 
-  const modal = header.findByType(Modal);
-  expect(modal.props.visible).toBe(true);
+    const modal = userSettings.findByType(Modal);
+    expect(modal.props.visible).toBe(true);
+    const portrait = modal.findByType(Portrait);
+    expect(portrait.props.source).toBe("portraitTest");
 
-  const portrait = header.findByType(Portrait);
-  expect(portrait.props.source).toBe("portraitTest");
+    const fullNameInput = modal.findByType(FullNameInput);
+    await act(() => fullNameInput.props.onChangeText("test"));
+    expect(fullNameInput.props.value).toBe("test");
 
-  const fullNameInput = header.findByType(FullNameInput);
-  await act(() => fullNameInput.props.onChangeText("Bruce Wayne"));
-  expect(fullNameInput.props.value).toBe("Bruce Wayne");
+    const commandLink = modal.findByType(CommandLink);
+    await act(() => commandLink.props.onPress());
 
-  const commandLink = header.findByType(CommandLink);
-  await act(() => commandLink.props.onPress());
+    const passwordInput = modal.findAllByType(PasswordInput).length;
+    expect(passwordInput).toBe(3);
 
-  const passwordInput = header.findAllByType(PasswordInput).length;
-  expect(passwordInput).toBe(3);
+    const _passwordInput = modal.findAllByType(PasswordInput);
 
-  const _passwordInput = header.findAllByType(PasswordInput);
+    const password1 = _passwordInput[0];
+    await act(() => password1.props.onChangeText("test"));
+    expect(password1.props.value).toBe("test");
 
-  const password1 = _passwordInput[0];
-  await act(() => password1.props.onChangeText("965874"));
-  expect(password1.props.value).toBe("965874");
+    const password2 = _passwordInput[1];
+    await act(() => password2.props.onChangeText("test"));
+    expect(password2.props.value).toBe("test");
 
-  const password2 = _passwordInput[1];
-  await act(() => password2.props.onChangeText("965874"));
-  expect(password2.props.value).toBe("965874");
+    const password3 = _passwordInput[2];
+    await act(() => password3.props.onChangeText("test"));
+    expect(password3.props.value).toBe("test");
 
-  const password3 = _passwordInput[2];
-  await act(() => password3.props.onChangeText("965874"));
-  expect(password3.props.value).toBe("965874");
+    const button = modal.findAllByType(Button).length;
+    expect(button).toBe(3);
 
-  const button = header.findAllByType(Button).length;
-  expect(button).toBe(3);
+    const _button = modal.findAllByType(Button);
 
-  const _button = header.findAllByType(Button);
+    const button1 = _button[0];
+    expect(button1.props.title).toBe("SELECIONAR");
 
-  const button1 = _button[0];
-  expect(button1.props.title).toBe("SELECIONAR");
+    const button2 = _button[1];
+    expect(button2.props.title).toBe("CANCELAR");
 
-  const button2 = _button[1];
-  expect(button2.props.title).toBe("CANCELAR");
+    const button3 = _button[2];
+    await act(() => button3.props.onPressIn());
+    expect(button3.props.title).toBe("CONFIRMAR");
+    expect(button3.props.disabled).toBe(true);
 
-  const button3 = _button[2];
-  await act(() => button3.props.onPressIn());
-  expect(button3.props.title).toBe("CONFIRMAR");
-  expect(button3.props.disabled).toBe(true);
+    await act(() => userSettings.props.dismiss());
+  });
 
-  await act(() => userSettings.props.dismiss());
-});
+  it("test Home HomeContainer", async () => {
+    const homeContainer = rendered.root.findByType(HomeContainer);
+    expect(homeContainer.props.title).toBe("Histórico");
+    expect(homeContainer.props.children).toBeDefined();
 
-it("Home test HomeContainer, Logs, LogsItem", async () => {
-  let navigation = useNavigation<StackNavigationProp<StackParams, "Home">>();
-  let route = useNavigation<RouteProp<StackParams, "Home">>();
-  let mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
+    const logs = homeContainer.findByType(Logs);
+    expect(logs.props.data).toBeDefined();
 
-  const rendered = renderer.create(
-    <AuthContext.Provider
-      value={{
-        user,
-        company,
-        department,
-        loading,
-        signUp,
-        signIn,
-        signOut,
-        recoverPassword,
-        userUpdate,
-      }}
-    >
-      <Home
-        navigation={mockNavigation.navigation}
-        route={mockNavigation.route}
-      />
-    </AuthContext.Provider>
-  );
+    const flatListLog = logs.findByType(FlatList);
 
-  const homeContainer = rendered.root.findByType(HomeContainer);
-  expect(homeContainer.props.title).toBe("Histórico");
-  expect(homeContainer.props.children).toBeDefined();
+    expect(flatListLog.props.data).toBeDefined();
 
-  const logs = homeContainer.findByType(Logs);
-  expect(logs.props.data).toBeDefined();
+    const logsItem = flatListLog.findAllByType(LogsItem).length;
+    expect(logsItem).toBe(2);
+  });
 
-  const flatListLog = logs.findByType(FlatList);
+  it("test Home DiscountModal", async () => {
+    const navigationButton = rendered.root.findByType(NavigationButton);
+    await act(() => navigationButton.props.onPress());
 
-  expect(flatListLog.props.data).toBeDefined();
+    const discountModal = rendered.root.findByType(DiscountModal);
+    expect(discountModal.props.visible).toBe(true);
 
-  const logsItem = flatListLog.findAllByType(LogsItem).length;
-  expect(logsItem).toBe(2);
-});
+    const modal = discountModal.findByType(Modal);
+    expect(modal.props.visible).toBe(true);
+    await act(() => modal.props.onShow());
 
-it("Home test DiscountModal", async () => {
-  let navigation = useNavigation<StackNavigationProp<StackParams, "Home">>();
-  let route = useNavigation<RouteProp<StackParams, "Home">>();
-  let mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
+    const textInput = modal.findByType(TextInput);
+    await act(() => textInput.props.onChangeText("test"));
+    expect(textInput.props.value).toBe("test");
 
-  const rendered = renderer.create(
-    <AuthContext.Provider
-      value={{
-        user,
-        company,
-        department,
-        loading,
-        signUp,
-        signIn,
-        signOut,
-        recoverPassword,
-        userUpdate,
-      }}
-    >
-      <Home
-        navigation={mockNavigation.navigation}
-        route={mockNavigation.route}
-      />
-    </AuthContext.Provider>
-  );
+    const picker = modal.findByType(Picker);
+    await act(() => picker.props.setValue(""));
+    expect(picker.props.value).toBe("");
 
-  const navigationButton = rendered.root.findByType(NavigationButton);
-  await act(() => navigationButton.props.onPress());
+    const pressable = discountModal.findByType(Pressable);
+    await act(() => pressable.props.onPressIn());
 
-  const discountModal = rendered.root.findByType(DiscountModal);
-  expect(discountModal.props.visible).toBe(true);
+    const button = modal.findByType(Button);
+    expect(button.props.title).toBe("CONTINUAR");
+    expect(button.props.disabled).toBe(true);
+    await act(() => button.props.onPressIn());
 
-  const modal = discountModal.findByType(Modal);
-  expect(modal.props.visible).toBe(true);
-  await act(() => modal.props.onShow());
+    await act(() => discountModal.props.dismiss());
+  });
 
-  const textInput = modal.findByType(TextInput);
-  await act(() => textInput.props.onChangeText("965874"));
-  expect(textInput.props.value).toBe("965874");
+  it("test Home Dialog", async () => {
+    await act(() =>
+      rendered.update(
+        <AuthContext.Provider
+          value={{
+            user,
+            company: "",
+            department,
+            loading,
+            signUp,
+            signIn,
+            signOut,
+            recoverPassword,
+            userUpdate,
+          }}
+        >
+          <Home
+            navigation={mockNavigation.navigation}
+            route={mockNavigation.route}
+          />
+        </AuthContext.Provider>
+      )
+    );
+    const navigationButton = rendered.root.findByType(NavigationButton);
+    await act(() => navigationButton.props.onPress());
 
-  const picker = modal.findByType(Picker);
-  await act(() => picker.props.setValue(""));
-  expect(picker.props.value).toBe("");
-
-  const pressable = discountModal.findByType(Pressable);
-  await act(() => pressable.props.onPressIn());
-
-  const button = modal.findByType(Button);
-  expect(button.props.title).toBe("CONTINUAR");
-  expect(button.props.disabled).toBe(true);
-  await act(() => button.props.onPressIn());
+    const dialog = rendered.root.findByType(Dialog);
+    await act(() => dialog.props.dismiss());
+  });
 });

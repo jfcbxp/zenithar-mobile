@@ -10,31 +10,11 @@ import { ItemsDropdown } from "../../components/dropdowns/discount/items-dropdow
 import { PaymentMethodDropdown } from "../../components/dropdowns/discount/payment-method-dropdown";
 import { Pressable } from "react-native";
 
-it("Discount renders without crashing", () => {
-  let navigation =
+describe("Discount test", () => {
+  const navigation =
     useNavigation<StackNavigationProp<StackParams, "Discount">>();
-  let route = useNavigation<RouteProp<StackParams, "Discount">>();
-  let mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
-
-  const rendered = renderer
-    .create(
-      <Discount
-        navigation={mockNavigation.navigation}
-        route={mockNavigation.route}
-      />
-    )
-    .toJSON();
-  expect(rendered).toBeTruthy();
-});
-
-it("Discount test Dropdowns", async () => {
-  let navigation =
-    useNavigation<StackNavigationProp<StackParams, "Discount">>();
-  let route = useNavigation<RouteProp<StackParams, "Discount">>();
-  let mockNavigation = {
+  const route = useNavigation<RouteProp<StackParams, "Discount">>();
+  const mockNavigation = {
     navigation: navigation,
     route: route,
   };
@@ -46,96 +26,59 @@ it("Discount test Dropdowns", async () => {
     />
   );
 
-  const headerDropdown = rendered.root.findByType(HeaderDropdown);
-  const itemsDropdown = rendered.root.findByType(ItemsDropdown);
-  const paymentMethodDropdown = rendered.root.findByType(PaymentMethodDropdown);
-  const button = rendered.root.findByType(Button);
+  it("test Discount Dropdowns", async () => {
+    const headerDropdown = rendered.root.findByType(HeaderDropdown);
+    const itemsDropdown = rendered.root.findByType(ItemsDropdown);
+    const paymentMethodDropdown = rendered.root.findByType(
+      PaymentMethodDropdown
+    );
+    const button = rendered.root.findByType(Button);
 
-  await act(() => button.props.onPress());
+    await act(() => button.props.onPress());
 
-  expect(headerDropdown).toBeTruthy();
-  expect(itemsDropdown).toBeTruthy();
-  expect(paymentMethodDropdown).toBeTruthy();
-});
+    expect(headerDropdown).toBeTruthy();
+    expect(itemsDropdown).toBeTruthy();
+    expect(paymentMethodDropdown).toBeTruthy();
+  });
 
-it("HeaderDropdown with Pressable", async () => {
-  let navigation =
-    useNavigation<StackNavigationProp<StackParams, "Discount">>();
-  let route = useNavigation<RouteProp<StackParams, "Discount">>();
-  let mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
+  it("test Discount HeaderDropdown with Pressable", async () => {
+    const headerDropdown = rendered.root.findByType(HeaderDropdown);
 
-  const rendered = renderer.create(
-    <Discount
-      navigation={mockNavigation.navigation}
-      route={mockNavigation.route}
-    />
-  );
-  const headerDropdown = rendered.root.findByType(HeaderDropdown);
+    const pressable = headerDropdown.findByType(Pressable);
 
-  const pressable = headerDropdown.findByType(Pressable);
+    const icon = headerDropdown.findAllByProps({ testID: "icon" })[0];
+    expect(icon.props.name).toBe("chevron-down");
 
-  const icon = headerDropdown.findAllByProps({ testID: "icon" })[0];
-  expect(icon.props.name).toBe("chevron-down");
+    await act(() => pressable.props.onPress());
 
-  await act(() => pressable.props.onPress());
+    expect(icon.props.name).toBe("chevron-up");
+  });
 
-  expect(icon.props.name).toBe("chevron-up");
-});
+  it("test Discount ItemsDropdown with Pressable", async () => {
+    const itemsDropdown = rendered.root.findByType(ItemsDropdown);
 
-it("ItemsDropdown with Pressable", async () => {
-  let navigation =
-    useNavigation<StackNavigationProp<StackParams, "Discount">>();
-  let route = useNavigation<RouteProp<StackParams, "Discount">>();
-  let mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
+    const pressable = itemsDropdown.findByType(Pressable);
 
-  const rendered = renderer.create(
-    <Discount
-      navigation={mockNavigation.navigation}
-      route={mockNavigation.route}
-    />
-  );
+    const icon = itemsDropdown.findAllByProps({ testID: "icon" })[0];
+    expect(icon.props.name).toBe("chevron-down");
 
-  const itemsDropdown = rendered.root.findByType(ItemsDropdown);
+    await act(() => pressable.props.onPress());
 
-  const pressable = itemsDropdown.findByType(Pressable);
+    expect(icon.props.name).toBe("chevron-up");
+  });
 
-  const icon = itemsDropdown.findAllByProps({ testID: "icon" })[0];
-  expect(icon.props.name).toBe("chevron-down");
+  it("test Discount PaymentMethodDropdown with Pressable", async () => {
+    const paymentMethodDropdown = rendered.root.findByType(
+      PaymentMethodDropdown
+    );
 
-  await act(() => pressable.props.onPress());
+    const pressable = paymentMethodDropdown.findByType(Pressable);
 
-  expect(icon.props.name).toBe("chevron-up");
-});
+    const icon = paymentMethodDropdown.findAllByProps({ testID: "icon" })[0];
+    expect(icon.props.name).toBe("chevron-down");
 
-it("PaymentMethodDropdown with Pressable", async () => {
-  let navigation =
-    useNavigation<StackNavigationProp<StackParams, "Discount">>();
-  let route = useNavigation<RouteProp<StackParams, "Discount">>();
-  let mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
+    await act(() => pressable.props.onPress());
 
-  const rendered = renderer.create(
-    <Discount
-      navigation={mockNavigation.navigation}
-      route={mockNavigation.route}
-    />
-  );
-  const paymentMethodDropdown = rendered.root.findByType(PaymentMethodDropdown);
-
-  const pressable = paymentMethodDropdown.findByType(Pressable);
-
-  const icon = paymentMethodDropdown.findAllByProps({ testID: "icon" })[0];
-  expect(icon.props.name).toBe("chevron-down");
-
-  await act(() => pressable.props.onPress());
-
-  expect(icon.props.name).toBe("chevron-up");
+    expect(icon.props.name).toBe("chevron-up");
+  });
 });
