@@ -8,6 +8,7 @@ import Discount from ".";
 import { HeaderDropdown } from "../../components/dropdowns/discount/header-dropdown";
 import { ItemsDropdown } from "../../components/dropdowns/discount/items-dropdown";
 import { PaymentMethodDropdown } from "../../components/dropdowns/discount/payment-method-dropdown";
+import { Pressable } from "react-native";
 
 let mockNavigation: StackScreenProps<StackParams, "Discount", undefined>;
 
@@ -53,4 +54,62 @@ it("Discount test Dropdowns", async () => {
   expect(headerDropdown).toBeTruthy();
   expect(itemsDropdown).toBeTruthy();
   expect(paymentMethodDropdown).toBeTruthy();
+});
+
+it("HeaderDropdown with Pressable", async () => {
+  const rendered = renderer.create(
+    <Discount
+      navigation={mockNavigation.navigation}
+      route={mockNavigation.route}
+    />
+  );
+  const headerDropdown = rendered.root.findByType(HeaderDropdown);
+
+  const pressable = headerDropdown.findByType(Pressable);
+
+  const icon = headerDropdown.findAllByProps({ testID: "icon" })[0];
+  expect(icon.props.name).toBe("chevron-down");
+
+  await act(() => pressable.props.onPress());
+
+  expect(icon.props.name).toBe("chevron-up");
+});
+
+it("ItemsDropdown with Pressable", async () => {
+  const rendered = renderer.create(
+    <Discount
+      navigation={mockNavigation.navigation}
+      route={mockNavigation.route}
+    />
+  );
+
+  const itemsDropdown = rendered.root.findByType(ItemsDropdown);
+
+  const pressable = itemsDropdown.findByType(Pressable);
+
+  const icon = itemsDropdown.findAllByProps({ testID: "icon" })[0];
+  expect(icon.props.name).toBe("chevron-down");
+
+  await act(() => pressable.props.onPress());
+
+  expect(icon.props.name).toBe("chevron-up");
+});
+
+it("PaymentMethodDropdown with Pressable", async () => {
+  const rendered = renderer.create(
+    <Discount
+      navigation={mockNavigation.navigation}
+      route={mockNavigation.route}
+    />
+  );
+  const paymentMethodDropdown = rendered.root.findByType(PaymentMethodDropdown);
+
+  const pressable = paymentMethodDropdown.findByType(Pressable);
+
+  const icon = paymentMethodDropdown.findAllByProps({ testID: "icon" })[0];
+  expect(icon.props.name).toBe("chevron-down");
+
+  await act(() => pressable.props.onPress());
+
+  expect(icon.props.name).toBe("chevron-up");
 });
