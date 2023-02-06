@@ -5,6 +5,9 @@ interface Properties extends TextInputMaskProps { }
 
 export function MaskedInput(properties: Properties) {
     return (
-        <TextInputMask {...properties} style={styles.input} />
+        <TextInputMask {...properties}
+            includeRawValueInChangeText={true}
+            placeholderTextColor="#123262"
+            style={styles.input} />
     )
 }

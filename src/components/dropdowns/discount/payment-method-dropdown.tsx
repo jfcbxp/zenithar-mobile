@@ -1,7 +1,9 @@
-import React from "react";
-import { Pressable, Text, View } from "react-native";
+import { useState } from "react";
+import { FlatList, ListRenderItem, Pressable, Text, View } from "react-native";
 import { DropdownStyles as styles } from "../dropdown-styles";
 import { Feather as Icon } from "@expo/vector-icons";
+import { PaymentMethod } from "../../../models/payment-method.model";
+import { PaymentMethodItem } from "../../lists/discount/payment-method-item";
 
 interface Properties {
   budget?: number;
@@ -9,11 +11,14 @@ interface Properties {
 }
 
 export function PaymentMethodDropdown(properties: Properties) {
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = useState(false);
+  const [data, setData] = useState([])
 
   const expand = () => {
     setVisible((current) => !current);
   };
+
+  const renderItem: ListRenderItem<PaymentMethod> = ({ item }) => <PaymentMethodItem data={item} />
 
   return (
     <View>
@@ -23,24 +28,12 @@ export function PaymentMethodDropdown(properties: Properties) {
           <Icon
             testID="icon"
             name={visible === false ? "chevron-down" : "chevron-up"}
-            size={32}
-          />
+            size={32} />
         </View>
       </Pressable>
       {visible && (
         <View style={styles.children}>
-          <View style={styles.item}>
-            <Text style={styles.subText}>Forma</Text>
-            <Text style={styles.subText}>CC</Text>
-          </View>
-          <View style={styles.item}>
-            <Text style={styles.subText}>Valor</Text>
-            <Text style={styles.subText}>R$ 233,40</Text>
-          </View>
-          <View style={styles.item}>
-            <Text style={styles.subText}>Parcelas</Text>
-            <Text style={styles.subText}>3</Text>
-          </View>
+          <FlatList data={data} renderItem={renderItem} />
         </View>
       )}
     </View>
