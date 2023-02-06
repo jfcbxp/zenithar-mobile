@@ -18,6 +18,7 @@ import { Button } from "../buttons/button";
 import { Picker } from "../pickers/picker";
 import { ItemType } from "react-native-dropdown-picker";
 import { UserBranch } from "../../models/user.branch.model";
+import { DiscountStyles as styles } from "./discount-styles";
 
 interface Properties extends ModalProps {
   visible?: boolean;
@@ -123,28 +124,3 @@ export function DiscountModal(properties: Properties) {
     </Modal>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: `rgba(0, 0, 0, 0.8)`,
-  },
-  field: {
-    position: "absolute",
-    width: "100%",
-    height: "50%",
-    alignItems: "center",
-    paddingHorizontal: "5%",
-    backgroundColor: "#F0F2F7",
-    borderTopLeftRadius: 18,
-    borderTopRightRadius: 18,
-    zIndex: 99,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#454545",
-    marginVertical: 32,
-  },
-});

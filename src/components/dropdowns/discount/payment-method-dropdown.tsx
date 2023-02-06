@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FlatList, ListRenderItem, Pressable, Text, View } from "react-native";
 import { DropdownStyles as styles } from "../dropdown-styles";
 import { Feather as Icon } from "@expo/vector-icons";
@@ -13,6 +13,10 @@ interface Properties {
 export function PaymentMethodDropdown(properties: Properties) {
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState([])
+
+  useEffect(() => { 
+    setData([])
+  },[])
 
   const expand = () => {
     setVisible((current) => !current);
