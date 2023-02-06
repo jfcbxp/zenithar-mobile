@@ -1,48 +1,29 @@
 import React from "react";
 import renderer, { act } from "react-test-renderer";
-import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParams } from "../../../types/stack.params";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import DiscountConfirmation from ".";
 
-let mockNavigation: StackScreenProps<
-  StackParams,
-  "DiscountConfirmation",
-  undefined
->;
-
-let route: RouteProp<StackParams, "DiscountConfirmation">;
-
-beforeAll(() => {
-  let navigation =
+describe("DiscountConfirmation test", () => {
+  const navigation =
     useNavigation<StackNavigationProp<StackParams, "DiscountConfirmation">>();
-  route = useNavigation<RouteProp<StackParams, "DiscountConfirmation">>();
-  mockNavigation = {
+  const route = useNavigation<RouteProp<StackParams, "DiscountConfirmation">>();
+  const mockNavigation = {
     navigation: navigation,
     route: route,
   };
-});
 
-it("DiscountConfirmation renders without crashing", () => {
-  const rendered = renderer
-    .create(
-      <DiscountConfirmation
-        navigation={mockNavigation.navigation}
-        route={mockNavigation.route}
-      />
-    )
-    .toJSON();
-  expect(rendered).toBeTruthy();
-});
-
-it("DiscountConfirmation tests", async () => {
   const rendered = renderer.create(
     <DiscountConfirmation
       navigation={mockNavigation.navigation}
       route={mockNavigation.route}
     />
   );
-  const icon = rendered.root.findAllByProps({ testID: "icon" })[0];
 
-  await act(() => icon.props.onPress());
+  it("test DiscountConfirmation Icon", async () => {
+    const icon = rendered.root.findAllByProps({ testID: "icon" })[0];
+
+    await act(() => icon.props.onPress());
+  });
 });

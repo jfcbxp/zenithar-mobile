@@ -1,41 +1,24 @@
 import React from "react";
 import renderer, { act } from "react-test-renderer";
 import { Button } from "../../components/buttons/button";
-import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import Discount from ".";
 import { HeaderDropdown } from "../../components/dropdowns/discount/header-dropdown";
 import { ItemsDropdown } from "../../components/dropdowns/discount/items-dropdown";
 import { PaymentMethodDropdown } from "../../components/dropdowns/discount/payment-method-dropdown";
+import { Pressable } from "react-native";
 
-let mockNavigation: StackScreenProps<StackParams, "Discount", undefined>;
-
-let route: RouteProp<StackParams, "Discount">;
-
-beforeAll(() => {
-  let navigation =
+describe("Discount test", () => {
+  const navigation =
     useNavigation<StackNavigationProp<StackParams, "Discount">>();
-  route = useNavigation<RouteProp<StackParams, "Discount">>();
-  mockNavigation = {
+  const route = useNavigation<RouteProp<StackParams, "Discount">>();
+  const mockNavigation = {
     navigation: navigation,
     route: route,
   };
-});
 
-it("Discount renders without crashing", () => {
-  const rendered = renderer
-    .create(
-      <Discount
-        navigation={mockNavigation.navigation}
-        route={mockNavigation.route}
-      />
-    )
-    .toJSON();
-  expect(rendered).toBeTruthy();
-});
-
-it("Discount test Dropdowns", async () => {
   const rendered = renderer.create(
     <Discount
       navigation={mockNavigation.navigation}
@@ -43,14 +26,59 @@ it("Discount test Dropdowns", async () => {
     />
   );
 
-  const headerDropdown = rendered.root.findByType(HeaderDropdown);
-  const itemsDropdown = rendered.root.findByType(ItemsDropdown);
-  const paymentMethodDropdown = rendered.root.findByType(PaymentMethodDropdown);
-  const button = rendered.root.findByType(Button);
+  it("test Discount Dropdowns", async () => {
+    const headerDropdown = rendered.root.findByType(HeaderDropdown);
+    const itemsDropdown = rendered.root.findByType(ItemsDropdown);
+    const paymentMethodDropdown = rendered.root.findByType(
+      PaymentMethodDropdown
+    );
+    const button = rendered.root.findByType(Button);
 
-  await act(() => button.props.onPress());
+    await act(() => button.props.onPress());
 
-  expect(headerDropdown).toBeTruthy();
-  expect(itemsDropdown).toBeTruthy();
-  expect(paymentMethodDropdown).toBeTruthy();
+    expect(headerDropdown).toBeTruthy();
+    expect(itemsDropdown).toBeTruthy();
+    expect(paymentMethodDropdown).toBeTruthy();
+  });
+
+  it("test Discount HeaderDropdown with Pressable", async () => {
+    const headerDropdown = rendered.root.findByType(HeaderDropdown);
+
+    const pressable = headerDropdown.findByType(Pressable);
+
+    const icon = headerDropdown.findAllByProps({ testID: "icon" })[0];
+    expect(icon.props.name).toBe("chevron-down");
+
+    await act(() => pressable.props.onPress());
+
+    expect(icon.props.name).toBe("chevron-up");
+  });
+
+  it("test Discount ItemsDropdown with Pressable", async () => {
+    const itemsDropdown = rendered.root.findByType(ItemsDropdown);
+
+    const pressable = itemsDropdown.findByType(Pressable);
+
+    const icon = itemsDropdown.findAllByProps({ testID: "icon" })[0];
+    expect(icon.props.name).toBe("chevron-down");
+
+    await act(() => pressable.props.onPress());
+
+    expect(icon.props.name).toBe("chevron-up");
+  });
+
+  it("test Discount PaymentMethodDropdown with Pressable", async () => {
+    const paymentMethodDropdown = rendered.root.findByType(
+      PaymentMethodDropdown
+    );
+
+    const pressable = paymentMethodDropdown.findByType(Pressable);
+
+    const icon = paymentMethodDropdown.findAllByProps({ testID: "icon" })[0];
+    expect(icon.props.name).toBe("chevron-down");
+
+    await act(() => pressable.props.onPress());
+
+    expect(icon.props.name).toBe("chevron-up");
+  });
 });
