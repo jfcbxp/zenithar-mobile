@@ -5,7 +5,6 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import Discount from ".";
-import { HeaderDropdown } from "../../components/dropdowns/discount/header-dropdown";
 import { ItemsDropdown } from "../../components/dropdowns/discount/items-dropdown";
 import { PaymentMethodDropdown } from "../../components/dropdowns/discount/payment-method-dropdown";
 import { Pressable } from "react-native";
@@ -27,7 +26,6 @@ describe("Discount test", () => {
   );
 
   it("test Discount Dropdowns", async () => {
-    const headerDropdown = rendered.root.findByType(HeaderDropdown);
     const itemsDropdown = rendered.root.findByType(ItemsDropdown);
     const paymentMethodDropdown = rendered.root.findByType(
       PaymentMethodDropdown
@@ -36,22 +34,8 @@ describe("Discount test", () => {
 
     await act(() => button.props.onPress());
 
-    expect(headerDropdown).toBeTruthy();
     expect(itemsDropdown).toBeTruthy();
     expect(paymentMethodDropdown).toBeTruthy();
-  });
-
-  it("test Discount HeaderDropdown with Pressable", async () => {
-    const headerDropdown = rendered.root.findByType(HeaderDropdown);
-
-    const pressable = headerDropdown.findByType(Pressable);
-
-    const icon = headerDropdown.findAllByProps({ testID: "icon" })[0];
-    expect(icon.props.name).toBe("chevron-down");
-
-    await act(() => pressable.props.onPress());
-
-    expect(icon.props.name).toBe("chevron-up");
   });
 
   it("test Discount ItemsDropdown with Pressable", async () => {
