@@ -1,7 +1,7 @@
 import React from "react";
 import renderer, { act } from "react-test-renderer";
 
-import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import Home from ".";
@@ -22,10 +22,6 @@ import { CommandLink } from "../../components/buttons/command-link";
 import { PasswordInput } from "../../components/inputs/password-input";
 import { AuthContext } from "../../contexts/auth.provider";
 import { User } from "../../models/user.model";
-
-let mockNavigation: StackScreenProps<StackParams, "Home", undefined>;
-
-let route: RouteProp<StackParams, "Home">;
 
 const company = "companyTest";
 const department = "departmentTest";
@@ -67,16 +63,14 @@ const user: User = {
   ],
 };
 
-beforeAll(() => {
+it("Home renders without crashing", () => {
   let navigation = useNavigation<StackNavigationProp<StackParams, "Home">>();
-  route = useNavigation<RouteProp<StackParams, "Home">>();
-  mockNavigation = {
+  let route = useNavigation<RouteProp<StackParams, "Home">>();
+  let mockNavigation = {
     navigation: navigation,
     route: route,
   };
-});
 
-it("Home renders without crashing", () => {
   const rendered = renderer
     .create(
       <AuthContext.Provider
@@ -103,18 +97,13 @@ it("Home renders without crashing", () => {
 });
 
 it("Home test Header", async () => {
-  jest.mock("expo-image-picker", () => {
-    return jest.fn().mockImplementation(() => {
-      return {
-        launchImageLibraryAsync: async () => {
-          return {
-            canceled: true,
-            assets: [{ uri: "teste" }],
-          };
-        },
-      };
-    });
-  });
+  let navigation = useNavigation<StackNavigationProp<StackParams, "Home">>();
+  let route = useNavigation<RouteProp<StackParams, "Home">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
+
   const rendered = renderer.create(
     <AuthContext.Provider
       value={{
@@ -189,9 +178,18 @@ it("Home test Header", async () => {
   await act(() => button3.props.onPressIn());
   expect(button3.props.title).toBe("CONFIRMAR");
   expect(button3.props.disabled).toBe(true);
+
+  await act(() => userSettings.props.dismiss());
 });
 
 it("Home test HomeContainer, Logs, LogsItem", async () => {
+  let navigation = useNavigation<StackNavigationProp<StackParams, "Home">>();
+  let route = useNavigation<RouteProp<StackParams, "Home">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
+
   const rendered = renderer.create(
     <AuthContext.Provider
       value={{
@@ -229,8 +227,32 @@ it("Home test HomeContainer, Logs, LogsItem", async () => {
 });
 
 it("Home test DiscountModal", async () => {
+  let navigation = useNavigation<StackNavigationProp<StackParams, "Home">>();
+  let route = useNavigation<RouteProp<StackParams, "Home">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
+
   const rendered = renderer.create(
-    <Home navigation={mockNavigation.navigation} route={mockNavigation.route} />
+    <AuthContext.Provider
+      value={{
+        user,
+        company,
+        department,
+        loading,
+        signUp,
+        signIn,
+        signOut,
+        recoverPassword,
+        userUpdate,
+      }}
+    >
+      <Home
+        navigation={mockNavigation.navigation}
+        route={mockNavigation.route}
+      />
+    </AuthContext.Provider>
   );
 
   const navigationButton = rendered.root.findByType(NavigationButton);
@@ -239,19 +261,23 @@ it("Home test DiscountModal", async () => {
   const discountModal = rendered.root.findByType(DiscountModal);
   expect(discountModal.props.visible).toBe(true);
 
-  const modal = rendered.root.findAllByType(Modal);
-  const modal1 = modal[0];
-  expect(modal1.props.visible).toBe(true);
+  const modal = discountModal.findByType(Modal);
+  expect(modal.props.visible).toBe(true);
+  await act(() => modal.props.onShow());
 
-  const textInput = rendered.root.findByType(TextInput);
+  const textInput = modal.findByType(TextInput);
   await act(() => textInput.props.onChangeText("965874"));
   expect(textInput.props.value).toBe("965874");
 
-  const button = rendered.root.findByType(Button);
-  expect(button.props.title).toBe("CONTINUAR");
-  expect(button.props.disabled).toBe(true);
-
-  const picker = rendered.root.findByType(Picker);
+  const picker = modal.findByType(Picker);
   await act(() => picker.props.setValue(""));
   expect(picker.props.value).toBe("");
+
+  const pressable = discountModal.findByType(Pressable);
+  await act(() => pressable.props.onPressIn());
+
+  const button = modal.findByType(Button);
+  expect(button.props.title).toBe("CONTINUAR");
+  expect(button.props.disabled).toBe(true);
+  await act(() => button.props.onPressIn());
 });

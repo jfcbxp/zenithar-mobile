@@ -1,7 +1,7 @@
 import React from "react";
 import renderer, { act } from "react-test-renderer";
 
-import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import SignUp from ".";
@@ -13,20 +13,13 @@ import { StatusBar } from "expo-status-bar";
 import { View } from "react-native";
 import { Portrait } from "../../components/portrait/portrait";
 
-let mockNavigation: StackScreenProps<StackParams, "SignUp", undefined>;
-
-let route: RouteProp<StackParams, "SignUp">;
-
-beforeAll(() => {
+it("SignUp renders without crashing", () => {
   let navigation = useNavigation<StackNavigationProp<StackParams, "SignUp">>();
-  route = useNavigation<RouteProp<StackParams, "SignUp">>();
-  mockNavigation = {
+  let route = useNavigation<RouteProp<StackParams, "SignUp">>();
+  let mockNavigation = {
     navigation: navigation,
     route: route,
   };
-});
-
-it("SignUp renders without crashing", () => {
   const rendered = renderer
     .create(
       <SignUp
@@ -39,6 +32,13 @@ it("SignUp renders without crashing", () => {
 });
 
 it("SignUp how many Views", () => {
+  let navigation = useNavigation<StackNavigationProp<StackParams, "SignUp">>();
+  let route = useNavigation<RouteProp<StackParams, "SignUp">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
+
   const rendered = renderer.create(
     <SignUp
       navigation={mockNavigation.navigation}
@@ -50,6 +50,13 @@ it("SignUp how many Views", () => {
 });
 
 it("SignUp test FullNameInput", async () => {
+  let navigation = useNavigation<StackNavigationProp<StackParams, "SignUp">>();
+  let route = useNavigation<RouteProp<StackParams, "SignUp">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
+
   const rendered = renderer.create(
     <SignUp
       navigation={mockNavigation.navigation}
@@ -62,6 +69,13 @@ it("SignUp test FullNameInput", async () => {
 });
 
 it("SignUp test EmailInput", async () => {
+  let navigation = useNavigation<StackNavigationProp<StackParams, "SignUp">>();
+  let route = useNavigation<RouteProp<StackParams, "SignUp">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
+
   const rendered = renderer.create(
     <SignUp
       navigation={mockNavigation.navigation}
@@ -74,6 +88,13 @@ it("SignUp test EmailInput", async () => {
 });
 
 it("SignUp test PasswordInput", async () => {
+  let navigation = useNavigation<StackNavigationProp<StackParams, "SignUp">>();
+  let route = useNavigation<RouteProp<StackParams, "SignUp">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
+
   const rendered = renderer.create(
     <SignUp
       navigation={mockNavigation.navigation}
@@ -86,6 +107,13 @@ it("SignUp test PasswordInput", async () => {
 });
 
 it("SignUp test Button Alert", async () => {
+  let navigation = useNavigation<StackNavigationProp<StackParams, "SignUp">>();
+  let route = useNavigation<RouteProp<StackParams, "SignUp">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
+
   window.alert = () => {};
   const rendered = renderer.create(
     <SignUp
@@ -104,6 +132,13 @@ it("SignUp test Button Alert", async () => {
 });
 
 it("SignUp test Button Success", async () => {
+  let navigation = useNavigation<StackNavigationProp<StackParams, "SignUp">>();
+  let route = useNavigation<RouteProp<StackParams, "SignUp">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
+
   window.alert = () => {};
 
   jest.mock("expo-image-picker", () => {
@@ -150,6 +185,13 @@ it("SignUp test Button Success", async () => {
 });
 
 it("SignUp test Dialog", async () => {
+  let navigation = useNavigation<StackNavigationProp<StackParams, "SignUp">>();
+  let route = useNavigation<RouteProp<StackParams, "SignUp">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
+
   const rendered = renderer.create(
     <SignUp
       navigation={mockNavigation.navigation}
@@ -166,6 +208,13 @@ it("SignUp test Dialog", async () => {
 });
 
 it("SignUp test StatusBar", () => {
+  let navigation = useNavigation<StackNavigationProp<StackParams, "SignUp">>();
+  let route = useNavigation<RouteProp<StackParams, "SignUp">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
+
   const rendered = renderer.create(
     <SignUp
       navigation={mockNavigation.navigation}

@@ -1,7 +1,7 @@
 import React from "react";
 import renderer, { act } from "react-test-renderer";
 import { Button } from "../../components/buttons/button";
-import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import Discount from ".";
@@ -10,21 +10,15 @@ import { ItemsDropdown } from "../../components/dropdowns/discount/items-dropdow
 import { PaymentMethodDropdown } from "../../components/dropdowns/discount/payment-method-dropdown";
 import { Pressable } from "react-native";
 
-let mockNavigation: StackScreenProps<StackParams, "Discount", undefined>;
-
-let route: RouteProp<StackParams, "Discount">;
-
-beforeAll(() => {
+it("Discount renders without crashing", () => {
   let navigation =
     useNavigation<StackNavigationProp<StackParams, "Discount">>();
-  route = useNavigation<RouteProp<StackParams, "Discount">>();
-  mockNavigation = {
+  let route = useNavigation<RouteProp<StackParams, "Discount">>();
+  let mockNavigation = {
     navigation: navigation,
     route: route,
   };
-});
 
-it("Discount renders without crashing", () => {
   const rendered = renderer
     .create(
       <Discount
@@ -37,6 +31,14 @@ it("Discount renders without crashing", () => {
 });
 
 it("Discount test Dropdowns", async () => {
+  let navigation =
+    useNavigation<StackNavigationProp<StackParams, "Discount">>();
+  let route = useNavigation<RouteProp<StackParams, "Discount">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
+
   const rendered = renderer.create(
     <Discount
       navigation={mockNavigation.navigation}
@@ -57,6 +59,14 @@ it("Discount test Dropdowns", async () => {
 });
 
 it("HeaderDropdown with Pressable", async () => {
+  let navigation =
+    useNavigation<StackNavigationProp<StackParams, "Discount">>();
+  let route = useNavigation<RouteProp<StackParams, "Discount">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
+
   const rendered = renderer.create(
     <Discount
       navigation={mockNavigation.navigation}
@@ -76,6 +86,14 @@ it("HeaderDropdown with Pressable", async () => {
 });
 
 it("ItemsDropdown with Pressable", async () => {
+  let navigation =
+    useNavigation<StackNavigationProp<StackParams, "Discount">>();
+  let route = useNavigation<RouteProp<StackParams, "Discount">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
+
   const rendered = renderer.create(
     <Discount
       navigation={mockNavigation.navigation}
@@ -96,6 +114,14 @@ it("ItemsDropdown with Pressable", async () => {
 });
 
 it("PaymentMethodDropdown with Pressable", async () => {
+  let navigation =
+    useNavigation<StackNavigationProp<StackParams, "Discount">>();
+  let route = useNavigation<RouteProp<StackParams, "Discount">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
+
   const rendered = renderer.create(
     <Discount
       navigation={mockNavigation.navigation}

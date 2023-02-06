@@ -1,30 +1,22 @@
 import React from "react";
 import renderer, { act } from "react-test-renderer";
 
-import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import SignIn from ".";
 import { Button } from "../../components/buttons/button";
 import { EmailInput } from "../../components/inputs/email-input";
 import { PasswordInput } from "../../components/inputs/password-input";
-import { CommandLink } from "../../components/buttons/command-link";
 import { Image, Text } from "react-native";
 
-let mockNavigation: StackScreenProps<StackParams, "SignIn", undefined>;
-
-let route: RouteProp<StackParams, "SignIn">;
-
-beforeAll(() => {
+it("SignIn renders without crashing", () => {
   let navigation = useNavigation<StackNavigationProp<StackParams, "SignIn">>();
-  route = useNavigation<RouteProp<StackParams, "SignIn">>();
-  mockNavigation = {
+  let route = useNavigation<RouteProp<StackParams, "SignIn">>();
+  let mockNavigation = {
     navigation: navigation,
     route: route,
   };
-});
-
-it("SignIn renders without crashing", () => {
   const rendered = renderer
     .create(
       <SignIn
@@ -37,6 +29,12 @@ it("SignIn renders without crashing", () => {
 });
 
 it("SignIn test EmailInput", async () => {
+  let navigation = useNavigation<StackNavigationProp<StackParams, "SignIn">>();
+  let route = useNavigation<RouteProp<StackParams, "SignIn">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
   const rendered = renderer.create(
     <SignIn
       navigation={mockNavigation.navigation}
@@ -49,6 +47,12 @@ it("SignIn test EmailInput", async () => {
 });
 
 it("SignIn test PasswordInput", async () => {
+  let navigation = useNavigation<StackNavigationProp<StackParams, "SignIn">>();
+  let route = useNavigation<RouteProp<StackParams, "SignIn">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
   const rendered = renderer.create(
     <SignIn
       navigation={mockNavigation.navigation}
@@ -61,6 +65,12 @@ it("SignIn test PasswordInput", async () => {
 });
 
 it("SignIn test Button", async () => {
+  let navigation = useNavigation<StackNavigationProp<StackParams, "SignIn">>();
+  let route = useNavigation<RouteProp<StackParams, "SignIn">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
   const rendered = renderer.create(
     <SignIn
       navigation={mockNavigation.navigation}
@@ -75,6 +85,12 @@ it("SignIn test Button", async () => {
 });
 
 it("SignIn test CommandLink", async () => {
+  let navigation = useNavigation<StackNavigationProp<StackParams, "SignIn">>();
+  let route = useNavigation<RouteProp<StackParams, "SignIn">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
   const rendered = renderer.create(
     <SignIn
       navigation={mockNavigation.navigation}
@@ -97,6 +113,12 @@ it("SignIn test CommandLink", async () => {
 });
 
 it("SignIn test Text", async () => {
+  let navigation = useNavigation<StackNavigationProp<StackParams, "SignIn">>();
+  let route = useNavigation<RouteProp<StackParams, "SignIn">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
   const rendered = renderer.create(
     <SignIn
       navigation={mockNavigation.navigation}
@@ -108,6 +130,12 @@ it("SignIn test Text", async () => {
 });
 
 it("SignIn test Image", async () => {
+  let navigation = useNavigation<StackNavigationProp<StackParams, "SignIn">>();
+  let route = useNavigation<RouteProp<StackParams, "SignIn">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
   const rendered = renderer.create(
     <SignIn
       navigation={mockNavigation.navigation}

@@ -2,34 +2,21 @@ import React from "react";
 import renderer, { act } from "react-test-renderer";
 
 import PasswordRecovery from ".";
-import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { Button } from "../../components/buttons/button";
 import { EmailInput } from "../../components/inputs/email-input";
 import { Dialog } from "../../components/modals/dialog";
 
-let mockNavigation: StackScreenProps<
-  StackParams,
-  "PasswordRecovery",
-  undefined
->;
-
-let route: RouteProp<StackParams, "PasswordRecovery">;
-
-beforeAll(() => {
+it("PasswordRecovery renders without crashing", () => {
   let navigation =
     useNavigation<StackNavigationProp<StackParams, "PasswordRecovery">>();
-
-  route = useNavigation<RouteProp<StackParams, "PasswordRecovery">>();
-
-  mockNavigation = {
+  let route = useNavigation<RouteProp<StackParams, "PasswordRecovery">>();
+  let mockNavigation = {
     navigation: navigation,
     route: route,
   };
-});
-
-it("PasswordRecovery renders without crashing", () => {
   const rendered = renderer
     .create(
       <PasswordRecovery
@@ -42,6 +29,13 @@ it("PasswordRecovery renders without crashing", () => {
 });
 
 it("PasswordRecovery test Button", async () => {
+  let navigation =
+    useNavigation<StackNavigationProp<StackParams, "PasswordRecovery">>();
+  let route = useNavigation<RouteProp<StackParams, "PasswordRecovery">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
   const rendered = renderer.create(
     <PasswordRecovery
       navigation={mockNavigation.navigation}
@@ -60,6 +54,13 @@ it("PasswordRecovery test Button", async () => {
 });
 
 it("PasswordRecovery test EmailInput", async () => {
+  let navigation =
+    useNavigation<StackNavigationProp<StackParams, "PasswordRecovery">>();
+  let route = useNavigation<RouteProp<StackParams, "PasswordRecovery">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
   const rendered = renderer.create(
     <PasswordRecovery
       navigation={mockNavigation.navigation}
@@ -75,6 +76,13 @@ it("PasswordRecovery test EmailInput", async () => {
 });
 
 it("PasswordRecovery test Dialog", async () => {
+  let navigation =
+    useNavigation<StackNavigationProp<StackParams, "PasswordRecovery">>();
+  let route = useNavigation<RouteProp<StackParams, "PasswordRecovery">>();
+  let mockNavigation = {
+    navigation: navigation,
+    route: route,
+  };
   const rendered = renderer.create(
     <PasswordRecovery
       navigation={mockNavigation.navigation}
