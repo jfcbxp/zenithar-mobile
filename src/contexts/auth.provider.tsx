@@ -92,6 +92,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             );
           });
           if (result.user && validate) {
+            let _portraitURL = await _uploadImage(_portrait, result.user.uid);
             let _user: User = {
               uid: result.user.uid,
               email: _email,
@@ -99,9 +100,18 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
               company: "",
               department: "",
               verified: false,
-              branches: [],
-              logs: [],
-              portrait: _portrait
+              branches: [{
+                id: "",
+                name: ""
+              }],
+              logs: [{
+                id: "",
+                date: "",
+                title: "",
+                description: "",
+                type: ""
+              }],
+              portrait: _portraitURL
             }
             await _userRegister(_user);
           }
@@ -138,6 +148,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     await firebaseAuth.signOut();
     await AsyncStorage.clear();
     setUser(undefined);
+    setCompany("");
+    setDepartment("");
     setLoading(false);
   };
 
@@ -152,25 +164,31 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const userUpdate = async (
     _fullName: string,
-    _portrait?: string,
+    _portrait: string,
     _currentPassword?: string,
     _newPassword?: string
   ) => {
     setLoading(true);
+    let _portraitURL = "";
+    if (_portrait != user?.portrait) {
+      _portraitURL = await _uploadImage(_portrait, user?.uid!);
+    } else {
+      _portraitURL = user?.portrait;
+    }
     let _user = firebaseAuth.currentUser!;
     await realtime
       .ref("users")
       .child(_user.uid)
       .update({
         fullName: _fullName,
-        portrait: _portrait,
+        portrait: _portraitURL,
       })
       .then(() => {
         let _user: User = {
           uid: user?.uid!,
           fullName: _fullName,
           email: user?.email!,
-          portrait: _portrait!,
+          portrait: _portraitURL,
           company: user?.company!,
           department: user?.department!,
           verified: user?.verified!,
@@ -230,10 +248,13 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setVisible(true);
   };
 
-  const _uploadImage = async (_portrait: string) => {
+  const _uploadImage = async (
+    _portrait: string,
+    _uid: string,
+  ) => {
     const response = await fetch(_portrait);
     const blob = await response.blob();
-    const filename = user?.uid;
+    const filename = _uid;
     let urlImage = "";
     await storage
       .ref()
@@ -247,30 +268,24 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const _userRegister = async (_user: User) => {
-    let _portraitURL = "";
-    if (_user.portrait != user?.portrait) {
-      _portraitURL = await _uploadImage(_user.portrait);
-    } else {
-      _portraitURL = _user.portrait;
-    }
     await realtime
       .ref("users")
       .child(_user.uid)
       .set({
         fullName: _user.fullName,
-        portrait: _portraitURL,
+        portrait: _user.portrait,
         company: _user.company,
         department: _user.department,
         verified: _user.verified,
-        branches: user?.branches,
-        logs: user?.logs,
+        branches: _user.branches,
+        logs: _user.logs,
       })
       .then(() => {
         let _user_: User = {
           uid: _user.uid,
           fullName: _user.fullName,
           email: _user.email,
-          portrait: _portraitURL,
+          portrait: _user.portrait,
           company: _user.company,
           department: _user.department,
           verified: _user.verified,
