@@ -1,11 +1,11 @@
 {
   "files": {
-    "app.js": "/zenithar-mobile/static/js/app.d1b0a272.chunk.js",
-    "app.js.map": "/zenithar-mobile/static/js/app.d1b0a272.chunk.js.map",
+    "app.js": "/zenithar-mobile/static/js/app.02b71878.chunk.js",
+    "app.js.map": "/zenithar-mobile/static/js/app.02b71878.chunk.js.map",
     "runtime~app.js": "/zenithar-mobile/static/js/runtime~app.562f6c92.js",
     "runtime~app.js.map": "/zenithar-mobile/static/js/runtime~app.562f6c92.js.map",
-    "static/js/2.1ba75201.chunk.js": "/zenithar-mobile/static/js/2.1ba75201.chunk.js",
-    "static/js/2.1ba75201.chunk.js.map": "/zenithar-mobile/static/js/2.1ba75201.chunk.js.map",
+    "static/js/2.580a497d.chunk.js": "/zenithar-mobile/static/js/2.580a497d.chunk.js",
+    "static/js/2.580a497d.chunk.js.map": "/zenithar-mobile/static/js/2.580a497d.chunk.js.map",
     "fonts/AntDesign.ttf": "/zenithar-mobile/./fonts/AntDesign.ttf",
     "fonts/Entypo.ttf": "/zenithar-mobile/./fonts/Entypo.ttf",
     "fonts/Feather.ttf": "/zenithar-mobile/./fonts/Feather.ttf",
@@ -24,7 +24,8 @@
     "index.html": "/zenithar-mobile/index.html",
     "manifest.json": "/zenithar-mobile/manifest.json",
     "serve.json": "/zenithar-mobile/serve.json",
-    "static/js/2.1ba75201.chunk.js.LICENSE.txt": "/zenithar-mobile/static/js/2.1ba75201.chunk.js.LICENSE.txt",
+    "service-worker.js.map": "/zenithar-mobile/service-worker.js.map",
+    "static/js/2.580a497d.chunk.js.LICENSE.txt": "/zenithar-mobile/static/js/2.580a497d.chunk.js.LICENSE.txt",
     "static/media/adaptive-icon.png": "/zenithar-mobile/static/media/adaptive-icon.9c43d51e.png",
     "static/media/arrow-down.png": "/zenithar-mobile/static/media/arrow-down.772a5382.png",
     "static/media/arrow-up.png": "/zenithar-mobile/static/media/arrow-up.0b0d1af9.png",
@@ -34,7 +35,7 @@
   },
   "entrypoints": [
     "static/js/runtime~app.562f6c92.js",
-    "static/js/2.1ba75201.chunk.js",
-    "static/js/app.d1b0a272.chunk.js"
+    "static/js/2.580a497d.chunk.js",
+    "static/js/app.02b71878.chunk.js"
   ]
 }
