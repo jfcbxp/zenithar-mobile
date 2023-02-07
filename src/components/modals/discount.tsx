@@ -94,7 +94,8 @@ export function DiscountModal(properties: Properties) {
           <TextInput
             value={budget}
             onChangeText={setBudget}
-            keyboardType="numeric"
+            keyboardType="default"
+            autoCapitalize="characters"
             placeholder="Número do Orçamento"
             maxLength={6}
             placeholderTextColor="#1F537E"

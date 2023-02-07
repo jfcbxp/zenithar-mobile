@@ -16,9 +16,8 @@ const styles = StyleSheet.create({
     text: {
         width: '100%',
         height: 40,
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: 'bold',
-        lineHeight: 21,
         letterSpacing: 0.25,
         color: '#1F537E',
         textAlign: 'center',

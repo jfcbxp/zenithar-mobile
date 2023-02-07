@@ -29,28 +29,32 @@ export default function Discount({ navigation }: Properties) {
           />
           <Text style={styles.headerText}>Orçamento #564354</Text>
         </View>
-        <Text style={styles.title}>Vendedor</Text>
-        <Text style={styles.subTitle}>000054 - ANDERSON</Text>
-        <Text style={styles.title}>Cliente</Text>
-        <Text style={styles.subTitle}>119749 - JOSE CARLOS</Text>
-        <View style={styles.budget}>
-          <View style={{ flexDirection: "row" }}>
-            <View style={[{ backgroundColor: "limegreen" }, styles.box]}>
-              <Text style={styles.headerText}>Normal</Text>
-            </View>
-            <View style={[{ backgroundColor: "red" }, styles.box]}>
-              <Text style={styles.headerText}>Proc. PDV</Text>
-            </View>
+        <View style={{ flex: 4, justifyContent: "space-between", paddingBottom: 8 }}>
+          <View>
+            <Text style={styles.title}>Vendedor</Text>
+            <Text style={styles.subTitle}>000054 - ANDERSON</Text>
+            <Text style={styles.title}>Cliente</Text>
+            <Text style={styles.subTitle}>119749 - JOSE CARLOS</Text>
           </View>
-          <Text style={{
-            fontSize: 24,
-            fontWeight: "bold",
-            color: "white",
-          }}>R$ 200,00</Text>
+          <View style={styles.budget}>
+            <View style={{ flexDirection: "row" }}>
+              <View style={[{ backgroundColor: "limegreen" }, styles.box]}>
+                <Text style={styles.headerText}>Normal</Text>
+              </View>
+              <View style={[{ backgroundColor: "red" }, styles.box]}>
+                <Text style={styles.headerText}>Proc. PDV</Text>
+              </View>
+            </View>
+            <Text style={{
+              fontSize: 24,
+              fontWeight: "bold",
+              color: "white",
+            }}>R$ 200,00</Text>
+          </View>
         </View>
       </View>
       <View style={styles.bottomField}>
-        <View style={{ flex: 6, paddingTop: "2.5%" }}>
+        <View style={{ flex: 5, paddingTop: "2.5%" }}>
           <ItemsDropdown />
           <PaymentMethodDropdown />
         </View>
@@ -77,6 +81,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F0F2F7",
   },
   header: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
   },
@@ -104,7 +109,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginHorizontal: "5%",
-    marginTop: 52,
   },
   box: {
     height: 30,

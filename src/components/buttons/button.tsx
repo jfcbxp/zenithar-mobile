@@ -25,20 +25,18 @@ export function Button(properties: Properties) {
 const styles = StyleSheet.create({
     button: {
         width: '100%',
-        height: 40,
         backgroundColor: '#1F2D5A',
         alignItems: 'center',
         justifyContent: 'center',
         paddingVertical: 12,
         paddingHorizontal: 32,
-        borderRadius: 18,
+        borderRadius: 90,
         elevation: 3,
         marginTop: 16,
     },
     text: {
         fontSize: 16,
         fontWeight: 'bold',
-        lineHeight: 21,
         letterSpacing: 0.25,
         color: 'white',
     }
