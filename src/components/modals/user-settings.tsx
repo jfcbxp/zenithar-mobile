@@ -25,8 +25,8 @@ export function UserSettings(properties: Properties) {
   const [portrait, setPortrait] = useState<string | undefined>(PORTRAIT);
   const [changePassword, setChangePassword] = useState<boolean | undefined>();
   const [disabled, setDisabled] = useState(false);
-  const [dialog, setDialog] = useState({ title: "", content: "" });
-  const [visible, setVisible] = useState(false);
+  const defaultDialog = { title: "", content: "", visible: false }
+  const [dialog, setDialog] = useState(defaultDialog);
 
   useEffect(() => {
     setFullName(FULLNAME);
@@ -101,8 +101,7 @@ export function UserSettings(properties: Properties) {
   };
 
   const Alert = (title: string, content: string) => {
-    setDialog({ title: title, content: content });
-    setVisible(true);
+    setDialog({ title: title, content: content, visible: true });
   };
 
   return (
@@ -155,13 +154,13 @@ export function UserSettings(properties: Properties) {
           />
         </View>
       </View>
-      {visible && (
+      {dialog.visible && (
         <Dialog
           title={dialog.title}
           content={dialog.content}
-          visible={visible}
+          visible={dialog.visible}
           dismiss={() => {
-            setVisible(false);
+            setDialog(defaultDialog);
           }}
         />
       )}

@@ -1,5 +1,6 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, SafeAreaView } from "react-native";
+import { useState, useEffect, useRef } from 'react';
+import { StyleSheet, SafeAreaView, Platform } from "react-native";
 import "react-native-gesture-handler";
 import AuthProvider from "./src/contexts/auth.provider";
 import Routes from "./src/routes";

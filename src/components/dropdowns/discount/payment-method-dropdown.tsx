@@ -2,27 +2,26 @@ import { useEffect, useState } from "react";
 import { FlatList, ListRenderItem, Pressable, Text, View } from "react-native";
 import { DropdownStyles as styles } from "../dropdown-styles";
 import { Feather as Icon } from "@expo/vector-icons";
-import { PaymentMethod } from "../../../models/payment-method.model";
+import { Pagamentos } from "../../../models/from-api/pagamentos.model";
 import { PaymentMethodItem } from "../../lists/discount/payment-method-item";
 
 interface Properties {
-  budget?: number;
-  branch?: string;
+  data: Pagamentos[] | undefined;
 }
 
 export function PaymentMethodDropdown(properties: Properties) {
   const [visible, setVisible] = useState(false);
-  const [data, setData] = useState([])
+  const [data, setData] = useState<Pagamentos[] | undefined>()
 
-  useEffect(() => { 
-    setData([])
-  },[])
+  useEffect(() => {
+    setData(properties.data)
+  }, [visible])
 
   const expand = () => {
     setVisible((current) => !current);
   };
 
-  const renderItem: ListRenderItem<PaymentMethod> = ({ item }) => <PaymentMethodItem data={item} />
+  const renderItem: ListRenderItem<Pagamentos> = ({ item }) => <PaymentMethodItem data={item} />
 
   return (
     <View>

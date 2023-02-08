@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View, Text } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -8,12 +8,58 @@ import { Button } from "../../components/buttons/button";
 import { ApplyDiscountModal } from "../../components/modals/apply-discount";
 import { PaymentMethodDropdown } from "../../components/dropdowns/discount/payment-method-dropdown";
 import { ItemsDropdown } from "../../components/dropdowns/discount/items-dropdown";
+import { Orcamento } from "../../models/from-api/orcamento.model";
+import { Dialog } from "../../components/modals/dialog";
+import { AxiosResponse } from "axios";
+import { API } from "../../services/api";
+import { AuthContext } from "../../contexts/auth.provider";
+import { AuthToken } from "../../models/from-api/authtoken.model";
+import GetSecret from "../../services/auth-secret";
 
 interface Properties
   extends StackScreenProps<StackParams, "Discount"> { }
 
-export default function Discount({ navigation }: Properties) {
+export default function Discount({ route, navigation }: Properties) {
+  const { _budget, _branch } = route.params
+  const authContext = useContext(AuthContext)
   const [visible, setVisible] = useState(false)
+  const [budget] = useState(_budget)
+  const [branch] = useState(_branch)
+  const [budgetData, setBudgetData] = useState<Orcamento>()
+  const defaultDialog = { title: "", content: "", visible: false }
+  const [dialog, setDialog] = useState(defaultDialog);
+
+  useEffect(() => {
+    loadBudget(budget, branch)
+      .then(budget => setBudgetData(budget))
+      .catch(error => Alert("Erro", "Os dados do orçamento não foram encontrados" + error.message))
+  }, [])
+
+  const getTokenJwt = async (): Promise<AuthToken> => {
+    const secret = GetSecret(authContext.urlBackend!)
+    const authToken: AuthToken = {
+      email: authContext.user?.email!,
+      uuid: authContext.user?.uid!,
+      secret: secret
+    }
+    const api = API(authContext.urlBackend!)
+    const url: string = `auth/token`;
+    const response: AxiosResponse<AuthToken> = await api.post<AuthToken>(url, authToken);
+    return response.data;
+  };
+
+  const loadBudget = async (budget: string, branch: string): Promise<Orcamento> => {
+    const authToken = await getTokenJwt();
+    const api = API(authContext.urlBackend!, authToken.token)
+    const url: string = `orcamento/consultar?numeroOrcamento=${budget}&empresa=${branch}`;
+    const response: AxiosResponse<Orcamento> = await api.get<Orcamento>(url);
+    return response.data;
+  };
+
+  const Alert = (title: string, content: string) => {
+    setDialog({ title: title, content: content, visible: true });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.topField}>
@@ -32,31 +78,33 @@ export default function Discount({ navigation }: Properties) {
         <View style={{ flex: 4, justifyContent: "space-between", paddingBottom: 8 }}>
           <View>
             <Text style={styles.title}>Vendedor</Text>
-            <Text style={styles.subTitle}>000054 - ANDERSON</Text>
+            <Text style={styles.subTitle}>{budgetData?.vendedor} - {budgetData?.nomeVendedor}</Text>
             <Text style={styles.title}>Cliente</Text>
-            <Text style={styles.subTitle}>119749 - JOSE CARLOS</Text>
+            <Text style={styles.subTitle}>{budgetData?.cliente} - {budgetData?.nomeCliente}</Text>
           </View>
           <View style={styles.budget}>
             <View style={{ flexDirection: "row" }}>
               <View style={[{ backgroundColor: "limegreen" }, styles.box]}>
-                <Text style={styles.headerText}>Normal</Text>
+                <Text style={styles.headerText}>{budgetData?.tipoOrcamento}</Text>
               </View>
               <View style={[{ backgroundColor: "red" }, styles.box]}>
-                <Text style={styles.headerText}>Proc. PDV</Text>
+                <Text style={styles.headerText}>{budgetData?.statusOrcamento}</Text>
               </View>
             </View>
             <Text style={{
               fontSize: 24,
               fontWeight: "bold",
               color: "white",
-            }}>R$ 200,00</Text>
+            }}>R$ {budgetData?.totalBruto.toFixed(2).replace('.', ',')}</Text>
           </View>
         </View>
       </View>
       <View style={styles.bottomField}>
         <View style={{ flex: 5, paddingTop: "2.5%" }}>
-          <ItemsDropdown />
-          <PaymentMethodDropdown />
+          <ItemsDropdown
+            data={budgetData?.itens} />
+          <PaymentMethodDropdown
+            data={budgetData?.pagamentos} />
         </View>
         <View style={{ flex: 1 }}>
           <Button
@@ -69,6 +117,11 @@ export default function Discount({ navigation }: Properties) {
           setVisible(false)
         }}
         visible={visible} />
+      <Dialog
+        visible={dialog.visible}
+        title={dialog.title}
+        content={dialog.content}
+        dismiss={() => setDialog(defaultDialog)} />
       <StatusBar style="light" translucent={false} backgroundColor="#212A4D" />
     </View>
   );

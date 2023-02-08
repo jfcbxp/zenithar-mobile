@@ -1,29 +1,28 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ListRenderItem, Pressable, Text, View } from "react-native";
 import { DropdownStyles as styles } from "../dropdown-styles";
 import { Feather as Icon } from "@expo/vector-icons";
 import { FlatList } from "react-native-gesture-handler";
-import { Items } from "../../../models/items.model";
+import { Itens } from "../../../models/from-api/itens.model";
 import { ItemsItem } from "../../lists/discount/items-item";
 
 interface Properties {
-  budget?: number;
-  branch?: string;
+  data: Itens[] | undefined
 }
 
 export function ItemsDropdown(properties: Properties) {
   const [visible, setVisible] = useState(false);
-  const [data, setData] = useState([])
+  const [data, setData] = useState<Itens[] | undefined>()
 
   useEffect(() => {
-    setData([])
-  }, [])
+    setData(properties.data)
+  }, [visible])
 
   const expand = () => {
     setVisible((current) => !current);
   };
 
-  const renderItem: ListRenderItem<Items> = ({ item }) => <ItemsItem data={item} />
+  const renderItem: ListRenderItem<Itens> = ({ item }) => <ItemsItem data={item} />
 
   return (
     <View>

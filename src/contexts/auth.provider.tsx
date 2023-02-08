@@ -9,6 +9,7 @@ type AuthContextProps = {
   user: User | undefined;
   company: string | undefined;
   department: string | undefined;
+  urlBackend: string | undefined;
   loading: boolean;
   signUp(
     _email: string,
@@ -31,6 +32,7 @@ const defaultState = {
   user: undefined,
   company: undefined,
   department: undefined,
+  urlBackend: undefined,
   loading: true,
   signUp: async () => { },
   signIn: async () => { },
@@ -49,9 +51,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User>();
   const [company, setCompany] = useState<string | undefined>("");
   const [department, setDepartment] = useState<string | undefined>("");
+  const [urlBackend, setUrlBackend] = useState<string | undefined>("")
   const [loading, setLoading] = useState<boolean>(true);
-  const [dialog, setDialog] = useState({ title: "", content: "" })
-  const [visible, setVisible] = useState(false);
+  const defaultDialog = { title: "", content: "", visible: false }
+  const [dialog, setDialog] = useState(defaultDialog)
 
   useEffect(() => {
     firebaseAuth.onAuthStateChanged(async (currentUser) => {
@@ -244,8 +247,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     });
 
   const Alert = (title: string, content: string) => {
-    setDialog({ title: title, content: content })
-    setVisible(true);
+    setDialog({ title: title, content: content, visible: true })
   };
 
   const _uploadImage = async (
@@ -321,8 +323,21 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           }
         }
         await _storeUser(_user);
+        await _getURL(_user.company)
       });
   };
+
+  const _getURL = async (company: string) => {
+    await realtime
+      .ref("companies")
+      .child(company)
+      .once("value")
+      .then(async (snapshot) => {
+        setUrlBackend(snapshot.val().urlBackend)
+      }).catch(error => {
+        console.log(error.message)
+      })
+  }
 
   const _storeUser = async (_user: User) => {
     let jsonUser = JSON.stringify(_user);
@@ -364,6 +379,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     user,
     company,
     department,
+    urlBackend,
     loading,
     signUp,
     signIn,
@@ -374,6 +390,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     user,
     company,
     department,
+    urlBackend,
     loading,
     signUp,
     signIn,
@@ -389,9 +406,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       <Dialog
         title={dialog.title}
         content={dialog.content}
-        visible={visible}
+        visible={dialog.visible}
         dismiss={() => {
-          setVisible(false);
+          setDialog(defaultDialog);
         }}
       />
       {children}

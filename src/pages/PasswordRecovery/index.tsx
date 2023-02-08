@@ -9,16 +9,16 @@ import { EmailInput } from "../../components/inputs/email-input";
 import { StatusBar } from "expo-status-bar";
 
 interface Properties
-  extends StackScreenProps<StackParams, "PasswordRecovery"> {}
+  extends StackScreenProps<StackParams, "PasswordRecovery"> { }
 
 export default function PasswordRecovery({ navigation }: Properties) {
   const authContext = useContext(AuthContext);
   const [email, setEmail] = useState<string>("");
-  const [visible, setVisible] = useState<boolean>(false);
   const defaultDialog = {
     title: "Recuperação de senha",
     content:
       "Em alguns instantes uma mensagem de e-mail chegará em sua caixa de entrada com as instruções para redefinição da sua senha.",
+    visible: false
   };
   const [dialog, setDialog] = useState(defaultDialog);
 
@@ -32,13 +32,12 @@ export default function PasswordRecovery({ navigation }: Properties) {
         "Por favor, forneça o seu e-mail para recuperar sua senha."
       );
     }
-    setVisible(false);
+    defaultDialog.visible = false
     setDialog(defaultDialog);
   };
 
   const Alert = (title: string, content: string) => {
-    setDialog({ title: title, content: content });
-    setVisible(true);
+    setDialog({ title: title, content: content, visible: true });
   };
 
   return (
@@ -46,13 +45,17 @@ export default function PasswordRecovery({ navigation }: Properties) {
       <View style={{ marginHorizontal: "10%" }}>
         <View>
           <EmailInput value={email} onChangeText={setEmail} />
-          <Button title="ENVIAR" onPress={() => setVisible(true)} />
+          <Button title="ENVIAR"
+            onPress={() => {
+              defaultDialog.visible = true
+              setDialog(defaultDialog)
+            }} />
         </View>
       </View>
       <Dialog
         title={dialog.title}
         content={dialog.content}
-        visible={visible}
+        visible={dialog.visible}
         dismiss={handleRecoverPassword}
       />
       <StatusBar style="light" translucent={false} backgroundColor="silver" />

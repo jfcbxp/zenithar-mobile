@@ -1,19 +1,23 @@
 import { StyleSheet, View, Image, Text } from "react-native";
-import { Items } from "../../../models/items.model";
+import { Itens } from "../../../models/from-api/itens.model";
 
-export function ItemsItem({ data }: { data: Items }) {
+export function ItemsItem({ data }: { data: Itens }) {
     return (
         <View style={styles.container}>
-            <Image
-                source={{ uri: data.imageUrl }}
-                style={{ maxWidth: 120, maxHeight: 100 }} />
-            <View style={{ marginLeft: 8 }}>
-                <Text style={styles.title}>{data.name}</Text>
-                <Text style={styles.description}>Armazem: {data.stock}</Text>
-                <Text style={styles.description}>Tipo: {data.type}</Text>
-                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                    <Text style={styles.title}>{data.items} x R$ {data.value}</Text>
-                    <Text style={styles.title}>R$ {data.total}</Text>
+            <View style={{ flex: 2 }}>
+                <Image
+                    source={require("../../../../assets/no-photo.png")}
+                    style={{ width: 120, height: 100, borderRadius: 10 }} />
+            </View>
+            <View style={{ flex: 5 }}>
+                <View style={{ flex: 4 }}>
+                    <Text style={styles.title}>{data.produto} {data.descricaoProduto}</Text>
+                    <Text style={styles.description}>Armazem: {data.armazem}</Text>
+                    <Text style={styles.description}>Tipo: {data.tipoEntrega}</Text>
+                </View>
+                <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
+                    <Text style={styles.title}>{data.quantidade} x R$ {data.preco.toFixed(2).replace('.', ',')}</Text>
+                    <Text style={styles.title}>R$ {data.total.toFixed(2).replace('.', ',')}</Text>
                 </View>
             </View>
         </View>
@@ -22,6 +26,7 @@ export function ItemsItem({ data }: { data: Items }) {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         flexDirection: "row",
         backgroundColor: "#DFE1E6",
         borderRadius: 10,
@@ -29,11 +34,12 @@ const styles = StyleSheet.create({
         marginVertical: 4
     },
     title: {
-        fontSize: 14,
+        fontSize: 16,
+        fontWeight: "bold",
         color: "#123262",
     },
     description: {
-        fontSize: 10,
-        color: "silver",
+        fontSize: 12,
+        color: "grey",
     }
 })
