@@ -3,6 +3,6 @@ export type StackParams = {
     SignUp: undefined
     PasswordRecovery: undefined
     Home: undefined
-    Discount: undefined
+    Discount: { _budget: string, _branch: string }
     DiscountConfirmation: undefined
 }

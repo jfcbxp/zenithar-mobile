@@ -9,16 +9,9 @@ describe("DiscountConfirmation test", () => {
   const navigation =
     useNavigation<StackNavigationProp<StackParams, "DiscountConfirmation">>();
   const route = useNavigation<RouteProp<StackParams, "DiscountConfirmation">>();
-  const mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
 
   const rendered = renderer.create(
-    <DiscountConfirmation
-      navigation={mockNavigation.navigation}
-      route={mockNavigation.route}
-    />
+    <DiscountConfirmation navigation={navigation} route={route} />
   );
 
   it("test DiscountConfirmation Icon", async () => {

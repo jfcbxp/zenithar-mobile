@@ -14,13 +14,9 @@ interface Properties
 export default function PasswordRecovery({ navigation }: Properties) {
   const authContext = useContext(AuthContext);
   const [email, setEmail] = useState<string>("");
-  const [visible, setVisible] = useState<boolean>(false);
-  const defaultDialog = {
-    title: "Recuperação de senha",
-    content:
-      "Em alguns instantes uma mensagem de e-mail chegará em sua caixa de entrada com as instruções para redefinição da sua senha.",
-  };
-  const [dialog, setDialog] = useState(defaultDialog);
+  const [dialogVisible, setDialogVisible] = useState<boolean>(false);
+  const [dialogTitle, setDialogTitle] = useState<string>("");
+  const [dialogContent, setDialogContent] = useState<string>("");
 
   const handleRecoverPassword = () => {
     if (email != "") {
@@ -32,13 +28,13 @@ export default function PasswordRecovery({ navigation }: Properties) {
         "Por favor, forneça o seu e-mail para recuperar sua senha."
       );
     }
-    setVisible(false);
-    setDialog(defaultDialog);
+    setDialogVisible(false);
   };
 
   const Alert = (title: string, content: string) => {
-    setDialog({ title: title, content: content });
-    setVisible(true);
+    setDialogTitle(title);
+    setDialogContent(content);
+    setDialogVisible(true);
   };
 
   return (
@@ -46,13 +42,21 @@ export default function PasswordRecovery({ navigation }: Properties) {
       <View style={{ marginHorizontal: "10%" }}>
         <View>
           <EmailInput value={email} onChangeText={setEmail} />
-          <Button title="ENVIAR" onPress={() => setVisible(true)} />
+          <Button
+            title="ENVIAR"
+            onPress={() => {
+              Alert(
+                "Recuperação de senha",
+                "Em alguns instantes uma mensagem de e-mail chegará em sua caixa de entrada com as instruções para redefinição da sua senha."
+              );
+            }}
+          />
         </View>
       </View>
       <Dialog
-        title={dialog.title}
-        content={dialog.content}
-        visible={visible}
+        title={dialogTitle}
+        content={dialogContent}
+        visible={dialogVisible}
         dismiss={handleRecoverPassword}
       />
       <StatusBar style="light" translucent={false} backgroundColor="silver" />

@@ -28,7 +28,7 @@ interface Properties extends ModalProps {
 export function DiscountModal(properties: Properties) {
   const authContext = useContext(AuthContext);
   const navigation = useNavigation<NavigationParams>();
-  const [budget, setBudget] = useState("");
+  const [budget, setBudget] = useState("000001");
   const [branch, setBranch] = useState("");
   const [branches, setBranches] = useState<ItemType<UserBranch>[]>();
   const translation = useRef(new Animated.Value(400)).current;
@@ -111,11 +111,14 @@ export function DiscountModal(properties: Properties) {
           <Button
             title="CONTINUAR"
             onPressIn={() => {
+              navigation && navigation.navigate("Discount", {
+                _budget: budget,
+                _branch: branch
+              });
               translation.setValue(400);
               setOpen(false);
               setBranch("");
               setBudget("");
-              navigation && navigation.navigate("Discount");
             }}
             onPressOut={properties.dismiss}
             disabled={disabled}

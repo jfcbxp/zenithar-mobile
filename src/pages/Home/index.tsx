@@ -12,7 +12,7 @@ import { AuthContext } from "../../contexts/auth.provider";
 import { Dialog } from "../../components/modals/dialog";
 import { UserLogs } from "../../models/user.logs.model";
 
-interface Properties extends StackScreenProps<StackParams, "Home"> {}
+interface Properties extends StackScreenProps<StackParams, "Home"> { }
 
 export default function Home({ navigation }: Properties) {
   const authContext = useContext(AuthContext);
@@ -20,8 +20,8 @@ export default function Home({ navigation }: Properties) {
   const [containerTitle] = useState("Histórico");
   const [containerChild] = useState<React.ReactNode>(<Logs data={data} />);
   const [discount, setDiscount] = useState(false);
-  const [dialog, setDialog] = useState({ title: "", content: "" });
-  const [visible, setVisible] = useState(false);
+  const defaultDialog = { title: "", content: "", visible: false }
+  const [dialog, setDialog] = useState(defaultDialog);
 
   const NavigationButtonOnPress = () => {
     if (authContext.company != "") {
@@ -32,8 +32,7 @@ export default function Home({ navigation }: Properties) {
   };
 
   const Alert = (title: string, content: string) => {
-    setDialog({ title: title, content: content });
-    setVisible(true);
+    setDialog({ title: title, content: content, visible: true });
   };
 
   return (
@@ -66,9 +65,9 @@ export default function Home({ navigation }: Properties) {
       <Dialog
         title={dialog.title}
         content={dialog.content}
-        visible={visible}
+        visible={dialog.visible}
         dismiss={() => {
-          setVisible(false);
+          setDialog(defaultDialog);
         }}
       />
       <StatusBar style="light" translucent={false} backgroundColor="#212A4D" />

@@ -15,20 +15,12 @@ export const DropdownStyles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     children: {
-        marginHorizontal: '5%',
-        paddingHorizontal: '5%',
         justifyContent: 'center',
-        backgroundColor: 'white',
     },
     text: {
         fontSize: 20,
     },
     subText: {
         fontSize: 13,
-    },
-    item: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingVertical: '1.25%',
-    },
+    },    
 })
