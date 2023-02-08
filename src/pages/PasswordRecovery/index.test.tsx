@@ -15,15 +15,9 @@ describe("PasswordRecovery test", () => {
   const navigation =
     useNavigation<StackNavigationProp<StackParams, "PasswordRecovery">>();
   const route = useNavigation<RouteProp<StackParams, "PasswordRecovery">>();
-  const mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
+
   const rendered = renderer.create(
-    <PasswordRecovery
-      navigation={mockNavigation.navigation}
-      route={mockNavigation.route}
-    />
+    <PasswordRecovery navigation={navigation} route={route} />
   );
 
   it("test PasswordRecovery Button", async () => {

@@ -27,6 +27,7 @@ import { Dialog } from "../../components/modals/dialog";
 const company = "companyTest";
 const department = "departmentTest";
 const loading = false;
+const urlBackend = "urlTest";
 const signUp = jest.fn();
 const signIn = jest.fn();
 const signOut = jest.fn();
@@ -67,10 +68,6 @@ const user: User = {
 describe("Home test", () => {
   const navigation = useNavigation<StackNavigationProp<StackParams, "Home">>();
   const route = useNavigation<RouteProp<StackParams, "Home">>();
-  const mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
   const rendered = renderer.create(
     <AuthContext.Provider
       value={{
@@ -83,12 +80,10 @@ describe("Home test", () => {
         signOut,
         recoverPassword,
         userUpdate,
+        urlBackend,
       }}
     >
-      <Home
-        navigation={mockNavigation.navigation}
-        route={mockNavigation.route}
-      />
+      <Home navigation={navigation} route={route} />
     </AuthContext.Provider>
   );
 
@@ -209,12 +204,10 @@ describe("Home test", () => {
             signOut,
             recoverPassword,
             userUpdate,
+            urlBackend,
           }}
         >
-          <Home
-            navigation={mockNavigation.navigation}
-            route={mockNavigation.route}
-          />
+          <Home navigation={navigation} route={route} />
         </AuthContext.Provider>
       )
     );

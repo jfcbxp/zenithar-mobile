@@ -17,16 +17,9 @@ describe("SignIn test", () => {
   const navigation =
     useNavigation<StackNavigationProp<StackParams, "SignIn">>();
   const route = useNavigation<RouteProp<StackParams, "SignIn">>();
-  const mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
 
   const rendered = renderer.create(
-    <SignIn
-      navigation={mockNavigation.navigation}
-      route={mockNavigation.route}
-    />
+    <SignIn navigation={navigation} route={route} />
   );
 
   it("test SignIn EmailInput", async () => {

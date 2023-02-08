@@ -21,10 +21,6 @@ describe("SignUp test", () => {
   const navigation =
     useNavigation<StackNavigationProp<StackParams, "SignUp">>();
   const route = useNavigation<RouteProp<StackParams, "SignUp">>();
-  const mockNavigation = {
-    navigation: navigation,
-    route: route,
-  };
 
   window.alert = () => {};
 
@@ -42,10 +38,7 @@ describe("SignUp test", () => {
   });
 
   const rendered = renderer.create(
-    <SignUp
-      navigation={mockNavigation.navigation}
-      route={mockNavigation.route}
-    />
+    <SignUp navigation={navigation} route={route} />
   );
 
   it("test SignUp how many Views", () => {

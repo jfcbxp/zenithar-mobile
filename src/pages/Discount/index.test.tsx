@@ -12,17 +12,16 @@ import { Pressable } from "react-native";
 describe("Discount test", () => {
   const navigation =
     useNavigation<StackNavigationProp<StackParams, "Discount">>();
-  const route = useNavigation<RouteProp<StackParams, "Discount">>();
-  const mockNavigation = {
-    navigation: navigation,
-    route: route,
+  const mockRoute = (): RouteProp<StackParams, "Discount"> => {
+    return {
+      params: { _branch: "", _budget: "" },
+      name: "Discount",
+      key: "Doscount",
+    };
   };
 
   const rendered = renderer.create(
-    <Discount
-      navigation={mockNavigation.navigation}
-      route={mockNavigation.route}
-    />
+    <Discount navigation={navigation} route={mockRoute()} />
   );
 
   it("test Discount Dropdowns", async () => {
