@@ -123,7 +123,7 @@ export function ApplyDiscountModal(properties: Properties) {
                                 text += "."
                             }
                             setPercentage(text)
-                            changeValueByPercentage(parseFloat(text!))
+                            changeValueByPercentage(parseFloat(text))
                         }}
                         onFocus={() => {
                             initialValues()

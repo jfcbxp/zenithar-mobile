@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import renderer, { act } from "react-test-renderer";
 
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -69,20 +69,32 @@ const user: User = {
 describe("Home test", () => {
   const navigation = useNavigation<StackNavigationProp<StackParams, "Home">>();
   const route = useNavigation<RouteProp<StackParams, "Home">>();
+  const contextValue = useMemo(() => ({
+    user,
+    company,
+    department,
+    urlBackend,
+    loading,
+    signUp,
+    signIn,
+    signOut,
+    recoverPassword,
+    userUpdate,
+  }), [
+    user,
+    company,
+    department,
+    urlBackend,
+    loading,
+    signUp,
+    signIn,
+    signOut,
+    recoverPassword,
+    userUpdate,
+  ])
   const rendered = renderer.create(
     <AuthContext.Provider
-      value={{
-        user,
-        company,
-        department,
-        urlBackend,
-        loading,
-        signUp,
-        signIn,
-        signOut,
-        recoverPassword,
-        userUpdate,
-      }}
+      value={contextValue}
     >
       <Home navigation={navigation} route={route} />
     </AuthContext.Provider>
@@ -192,21 +204,33 @@ describe("Home test", () => {
   });
 
   it("test Home Dialog", async () => {
+    const contextValue = useMemo(() => ({
+      user,
+      company,
+      department,
+      urlBackend,
+      loading,
+      signUp,
+      signIn,
+      signOut,
+      recoverPassword,
+      userUpdate,
+    }), [
+      user,
+      company,
+      department,
+      urlBackend,
+      loading,
+      signUp,
+      signIn,
+      signOut,
+      recoverPassword,
+      userUpdate,
+    ])
     await act(() =>
       rendered.update(
         <AuthContext.Provider
-          value={{
-            user,
-            company: "",
-            department,
-            urlBackend,
-            loading,
-            signUp,
-            signIn,
-            signOut,
-            recoverPassword,
-            userUpdate,
-          }}
+          value={contextValue}
         >
           <Home navigation={navigation} route={route} />
         </AuthContext.Provider>
