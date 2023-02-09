@@ -11,4 +11,5 @@ export interface User {
   branches: UserBranch[];
   logs: UserLogs[];
   portrait: string;
+  discountLimit: number;
 }

@@ -8,7 +8,6 @@ import Home from ".";
 import { NavigationButton } from "../../components/buttons/navigation-button";
 import { DiscountModal } from "../../components/modals/discount";
 import { FlatList, Modal, Pressable } from "react-native";
-import { TextInput } from "../../components/inputs/text-input";
 import { Button } from "../../components/buttons/button";
 import { HomeContainer } from "../../components/containers/home-container";
 import { Logs } from "../../components/lists/logs";
@@ -23,6 +22,7 @@ import { PasswordInput } from "../../components/inputs/password-input";
 import { AuthContext } from "../../contexts/auth.provider";
 import { User } from "../../models/user.model";
 import { Dialog } from "../../components/modals/dialog";
+import { MaskedInput } from "../../components/inputs/masked-input";
 
 const company = "companyTest";
 const department = "departmentTest";
@@ -39,6 +39,7 @@ const user: User = {
   fullName: "fullNameTest",
   company: "companyTest",
   department: "departmentTest",
+  discountLimit: 15,
   verified: true,
   portrait: "portraitTest",
   branches: [
@@ -74,15 +75,14 @@ describe("Home test", () => {
         user,
         company,
         department,
+        urlBackend,
         loading,
         signUp,
         signIn,
         signOut,
         recoverPassword,
         userUpdate,
-        urlBackend,
-      }}
-    >
+      }}>
       <Home navigation={navigation} route={route} />
     </AuthContext.Provider>
   );
@@ -171,7 +171,7 @@ describe("Home test", () => {
     expect(modal.props.visible).toBe(true);
     await act(() => modal.props.onShow());
 
-    const textInput = modal.findByType(TextInput);
+    const textInput = modal.findByType(MaskedInput);
     await act(() => textInput.props.onChangeText("test"));
     expect(textInput.props.value).toBe("test");
 
@@ -196,17 +196,16 @@ describe("Home test", () => {
         <AuthContext.Provider
           value={{
             user,
-            company: "",
+            company,
             department,
+            urlBackend,
             loading,
             signUp,
             signIn,
             signOut,
             recoverPassword,
             userUpdate,
-            urlBackend,
-          }}
-        >
+          }}>
           <Home navigation={navigation} route={route} />
         </AuthContext.Provider>
       )

@@ -10,7 +10,6 @@ import {
   Keyboard,
   Animated,
 } from "react-native";
-import { TextInput } from "../inputs/text-input";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationParams } from "../../types/navigation.params";
 import { AuthContext } from "../../contexts/auth.provider";
@@ -19,6 +18,7 @@ import { Picker } from "../pickers/picker";
 import { ItemType } from "react-native-dropdown-picker";
 import { UserBranch } from "../../models/user.branch.model";
 import { DiscountStyles as styles } from "./discount-styles";
+import { MaskedInput } from "../inputs/masked-input";
 
 interface Properties extends ModalProps {
   visible?: boolean;
@@ -72,7 +72,7 @@ export function DiscountModal(properties: Properties) {
         Animated.timing(translation, {
           toValue: 1,
           duration: 500,
-          useNativeDriver: true,
+          useNativeDriver: false,
         }).start();
       }}
     >
@@ -91,15 +91,16 @@ export function DiscountModal(properties: Properties) {
           style={[{ transform: [{ translateY: translation }] }, styles.field]}
         >
           <Text style={styles.title}>Desconto</Text>
-          <TextInput
+          <MaskedInput
             value={budget}
             onChangeText={setBudget}
-            keyboardType="default"
             autoCapitalize="characters"
             placeholder="Número do Orçamento"
             maxLength={6}
-            placeholderTextColor="#1F537E"
-          />
+            type="custom"
+            options={{
+              mask: '999999'
+            }} />
           <Picker
             items={branches!}
             value={branch}

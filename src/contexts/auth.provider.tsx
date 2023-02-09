@@ -114,7 +114,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
                 description: "",
                 type: ""
               }],
-              portrait: _portraitURL
+              portrait: _portraitURL,
+              discountLimit: 15,
             }
             await _userRegister(_user);
           }
@@ -192,6 +193,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           fullName: _fullName,
           email: user?.email!,
           portrait: _portraitURL,
+          discountLimit: user?.discountLimit!,
           company: user?.company!,
           department: user?.department!,
           verified: user?.verified!,
@@ -278,6 +280,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         portrait: _user.portrait,
         company: _user.company,
         department: _user.department,
+        discountLimit: _user.discountLimit,
         verified: _user.verified,
         branches: _user.branches,
         logs: _user.logs,
@@ -290,6 +293,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           portrait: _user.portrait,
           company: _user.company,
           department: _user.department,
+          discountLimit: _user.discountLimit,
           verified: _user.verified,
           branches: _user.branches,
           logs: _user.logs
@@ -311,6 +315,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           portrait: snapshot.val().portrait,
           company: snapshot.val().company,
           department: snapshot.val().department,
+          discountLimit: snapshot.val().discountLimit,
           verified: snapshot.val().verified,
           branches: snapshot.child("branches").val(),
           logs: snapshot.child("logs").val(),
