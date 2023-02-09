@@ -39,6 +39,7 @@ const user: User = {
   fullName: "fullNameTest",
   company: "companyTest",
   department: "departmentTest",
+  discountLimit: 15,
   verified: true,
   portrait: "portraitTest",
   branches: [
@@ -74,13 +75,13 @@ describe("Home test", () => {
         user,
         company,
         department,
+        urlBackend,
         loading,
         signUp,
         signIn,
         signOut,
         recoverPassword,
         userUpdate,
-        urlBackend,
       }}
     >
       <Home navigation={navigation} route={route} />
@@ -198,13 +199,13 @@ describe("Home test", () => {
             user,
             company: "",
             department,
+            urlBackend,
             loading,
             signUp,
             signIn,
             signOut,
             recoverPassword,
             userUpdate,
-            urlBackend,
           }}
         >
           <Home navigation={navigation} route={route} />
