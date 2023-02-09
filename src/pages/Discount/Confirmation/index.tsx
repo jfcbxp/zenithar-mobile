@@ -19,7 +19,7 @@ export default function DiscountConfirmation({ navigation }: Properties) {
             size={48}
             color="white"
             onPress={() => {
-              navigation && navigation.navigate("Discount");
+              navigation && navigation.navigate("Home");
             }}
           />
           <Text style={styles.headerText}>Desconto</Text>

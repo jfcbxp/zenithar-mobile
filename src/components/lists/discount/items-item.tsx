@@ -2,12 +2,21 @@ import { StyleSheet, View, Image, Text } from "react-native";
 import { Itens } from "../../../models/from-api/itens.model";
 
 export function ItemsItem({ data }: { data: Itens }) {
+    const hidden = true
     return (
         <View style={styles.container}>
             <View style={{ flex: 2 }}>
-                <Image
-                    source={require("../../../../assets/no-photo.png")}
-                    style={{ width: 120, height: 100, borderRadius: 10 }} />
+                {hidden ?
+                    <View style={styles.noPhoto}>
+                        <Text style={styles.noPhotoText}>
+                            {data.descricaoProduto.charAt(0).toUpperCase()}
+                        </Text>
+                    </View>
+                    :
+                    <Image
+                        source={require("../../../../assets/no-photo.png")}
+                        style={{ width: 120, height: 100, borderRadius: 10 }} />
+                }
             </View>
             <View style={{ flex: 5 }}>
                 <View style={{ flex: 4 }}>
@@ -41,5 +50,18 @@ const styles = StyleSheet.create({
     description: {
         fontSize: 12,
         color: "grey",
+    },
+    noPhoto: {
+        width: 100,
+        height: 100,
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 10,
+        backgroundColor: "#123262"
+    },
+    noPhotoText: {
+        fontSize: 48,
+        fontWeight: "bold",
+        color: "white",
     }
 })
