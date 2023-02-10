@@ -8,10 +8,62 @@ import DiscountConfirmation from ".";
 describe("DiscountConfirmation test", () => {
   const navigation =
     useNavigation<StackNavigationProp<StackParams, "DiscountConfirmation">>();
-  const route = useNavigation<RouteProp<StackParams, "DiscountConfirmation">>();
+  const mockRoute = (): RouteProp<StackParams, "DiscountConfirmation"> => {
+    return {
+      params: {
+        _branch: "",
+        _budget: "",
+        _budgetObject: {
+          cliente: "",
+          desconto: 0,
+          empresa: "",
+          itens: [
+            {
+              armazem: "",
+              codigoBarras: "",
+              desconto: 0,
+              descricaoProduto: "",
+              empresa: "",
+              estoque: 0,
+              numero: "",
+              preco: 0,
+              produto: "",
+              quantidade: 0,
+              tipoEntrega: "",
+              total: 0,
+              valorDesconto: 0
+            }
+          ],
+          loja: "",
+          nomeCliente: "",
+          nomeVendedor: "",
+          numero: "",
+          observacao: "",
+          pagamentos: [
+            {
+              empresa: "",
+              forma: "",
+              numero: "",
+              parcelas: 1,
+              valor: 0
+            }
+          ],
+          statusOrcamento: "",
+          tipoOrcamento: "",
+          totalBruto: 0,
+          totalLiquido: 0,
+          valorDesconto: 0,
+          vendedor: ""
+        },
+        _discountValue: 0
+      },
+      name: "DiscountConfirmation",
+      key: "DiscountConfirmation",
+    };
+  };
 
   const rendered = renderer.create(
-    <DiscountConfirmation navigation={navigation} route={route} />
+    <DiscountConfirmation navigation={navigation} route={mockRoute()} />
   );
 
   it("test DiscountConfirmation Icon", async () => {
