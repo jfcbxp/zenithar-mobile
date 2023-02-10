@@ -11,7 +11,6 @@ import { StatusBar } from "expo-status-bar";
 import { AuthContext } from "../../contexts/auth.provider";
 import { Dialog } from "../../components/modals/dialog";
 import { UserLogs } from "../../models/user.logs.model";
-import GetSecret from "../../services/auth-secret";
 
 interface Properties extends StackScreenProps<StackParams, "Home"> { }
 
