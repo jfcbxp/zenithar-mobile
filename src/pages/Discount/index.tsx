@@ -10,62 +10,43 @@ import { PaymentMethodDropdown } from "../../components/dropdowns/discount/payme
 import { ItemsDropdown } from "../../components/dropdowns/discount/items-dropdown";
 import { Orcamento } from "../../models/from-api/orcamento.model";
 import { Dialog } from "../../components/modals/dialog";
-import { AxiosResponse } from "axios";
-import { API } from "../../services/api";
+import { GetTokenJWT } from "../../services/token-jwt.service";
+import { LoadBudget } from "../../services/budget.service";
 import { AuthContext } from "../../contexts/auth.provider";
-import { AuthToken } from "../../models/from-api/authtoken.model";
-import GetSecret from "../../services/auth-secret";
 
 interface Properties
   extends StackScreenProps<StackParams, "Discount"> { }
 
 export default function Discount({ route, navigation }: Properties) {
-  const { _budget, _branch } = route.params
+  const { _budget, _branch, _discountValue } = route.params
   const authContext = useContext(AuthContext)
   const [visible, setVisible] = useState(false)
-  const [budget] = useState(_budget)
-  const [branch] = useState(_branch)
   const [budgetData, setBudgetData] = useState<Orcamento>()
   const defaultDialog = { title: "", content: "", visible: false }
   const [dialog, setDialog] = useState(defaultDialog);
 
   useEffect(() => {
-    getTokenJwt().then((authToken) => {
-      loadBudget(budget, branch, authToken?.token!)
-        .then(budget => setBudgetData(budget))
-        .catch(result => {
-          Alert("Erro", result.response.data.error)
-        })
+    GetTokenJWT(
+      authContext.user?.email!,
+      authContext.user?.uid!,
+      authContext.urlBackend!
+    ).then((authToken) => {
+      LoadBudget(
+        _budget,
+        _branch,
+        authToken?.token!,
+        authContext.urlBackend!
+      ).then(budget => setBudgetData(budget)).catch(result => {
+        Alert("Erro", result.response.data.error)
+      })
     }).catch(result => {
-      Alert("Erro", result.response.data.error)
+      if (result.data == undefined) {
+        Alert("Erro", "Servidor indisponível")
+      } else {
+        Alert("Erro", result.response.data.error)
+      }
     })
-
   }, [])
-
-  const getTokenJwt = async (): Promise<AuthToken | undefined> => {
-    const secret = GetSecret(authContext.urlBackend!)
-    const authToken: AuthToken = {
-      email: authContext.user?.email!,
-      uuid: authContext.user?.uid!,
-      secret: secret
-    }
-    const api = API(authContext.urlBackend!)
-    const url: string = `auth/token`;
-    const response: AxiosResponse<AuthToken> = await api.post<AuthToken>(url, authToken);
-    if (response.data.token == undefined) {
-      Alert("Erro", "Token de autorização não foi obtido na requisição. " + response.data.token)
-      return
-    }
-    return response.data;
-  };
-
-  const loadBudget = async (budget: string, branch: string, token: string): Promise<Orcamento | undefined> => {
-    const api = API(authContext.urlBackend!, token);
-    const url: string = `orcamento/consultar?numeroOrcamento=${budget}&empresa=${branch}`;
-    const response: AxiosResponse<Orcamento> = await api.get<Orcamento>(url);
-    return response.data;
-
-  };
 
   const Alert = (title: string, content: string) => {
     setDialog({ title: title, content: content, visible: true });
@@ -85,7 +66,7 @@ export default function Discount({ route, navigation }: Properties) {
                 navigation && navigation.navigate("Home");
               }}
             />
-            <Text style={styles.headerText}>Orçamento #564354</Text>
+            <Text style={styles.headerText}>Orçamento #{_budget}</Text>
           </View>
           <View style={{ flex: 4, justifyContent: "space-between", paddingBottom: 8 }}>
             <View>
@@ -142,9 +123,17 @@ export default function Discount({ route, navigation }: Properties) {
         </View>
         <ApplyDiscountModal
           dismiss={() => {
+            navigation.navigate("DiscountConfirmation", {
+              _budget: _budget,
+              _branch: _branch,
+              _budgetObject: budgetData!,
+              _discountValue: _discountValue!
+            })
             setVisible(false)
           }}
           visible={visible}
+          budget={_budget}
+          branch={_branch}
           total={budgetData?.totalBruto!} />
         <Dialog
           visible={dialog.visible}
