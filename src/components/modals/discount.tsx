@@ -114,7 +114,7 @@ export function DiscountModal(properties: Properties) {
             onPressIn={() => {
               navigation && navigation.navigate("Discount", {
                 _budget: budget,
-                _branch: branch
+                _branch: branch,
               });
               translation.setValue(400);
               setOpen(false);

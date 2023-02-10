@@ -22,6 +22,8 @@ interface Properties extends ModalProps {
     visible: boolean;
     dismiss?: (event: GestureResponderEvent) => void | null;
     total: number;
+    budget: string;
+    branch: string;
 }
 
 export function ApplyDiscountModal(properties: Properties) {
@@ -33,6 +35,7 @@ export function ApplyDiscountModal(properties: Properties) {
     const [newTotal, setNewTotal] = useState("")
     const defaultDialog = { title: "", content: "", visible: false }
     const [dialog, setDialog] = useState(defaultDialog);
+    const [discountValue, setDiscountValue] = useState(0)
     const percentageLimit = authContext.user?.discountLimit!
 
     useEffect(() => {
@@ -48,6 +51,7 @@ export function ApplyDiscountModal(properties: Properties) {
             setPercentage(discountPercentage.toString())
             total -= value
             setNewTotal(total.toFixed(2).replace('.', ','))
+            setDiscountValue(value)
         }
     }
 
@@ -61,6 +65,7 @@ export function ApplyDiscountModal(properties: Properties) {
             setValue(newValue.toFixed(2))
             total -= newValue
             setNewTotal(total.toFixed(2).replace('.', ','))
+            setDiscountValue(newValue)
         }
     }
 
@@ -152,7 +157,11 @@ export function ApplyDiscountModal(properties: Properties) {
                     <Button
                         title="CONTINUAR"
                         onPressIn={() => {
-                            navigation && navigation.navigate("DiscountConfirmation");
+                            navigation && navigation.navigate("Discount", {
+                                _budget: properties.budget,
+                                _branch: properties.branch,
+                                _discountValue: discountValue
+                            });
                             reset();
                         }}
                         onPressOut={properties.dismiss} />
