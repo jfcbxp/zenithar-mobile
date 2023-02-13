@@ -9,6 +9,7 @@ import { Dialog } from "../../../components/modals/dialog";
 import { GetTokenJWT } from "../../../services/token-jwt.service";
 import { ReleaseDiscount } from "../../../services/discount.service";
 import { AuthContext } from "../../../contexts/auth.provider";
+import { UserLogs } from "../../../models/user.logs.model";
 
 interface Properties extends StackScreenProps<StackParams, "DiscountConfirmation"> { }
 
@@ -17,6 +18,11 @@ export default function DiscountConfirmation({ navigation, route }: Properties) 
   const authContext = useContext(AuthContext)
   const defaultDialog = { title: "", content: "", visible: false }
   const [dialog, setDialog] = useState(defaultDialog);
+  const data = authContext.user?.logs!
+  const date = new Date()
+  const day = date.getDate()
+  const month = date.getMonth() + 1
+  const year = date.getFullYear()
 
   const releaseDiscount = () => {
     GetTokenJWT(
@@ -31,6 +37,16 @@ export default function DiscountConfirmation({ navigation, route }: Properties) 
         authToken?.token!,
         authContext.urlBackend!
       ).then(() => {
+        let i = data.length.toString()
+        let newLog: UserLogs = {
+          id: i,
+          title: `Desconto no orçamento ${_budget}`,
+          date: `${day}/${month}/${year}`,
+          description: `R$ ${(_budgetObject.totalBruto) - (_discountValue)}`,
+          type: "DESCONTO_ORCAMENTO",
+        }
+        data.push(newLog)
+        authContext.addLog(data)
         Alert("Sucesso", "Efetuado desconto para o orçamento: " + _budget)
       }).catch(result => {
         Alert("Erro", result.response.data.error)

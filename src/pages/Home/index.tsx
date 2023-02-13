@@ -16,9 +16,19 @@ interface Properties extends StackScreenProps<StackParams, "Home"> { }
 
 export default function Home({ navigation }: Properties) {
   const authContext = useContext(AuthContext);
-  const [data] = useState<UserLogs[]>(authContext.user?.logs!);
+  const data = authContext.user?.logs!
+  const filteredData = (data: UserLogs[]) => {
+    switch (data.length) {
+      case 5: return [data[4], data[3], data[2], data[1], data[0]]
+      case 4: return [data[3], data[2], data[1], data[0]]
+      case 3: return [data[2], data[1], data[0]]
+      case 2: return [data[1], data[0]]
+      case 1: return [data[0]]
+      case 0: return
+    }
+  }
   const [containerTitle] = useState("Histórico");
-  const [containerChild] = useState<React.ReactNode>(<Logs data={data} />);
+  const [containerChild] = useState<React.ReactNode>(<Logs data={filteredData(data)} />);
   const [discount, setDiscount] = useState(false);
   const defaultDialog = { title: "", content: "", visible: false }
   const [dialog, setDialog] = useState(defaultDialog);
@@ -43,13 +53,11 @@ export default function Home({ navigation }: Properties) {
       <ScrollView
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        style={styles.menu}
-      >
+        style={styles.menu}>
         <NavigationButton
           icon="attach-money"
           title="Desconto"
-          onPress={NavigationButtonOnPress}
-        />
+          onPress={NavigationButtonOnPress} />
       </ScrollView>
       <View style={styles.field}>
         <HomeContainer title={containerTitle}>{containerChild}</HomeContainer>
@@ -59,8 +67,7 @@ export default function Home({ navigation }: Properties) {
           visible={discount}
           dismiss={() => {
             setDiscount(false);
-          }}
-        />
+          }} />
       )}
       <Dialog
         title={dialog.title}
@@ -68,8 +75,7 @@ export default function Home({ navigation }: Properties) {
         visible={dialog.visible}
         dismiss={() => {
           setDialog(defaultDialog);
-        }}
-      />
+        }} />
       <StatusBar style="light" translucent={false} backgroundColor="#212A4D" />
     </View>
   );
