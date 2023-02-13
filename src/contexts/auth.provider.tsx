@@ -4,6 +4,7 @@ import { firebaseAuth, storage, realtime } from "../services/firebase.service";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import firebase from "firebase/compat/app";
 import { Dialog } from "../components/modals/dialog";
+import { UserLogs } from "../models/user.logs.model";
 
 type AuthContextProps = {
   user: User | undefined;
@@ -26,6 +27,7 @@ type AuthContextProps = {
     _currentPassword?: string,
     _newPassword?: string
   ): Promise<void>;
+  addLog(_logs: UserLogs[]): Promise<void>;
 };
 
 const defaultState = {
@@ -39,6 +41,7 @@ const defaultState = {
   signOut: async () => { },
   recoverPassword: async () => { },
   userUpdate: async () => { },
+  addLog: async () => { },
 };
 
 export const AuthContext = createContext<AuthContextProps>(defaultState);
@@ -207,6 +210,33 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     }
     setLoading(false);
   };
+
+  const addLog = async (
+    _logs: UserLogs[]
+  ) => {
+    setLoading(true)
+    let _user = firebaseAuth.currentUser!
+    let currentLogs = user?.logs!
+    if (_logs.length > currentLogs.length) {
+      _logs.forEach((item, index) => {
+        if (item.id == "0") _logs.splice(index, 1)
+      })
+      _logs.forEach((item, index) => {
+        item.id = index.toString()
+      })
+    }
+    await realtime
+      .ref("users")
+      .child(_user.uid)
+      .update({
+        logs: _logs
+      }).then(() => {
+        let _user: User = user!
+        _user.logs = _logs
+        _storeUser(_user)
+      })
+    setLoading(false)
+  }
 
   const _reauthenticate = async (currentPassword: string) => {
     const user = firebaseAuth.currentUser!;
@@ -391,6 +421,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     signOut,
     recoverPassword,
     userUpdate,
+    addLog,
   }), [
     user,
     company,
@@ -402,6 +433,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     signOut,
     recoverPassword,
     userUpdate,
+    addLog,
   ])
 
   return (

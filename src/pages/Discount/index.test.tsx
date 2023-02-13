@@ -7,7 +7,6 @@ import { RouteProp, useNavigation } from "@react-navigation/native";
 import Discount from ".";
 import { ItemsDropdown } from "../../components/dropdowns/discount/items-dropdown";
 import { PaymentMethodDropdown } from "../../components/dropdowns/discount/payment-method-dropdown";
-import { Pressable } from "react-native";
 
 describe("Discount test", () => {
   const navigation =
