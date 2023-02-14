@@ -218,12 +218,18 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     let _user = firebaseAuth.currentUser!
     let currentLogs = user?.logs!
     if (_logs.length > currentLogs.length) {
-      _logs.forEach((item, index) => {
-        if (item.id == "0") _logs.splice(index, 1)
+      _logs.forEach((element, index) => {
+        if (element.id == "0") _logs.splice(index, 1)
       })
-      _logs.forEach((item, index) => {
-        item.id = index.toString()
-      })
+      _logs.forEach(element => {
+        switch (element.id) {
+          case "1": { element.id = "0"; break; }
+          case "2": { element.id = "1"; break; }
+          case "3": { element.id = "2"; break; }
+          case "4": { element.id = "3"; break; }
+          case "5": { element.id = "4"; break; }
+        }
+      });
     }
     await realtime
       .ref("users")
@@ -358,7 +364,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           }
         }
         await _storeUser(_user);
-        await _getURL(_user.company)
+        await _getURL(_user.company);
+        await _licenseCheck(_user.company)
       });
   };
 
@@ -409,6 +416,28 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         });
     }
   };
+
+  const _licenseCheck = async (company: string) => {
+    const date = new Date()
+    const currentDay = date.getDate()
+    const currentMonth = date.getMonth() + 1
+    const currentYear = date.getFullYear()
+    const [expireAt, setExpireAt] = useState("")
+    await realtime
+      .ref("companies")
+      .child(company)
+      .once("value")
+      .then(snapshot => {
+        setExpireAt(snapshot.val().expireAt)
+      })
+    const expireAtDay = parseInt((expireAt[0] + expireAt[1]))
+    const expireAtMonth = parseInt((expireAt[3] + expireAt[4]))
+    const expireAtYear = parseInt((expireAt[5] + expireAt[6] + expireAt[7] + expireAt[8]))
+    if ((expireAtYear <= currentYear) && (expireAtMonth <= currentMonth) && (expireAtDay <= currentDay)) {
+      Alert("Licença", "Sua licença expirou em " + expireAt)
+      signOut()
+    }
+  }
 
   const contextValue = useMemo(() => ({
     user,
