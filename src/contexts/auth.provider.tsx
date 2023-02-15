@@ -68,7 +68,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           }
         } else {
           Alert("E-mail não verificado", "Por favor verifique seu [e-mail].");
-          signOut();
         }
       } else {
         signOut();
@@ -101,28 +100,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             let _portraitURL = await _uploadImage(_portrait, result.user.uid);
             let _user: User = {
               uid: result.user.uid,
-              email: _email,
               fullName: _fullName,
-              company: "",
-              department: "",
               verified: false,
-              branches: [
-                {
-                  id: "",
-                  name: "",
-                },
-              ],
-              logs: [
-                {
-                  id: "",
-                  date: "",
-                  title: "",
-                  description: "",
-                  type: "",
-                },
-              ],
               portrait: _portraitURL,
-              discountLimit: 15,
+              discountLimit: 0,
             };
             await _userRegister(_user);
           }
@@ -194,19 +175,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         portrait: _portraitURL,
       })
       .then(() => {
-        let _user: User = {
-          uid: user?.uid!,
-          fullName: _fullName,
-          email: user?.email!,
-          portrait: _portraitURL,
-          discountLimit: user?.discountLimit!,
-          company: user?.company!,
-          department: user?.department!,
-          verified: user?.verified!,
-          branches: user?.branches!,
-          logs: user?.logs!,
-        };
-        _storeUser(_user);
+        let _user = user!;
+        _user.fullName = _fullName;
+        _user.portrait = _portraitURL;
+        setUser(_user);
       });
     if (_currentPassword && _newPassword) {
       await _userUpdatePassword(_currentPassword, _newPassword);
@@ -217,8 +189,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const addLog = async (_logs: UserLogs[]) => {
     setLoading(true);
     let _user = firebaseAuth.currentUser!;
-    let currentLogs = user?.logs!;
-    if (_logs.length > currentLogs.length) {
+    let currentLogs = user?.logs;
+
+    if (currentLogs && _logs.length > currentLogs.length) {
       _logs.forEach((element, index) => {
         if (element.id == "0") _logs.splice(index, 1);
       });
@@ -256,7 +229,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .then(() => {
         let _user: User = user!;
         _user.logs = _logs;
-        _storeUser(_user);
+        setUser(_user);
       });
     setLoading(false);
   };
@@ -293,17 +266,13 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const _alertPasswordChange = async () =>
-    new Promise((resolve) => {
+    new Promise((_) => {
       Alert(
         "Alteração de senha",
         "Sua senha foi alterada. Efetue acesso novamente."
       );
       signOut();
     });
-
-  const Alert = (title: string, content: string) => {
-    setDialog({ title: title, content: content, visible: true });
-  };
 
   const _uploadImage = async (_portrait: string, _uid: string) => {
     const response = await fetch(_portrait);
@@ -328,27 +297,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .set({
         fullName: _user.fullName,
         portrait: _user.portrait,
-        company: _user.company,
-        department: _user.department,
         discountLimit: _user.discountLimit,
         verified: _user.verified,
-        branches: _user.branches,
-        logs: _user.logs,
       })
       .then(() => {
-        let _user_: User = {
-          uid: _user.uid,
-          fullName: _user.fullName,
-          email: _user.email,
-          portrait: _user.portrait,
-          company: _user.company,
-          department: _user.department,
-          discountLimit: _user.discountLimit,
-          verified: _user.verified,
-          branches: _user.branches,
-          logs: _user.logs,
-        };
-        _storeUser(_user_);
+        setUser(_user);
       });
   };
 
@@ -361,7 +314,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         let _user: User = {
           uid: _uid,
           fullName: snapshot.val().fullName,
-          email: snapshot.val().email,
           portrait: snapshot.val().portrait,
           company: snapshot.val().company,
           department: snapshot.val().department,
@@ -377,39 +329,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             await _userRegister(_user);
           }
         }
-        await _storeUser(_user);
-        await _getURL(_user.company);
-        await _licenseCheck(_user.company);
+        setUser(_user);
+        _user.department && (await _storeDepartment(_user.department));
+        _user.company && (await _licenseCheck(_user.company));
       });
-  };
-
-  const _getURL = async (company: string) => {
-    await realtime
-      .ref("companies")
-      .child(company)
-      .once("value")
-      .then(async (snapshot) => {
-        setUrlBackend(snapshot.val().urlBackend);
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-  };
-
-  const _storeUser = async (_user: User) => {
-    setUser(_user);
-    _storeCompany(_user.company);
-    _storeDepartment(_user.department);
-  };
-
-  const _storeCompany = async (_company: string) => {
-    if (_company != "") {
-      await realtime
-        .ref("companies")
-        .child(_company)
-        .once("value")
-        .then((snapshot) => setCompany(snapshot.val().name));
-    }
   };
 
   const _storeDepartment = async (_department: string) => {
@@ -434,6 +357,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .once("value")
       .then((snapshot) => {
         setExpireAt(snapshot.val().expireAt);
+        setUrlBackend(snapshot.val().urlBackend);
+        setCompany(snapshot.val().name);
       });
     const expireAtDay = parseInt(expireAt[0] + expireAt[1]);
     const expireAtMonth = parseInt(expireAt[3] + expireAt[4]);
@@ -448,6 +373,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       Alert("Licença", "Sua licença expirou em " + expireAt);
       signOut();
     }
+  };
+
+  const Alert = (title: string, content: string) => {
+    setDialog({ title: title, content: content, visible: true });
   };
 
   const contextValue = useMemo(

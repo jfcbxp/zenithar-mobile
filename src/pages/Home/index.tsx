@@ -12,25 +12,33 @@ import { AuthContext } from "../../contexts/auth.provider";
 import { Dialog } from "../../components/modals/dialog";
 import { UserLogs } from "../../models/user.logs.model";
 
-interface Properties extends StackScreenProps<StackParams, "Home"> { }
+interface Properties extends StackScreenProps<StackParams, "Home"> {}
 
 export default function Home({ navigation }: Properties) {
   const authContext = useContext(AuthContext);
-  const data = authContext.user?.logs!
-  const filteredData = (data: UserLogs[]) => {
-    switch (data.length) {
-      case 5: return [data[4], data[3], data[2], data[1], data[0]]
-      case 4: return [data[3], data[2], data[1], data[0]]
-      case 3: return [data[2], data[1], data[0]]
-      case 2: return [data[1], data[0]]
-      case 1: return [data[0]]
-      case 0: return
+  const data = authContext.user?.logs;
+  const filteredData = (data: UserLogs[] | undefined) => {
+    if (data) {
+      switch (data.length) {
+        case 5:
+          return [data[4], data[3], data[2], data[1], data[0]];
+        case 4:
+          return [data[3], data[2], data[1], data[0]];
+        case 3:
+          return [data[2], data[1], data[0]];
+        case 2:
+          return [data[1], data[0]];
+        case 1:
+          return [data[0]];
+      }
     }
-  }
+  };
   const [containerTitle] = useState("Histórico");
-  const [containerChild] = useState<React.ReactNode>(<Logs data={filteredData(data)} />);
+  const [containerChild] = useState<React.ReactNode>(
+    <Logs data={filteredData(data)} />
+  );
   const [discount, setDiscount] = useState(false);
-  const defaultDialog = { title: "", content: "", visible: false }
+  const defaultDialog = { title: "", content: "", visible: false };
   const [dialog, setDialog] = useState(defaultDialog);
 
   const NavigationButtonOnPress = () => {
@@ -53,11 +61,13 @@ export default function Home({ navigation }: Properties) {
       <ScrollView
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        style={styles.menu}>
+        style={styles.menu}
+      >
         <NavigationButton
           icon="attach-money"
           title="Desconto"
-          onPress={NavigationButtonOnPress} />
+          onPress={NavigationButtonOnPress}
+        />
       </ScrollView>
       <View style={styles.field}>
         <HomeContainer title={containerTitle}>{containerChild}</HomeContainer>
@@ -67,7 +77,8 @@ export default function Home({ navigation }: Properties) {
           visible={discount}
           dismiss={() => {
             setDiscount(false);
-          }} />
+          }}
+        />
       )}
       <Dialog
         title={dialog.title}
@@ -75,7 +86,8 @@ export default function Home({ navigation }: Properties) {
         visible={dialog.visible}
         dismiss={() => {
           setDialog(defaultDialog);
-        }} />
+        }}
+      />
       <StatusBar style="light" translucent={false} backgroundColor="#212A4D" />
     </View>
   );
