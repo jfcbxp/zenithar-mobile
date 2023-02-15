@@ -1,7 +1,6 @@
 import { createContext, useEffect, useMemo, useState } from "react";
 import { User } from "../models/user.model";
 import { firebaseAuth, storage, realtime } from "../services/firebase.service";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import firebase from "firebase/compat/app";
 import { Dialog } from "../components/modals/dialog";
 import { UserLogs } from "../models/user.logs.model";
@@ -36,12 +35,12 @@ const defaultState = {
   department: undefined,
   urlBackend: undefined,
   loading: true,
-  signUp: async () => { },
-  signIn: async () => { },
-  signOut: async () => { },
-  recoverPassword: async () => { },
-  userUpdate: async () => { },
-  addLog: async () => { },
+  signUp: async () => {},
+  signIn: async () => {},
+  signOut: async () => {},
+  recoverPassword: async () => {},
+  userUpdate: async () => {},
+  addLog: async () => {},
 };
 
 export const AuthContext = createContext<AuthContextProps>(defaultState);
@@ -54,10 +53,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User>();
   const [company, setCompany] = useState<string | undefined>("");
   const [department, setDepartment] = useState<string | undefined>("");
-  const [urlBackend, setUrlBackend] = useState<string | undefined>("")
+  const [urlBackend, setUrlBackend] = useState<string | undefined>("");
   const [loading, setLoading] = useState<boolean>(true);
-  const defaultDialog = { title: "", content: "", visible: false }
-  const [dialog, setDialog] = useState(defaultDialog)
+  const defaultDialog = { title: "", content: "", visible: false };
+  const [dialog, setDialog] = useState(defaultDialog);
+  const [expireAt, setExpireAt] = useState("");
 
   useEffect(() => {
     firebaseAuth.onAuthStateChanged(async (currentUser) => {
@@ -68,7 +68,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           }
         } else {
           Alert("E-mail não verificado", "Por favor verifique seu [e-mail].");
-          signOut();
         }
       } else {
         signOut();
@@ -101,25 +100,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             let _portraitURL = await _uploadImage(_portrait, result.user.uid);
             let _user: User = {
               uid: result.user.uid,
-              email: _email,
               fullName: _fullName,
-              company: "",
-              department: "",
               verified: false,
-              branches: [{
-                id: "",
-                name: ""
-              }],
-              logs: [{
-                id: "",
-                date: "",
-                title: "",
-                description: "",
-                type: ""
-              }],
               portrait: _portraitURL,
-              discountLimit: 15,
-            }
+              discountLimit: 0,
+            };
             await _userRegister(_user);
           }
         }
@@ -153,7 +138,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const signOut = async () => {
     setLoading(true);
     await firebaseAuth.signOut();
-    await AsyncStorage.clear();
     setUser(undefined);
     setCompany("");
     setDepartment("");
@@ -191,19 +175,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         portrait: _portraitURL,
       })
       .then(() => {
-        let _user: User = {
-          uid: user?.uid!,
-          fullName: _fullName,
-          email: user?.email!,
-          portrait: _portraitURL,
-          discountLimit: user?.discountLimit!,
-          company: user?.company!,
-          department: user?.department!,
-          verified: user?.verified!,
-          branches: user?.branches!,
-          logs: user?.logs!,
-        };
-        _storeUser(_user);
+        let _user = user!;
+        _user.fullName = _fullName;
+        _user.portrait = _portraitURL;
+        setUser(_user);
       });
     if (_currentPassword && _newPassword) {
       await _userUpdatePassword(_currentPassword, _newPassword);
@@ -211,23 +186,37 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setLoading(false);
   };
 
-  const addLog = async (
-    _logs: UserLogs[]
-  ) => {
-    setLoading(true)
-    let _user = firebaseAuth.currentUser!
-    let currentLogs = user?.logs!
-    if (_logs.length > currentLogs.length) {
+  const addLog = async (_logs: UserLogs[]) => {
+    setLoading(true);
+    let _user = firebaseAuth.currentUser!;
+    let currentLogs = user?.logs;
+
+    if (currentLogs && _logs.length > currentLogs.length) {
       _logs.forEach((element, index) => {
-        if (element.id == "0") _logs.splice(index, 1)
-      })
-      _logs.forEach(element => {
+        if (element.id == "0") _logs.splice(index, 1);
+      });
+      _logs.forEach((element) => {
         switch (element.id) {
-          case "1": { element.id = "0"; break; }
-          case "2": { element.id = "1"; break; }
-          case "3": { element.id = "2"; break; }
-          case "4": { element.id = "3"; break; }
-          case "5": { element.id = "4"; break; }
+          case "1": {
+            element.id = "0";
+            break;
+          }
+          case "2": {
+            element.id = "1";
+            break;
+          }
+          case "3": {
+            element.id = "2";
+            break;
+          }
+          case "4": {
+            element.id = "3";
+            break;
+          }
+          case "5": {
+            element.id = "4";
+            break;
+          }
         }
       });
     }
@@ -235,14 +224,15 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .ref("users")
       .child(_user.uid)
       .update({
-        logs: _logs
-      }).then(() => {
-        let _user: User = user!
-        _user.logs = _logs
-        _storeUser(_user)
+        logs: _logs,
       })
-    setLoading(false)
-  }
+      .then(() => {
+        let _user: User = user!;
+        _user.logs = _logs;
+        setUser(_user);
+      });
+    setLoading(false);
+  };
 
   const _reauthenticate = async (currentPassword: string) => {
     const user = firebaseAuth.currentUser!;
@@ -276,7 +266,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const _alertPasswordChange = async () =>
-    new Promise((resolve) => {
+    new Promise((_) => {
       Alert(
         "Alteração de senha",
         "Sua senha foi alterada. Efetue acesso novamente."
@@ -284,14 +274,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       signOut();
     });
 
-  const Alert = (title: string, content: string) => {
-    setDialog({ title: title, content: content, visible: true })
-  };
-
-  const _uploadImage = async (
-    _portrait: string,
-    _uid: string,
-  ) => {
+  const _uploadImage = async (_portrait: string, _uid: string) => {
     const response = await fetch(_portrait);
     const blob = await response.blob();
     const filename = _uid;
@@ -314,27 +297,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .set({
         fullName: _user.fullName,
         portrait: _user.portrait,
-        company: _user.company,
-        department: _user.department,
         discountLimit: _user.discountLimit,
         verified: _user.verified,
-        branches: _user.branches,
-        logs: _user.logs,
       })
       .then(() => {
-        let _user_: User = {
-          uid: _user.uid,
-          fullName: _user.fullName,
-          email: _user.email,
-          portrait: _user.portrait,
-          company: _user.company,
-          department: _user.department,
-          discountLimit: _user.discountLimit,
-          verified: _user.verified,
-          branches: _user.branches,
-          logs: _user.logs
-        };
-        _storeUser(_user_);
+        setUser(_user);
       });
   };
 
@@ -347,7 +314,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         let _user: User = {
           uid: _uid,
           fullName: snapshot.val().fullName,
-          email: snapshot.val().email,
           portrait: snapshot.val().portrait,
           company: snapshot.val().company,
           department: snapshot.val().department,
@@ -363,44 +329,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             await _userRegister(_user);
           }
         }
-        await _storeUser(_user);
-        await _getURL(_user.company);
-        await _licenseCheck(_user.company)
+        setUser(_user);
+        _user.department && (await _storeDepartment(_user.department));
+        _user.company && (await _licenseCheck(_user.company));
       });
-  };
-
-  const _getURL = async (company: string) => {
-    await realtime
-      .ref("companies")
-      .child(company)
-      .once("value")
-      .then(async (snapshot) => {
-        setUrlBackend(snapshot.val().urlBackend)
-      }).catch(error => {
-        console.log(error.message)
-      })
-  }
-
-  const _storeUser = async (_user: User) => {
-    let jsonUser = JSON.stringify(_user);
-    await AsyncStorage.setItem("user", jsonUser);
-    setUser(_user);
-    _storeCompany(_user.company);
-    _storeDepartment(_user.department);
-  };
-
-  const _storeCompany = async (_company: string) => {
-    if (_company != "") {
-      await realtime
-        .ref("companies")
-        .child(_company)
-        .once("value")
-        .then(async (snapshot) => {
-          await AsyncStorage.setItem("company", snapshot.val().name).then(() => {
-            setCompany(snapshot.val().name);
-          });
-        });
-    }
   };
 
   const _storeDepartment = async (_department: string) => {
@@ -409,66 +341,75 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         .ref("departments")
         .child(_department)
         .once("value")
-        .then(async (snapshot) => {
-          await AsyncStorage.setItem("department", snapshot.val()).then(() => {
-            setDepartment(snapshot.val());
-          });
-        });
+        .then(async (snapshot) => setDepartment(snapshot.val()));
     }
   };
 
   const _licenseCheck = async (company: string) => {
-    const date = new Date()
-    const currentDay = date.getDate()
-    const currentMonth = date.getMonth() + 1
-    const currentYear = date.getFullYear()
-    const [expireAt, setExpireAt] = useState("")
+    const date = new Date();
+    const currentDay = date.getDate();
+    const currentMonth = date.getMonth() + 1;
+    const currentYear = date.getFullYear();
+
     await realtime
       .ref("companies")
       .child(company)
       .once("value")
-      .then(snapshot => {
-        setExpireAt(snapshot.val().expireAt)
-      })
-    const expireAtDay = parseInt((expireAt[0] + expireAt[1]))
-    const expireAtMonth = parseInt((expireAt[3] + expireAt[4]))
-    const expireAtYear = parseInt((expireAt[5] + expireAt[6] + expireAt[7] + expireAt[8]))
-    if ((expireAtYear <= currentYear) && (expireAtMonth <= currentMonth) && (expireAtDay <= currentDay)) {
-      Alert("Licença", "Sua licença expirou em " + expireAt)
-      signOut()
+      .then((snapshot) => {
+        setExpireAt(snapshot.val().expireAt);
+        setUrlBackend(snapshot.val().urlBackend);
+        setCompany(snapshot.val().name);
+      });
+    const expireAtDay = parseInt(expireAt[0] + expireAt[1]);
+    const expireAtMonth = parseInt(expireAt[3] + expireAt[4]);
+    const expireAtYear = parseInt(
+      expireAt[5] + expireAt[6] + expireAt[7] + expireAt[8]
+    );
+    if (
+      expireAtYear <= currentYear &&
+      expireAtMonth <= currentMonth &&
+      expireAtDay <= currentDay
+    ) {
+      Alert("Licença", "Sua licença expirou em " + expireAt);
+      signOut();
     }
-  }
+  };
 
-  const contextValue = useMemo(() => ({
-    user,
-    company,
-    department,
-    urlBackend,
-    loading,
-    signUp,
-    signIn,
-    signOut,
-    recoverPassword,
-    userUpdate,
-    addLog,
-  }), [
-    user,
-    company,
-    department,
-    urlBackend,
-    loading,
-    signUp,
-    signIn,
-    signOut,
-    recoverPassword,
-    userUpdate,
-    addLog,
-  ])
+  const Alert = (title: string, content: string) => {
+    setDialog({ title: title, content: content, visible: true });
+  };
+
+  const contextValue = useMemo(
+    () => ({
+      user,
+      company,
+      department,
+      urlBackend,
+      loading,
+      signUp,
+      signIn,
+      signOut,
+      recoverPassword,
+      userUpdate,
+      addLog,
+    }),
+    [
+      user,
+      company,
+      department,
+      urlBackend,
+      loading,
+      signUp,
+      signIn,
+      signOut,
+      recoverPassword,
+      userUpdate,
+      addLog,
+    ]
+  );
 
   return (
-    <AuthContext.Provider
-      value={contextValue}
-    >
+    <AuthContext.Provider value={contextValue}>
       <Dialog
         title={dialog.title}
         content={dialog.content}

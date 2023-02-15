@@ -11,50 +11,54 @@ import { ReleaseDiscount } from "../../../services/discount.service";
 import { AuthContext } from "../../../contexts/auth.provider";
 import { UserLogs } from "../../../models/user.logs.model";
 
-interface Properties extends StackScreenProps<StackParams, "DiscountConfirmation"> { }
+interface Properties
+  extends StackScreenProps<StackParams, "DiscountConfirmation"> {}
 
-export default function DiscountConfirmation({ navigation, route }: Properties) {
-  const { _branch, _budget, _budgetObject, _discountValue } = route.params
-  const authContext = useContext(AuthContext)
-  const defaultDialog = { title: "", content: "", visible: false }
+export default function DiscountConfirmation({
+  navigation,
+  route,
+}: Properties) {
+  const { _branch, _budget, _budgetObject, _discountValue } = route.params;
+  const authContext = useContext(AuthContext);
+  const defaultDialog = { title: "", content: "", visible: false };
   const [dialog, setDialog] = useState(defaultDialog);
-  const data = authContext.user?.logs!
-  const date = new Date()
-  const day = date.getDate()
-  const month = date.getMonth() + 1
-  const year = date.getFullYear()
+  const data = authContext.user?.logs!;
+  const date = new Date();
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
 
   const releaseDiscount = () => {
-    GetTokenJWT(
-      authContext.user?.email!,
-      authContext.user?.uid!,
-      authContext.urlBackend!
-    ).then((authToken) => {
-      ReleaseDiscount(
-        _budget,
-        _branch,
-        _discountValue,
-        authToken?.token!,
-        authContext.urlBackend!
-      ).then(() => {
-        let i = data.length.toString()
-        let newLog: UserLogs = {
-          id: i,
-          title: `Desconto no orçamento ${_budget}`,
-          date: `${day}/${month}/${year}`,
-          description: `R$ ${(_budgetObject.totalBruto) - (_discountValue)}`,
-          type: "DESCONTO_ORCAMENTO",
-        }
-        data.push(newLog)
-        authContext.addLog(data)
-        Alert("Sucesso", "Efetuado desconto para o orçamento: " + _budget)
-      }).catch(result => {
-        Alert("Erro", result.response.data.error)
+    GetTokenJWT(authContext.user?.uid!, authContext.urlBackend!)
+      .then((authToken) => {
+        ReleaseDiscount(
+          _budget,
+          _branch,
+          _discountValue,
+          authToken?.token!,
+          authContext.urlBackend!
+        )
+          .then(() => {
+            let i = data.length.toString();
+            let newLog: UserLogs = {
+              id: i,
+              title: `Desconto no orçamento ${_budget}`,
+              date: `${day}/${month}/${year}`,
+              description: `R$ ${_budgetObject.totalBruto - _discountValue}`,
+              type: "DESCONTO_ORCAMENTO",
+            };
+            data.push(newLog);
+            authContext.addLog(data);
+            Alert("Sucesso", "Efetuado desconto para o orçamento: " + _budget);
+          })
+          .catch((result) => {
+            Alert("Erro", result.response.data.error);
+          });
       })
-    }).catch(result => {
-      Alert("Erro", result.response.data.error)
-    })
-  }
+      .catch((result) => {
+        Alert("Erro", result.response.data.error);
+      });
+  };
 
   const Alert = (title: string, content: string) => {
     setDialog({ title: title, content: content, visible: true });
@@ -62,7 +66,10 @@ export default function DiscountConfirmation({ navigation, route }: Properties) 
 
   if (dialog.title != "Erro") {
     return (
-      <ScrollView contentContainerStyle={styles.container} scrollEnabled={false}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        scrollEnabled={false}
+      >
         <View style={styles.topField}>
           <View style={styles.header}>
             <Icon
@@ -82,35 +89,48 @@ export default function DiscountConfirmation({ navigation, route }: Properties) 
         <View style={styles.bottomField}>
           <View>
             <Text style={styles.result}>Normal</Text>
-            <Text style={styles.description}>{_budgetObject.tipoOrcamento}</Text>
+            <Text style={styles.description}>
+              {_budgetObject.tipoOrcamento}
+            </Text>
           </View>
           <View>
             <Text style={styles.result}>{_budgetObject.nomeVendedor}</Text>
             <Text style={styles.description}>Vendedor</Text>
           </View>
           <View>
-            <Text style={styles.result}>Total R$ {((_budgetObject.totalBruto) - (_discountValue))}</Text>
+            <Text style={styles.result}>
+              Total R$ {_budgetObject.totalBruto - _discountValue}
+            </Text>
             <Text style={styles.description}>
               Pagamento
-              <Text style={{ fontWeight: "bold" }}> em {_budgetObject.pagamentos[0].forma}</Text>
+              <Text style={{ fontWeight: "bold" }}>
+                {" "}
+                em {_budgetObject.pagamentos[0].forma}
+              </Text>
             </Text>
           </View>
           <SwipeButton
             onComplete={releaseDiscount}
             title="EFETUAR DESCONTO"
-            underlayTitle="LIBERAR" />
+            underlayTitle="LIBERAR"
+          />
         </View>
         <Dialog
           visible={dialog.visible}
           title={dialog.title}
           content={dialog.content}
           dismiss={() => {
-            navigation.navigate("Discount", { _branch, _budget })
-            setDialog(defaultDialog)
-          }} />
-        <StatusBar style="light" translucent={false} backgroundColor="#212A4D" />
+            navigation.navigate("Discount", { _branch, _budget });
+            setDialog(defaultDialog);
+          }}
+        />
+        <StatusBar
+          style="light"
+          translucent={false}
+          backgroundColor="#212A4D"
+        />
       </ScrollView>
-    )
+    );
   } else {
     return (
       <View>
@@ -119,11 +139,12 @@ export default function DiscountConfirmation({ navigation, route }: Properties) 
           title={dialog.title}
           content={dialog.content}
           dismiss={() => {
-            navigation.navigate("Home")
-            setDialog(defaultDialog)
-          }} />
+            navigation.navigate("Home");
+            setDialog(defaultDialog);
+          }}
+        />
       </View>
-    )
+    );
   }
 }
 

@@ -3,13 +3,12 @@ import { UserLogs } from "./user.logs.model";
 
 export interface User {
   uid: string;
-  email: string;
   fullName: string;
-  company: string;
-  department: string;
+  company?: string;
+  department?: string;
   verified: boolean;
-  branches: UserBranch[];
-  logs: UserLogs[];
+  branches?: UserBranch[];
+  logs?: UserLogs[];
   portrait: string;
   discountLimit: number;
 }
