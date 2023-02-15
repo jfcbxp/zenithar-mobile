@@ -1,7 +1,6 @@
 import { createContext, useEffect, useMemo, useState } from "react";
 import { User } from "../models/user.model";
 import { firebaseAuth, storage, realtime } from "../services/firebase.service";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import firebase from "firebase/compat/app";
 import { Dialog } from "../components/modals/dialog";
 import { UserLogs } from "../models/user.logs.model";
@@ -36,12 +35,12 @@ const defaultState = {
   department: undefined,
   urlBackend: undefined,
   loading: true,
-  signUp: async () => { },
-  signIn: async () => { },
-  signOut: async () => { },
-  recoverPassword: async () => { },
-  userUpdate: async () => { },
-  addLog: async () => { },
+  signUp: async () => {},
+  signIn: async () => {},
+  signOut: async () => {},
+  recoverPassword: async () => {},
+  userUpdate: async () => {},
+  addLog: async () => {},
 };
 
 export const AuthContext = createContext<AuthContextProps>(defaultState);
@@ -54,10 +53,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User>();
   const [company, setCompany] = useState<string | undefined>("");
   const [department, setDepartment] = useState<string | undefined>("");
-  const [urlBackend, setUrlBackend] = useState<string | undefined>("")
+  const [urlBackend, setUrlBackend] = useState<string | undefined>("");
   const [loading, setLoading] = useState<boolean>(true);
-  const defaultDialog = { title: "", content: "", visible: false }
-  const [dialog, setDialog] = useState(defaultDialog)
+  const defaultDialog = { title: "", content: "", visible: false };
+  const [dialog, setDialog] = useState(defaultDialog);
+  const [expireAt, setExpireAt] = useState("");
 
   useEffect(() => {
     firebaseAuth.onAuthStateChanged(async (currentUser) => {
@@ -106,20 +106,24 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
               company: "",
               department: "",
               verified: false,
-              branches: [{
-                id: "",
-                name: ""
-              }],
-              logs: [{
-                id: "",
-                date: "",
-                title: "",
-                description: "",
-                type: ""
-              }],
+              branches: [
+                {
+                  id: "",
+                  name: "",
+                },
+              ],
+              logs: [
+                {
+                  id: "",
+                  date: "",
+                  title: "",
+                  description: "",
+                  type: "",
+                },
+              ],
               portrait: _portraitURL,
               discountLimit: 15,
-            }
+            };
             await _userRegister(_user);
           }
         }
@@ -153,7 +157,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const signOut = async () => {
     setLoading(true);
     await firebaseAuth.signOut();
-    await AsyncStorage.clear();
     setUser(undefined);
     setCompany("");
     setDepartment("");
@@ -211,23 +214,36 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setLoading(false);
   };
 
-  const addLog = async (
-    _logs: UserLogs[]
-  ) => {
-    setLoading(true)
-    let _user = firebaseAuth.currentUser!
-    let currentLogs = user?.logs!
+  const addLog = async (_logs: UserLogs[]) => {
+    setLoading(true);
+    let _user = firebaseAuth.currentUser!;
+    let currentLogs = user?.logs!;
     if (_logs.length > currentLogs.length) {
       _logs.forEach((element, index) => {
-        if (element.id == "0") _logs.splice(index, 1)
-      })
-      _logs.forEach(element => {
+        if (element.id == "0") _logs.splice(index, 1);
+      });
+      _logs.forEach((element) => {
         switch (element.id) {
-          case "1": { element.id = "0"; break; }
-          case "2": { element.id = "1"; break; }
-          case "3": { element.id = "2"; break; }
-          case "4": { element.id = "3"; break; }
-          case "5": { element.id = "4"; break; }
+          case "1": {
+            element.id = "0";
+            break;
+          }
+          case "2": {
+            element.id = "1";
+            break;
+          }
+          case "3": {
+            element.id = "2";
+            break;
+          }
+          case "4": {
+            element.id = "3";
+            break;
+          }
+          case "5": {
+            element.id = "4";
+            break;
+          }
         }
       });
     }
@@ -235,14 +251,15 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .ref("users")
       .child(_user.uid)
       .update({
-        logs: _logs
-      }).then(() => {
-        let _user: User = user!
-        _user.logs = _logs
-        _storeUser(_user)
+        logs: _logs,
       })
-    setLoading(false)
-  }
+      .then(() => {
+        let _user: User = user!;
+        _user.logs = _logs;
+        _storeUser(_user);
+      });
+    setLoading(false);
+  };
 
   const _reauthenticate = async (currentPassword: string) => {
     const user = firebaseAuth.currentUser!;
@@ -285,13 +302,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     });
 
   const Alert = (title: string, content: string) => {
-    setDialog({ title: title, content: content, visible: true })
+    setDialog({ title: title, content: content, visible: true });
   };
 
-  const _uploadImage = async (
-    _portrait: string,
-    _uid: string,
-  ) => {
+  const _uploadImage = async (_portrait: string, _uid: string) => {
     const response = await fetch(_portrait);
     const blob = await response.blob();
     const filename = _uid;
@@ -332,7 +346,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           discountLimit: _user.discountLimit,
           verified: _user.verified,
           branches: _user.branches,
-          logs: _user.logs
+          logs: _user.logs,
         };
         _storeUser(_user_);
       });
@@ -365,7 +379,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         }
         await _storeUser(_user);
         await _getURL(_user.company);
-        await _licenseCheck(_user.company)
+        await _licenseCheck(_user.company);
       });
   };
 
@@ -375,15 +389,14 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .child(company)
       .once("value")
       .then(async (snapshot) => {
-        setUrlBackend(snapshot.val().urlBackend)
-      }).catch(error => {
-        console.log(error.message)
+        setUrlBackend(snapshot.val().urlBackend);
       })
-  }
+      .catch((error) => {
+        console.log(error.message);
+      });
+  };
 
   const _storeUser = async (_user: User) => {
-    let jsonUser = JSON.stringify(_user);
-    await AsyncStorage.setItem("user", jsonUser);
     setUser(_user);
     _storeCompany(_user.company);
     _storeDepartment(_user.department);
@@ -395,11 +408,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         .ref("companies")
         .child(_company)
         .once("value")
-        .then(async (snapshot) => {
-          await AsyncStorage.setItem("company", snapshot.val().name).then(() => {
-            setCompany(snapshot.val().name);
-          });
-        });
+        .then((snapshot) => setCompany(snapshot.val().name));
     }
   };
 
@@ -409,66 +418,69 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         .ref("departments")
         .child(_department)
         .once("value")
-        .then(async (snapshot) => {
-          await AsyncStorage.setItem("department", snapshot.val()).then(() => {
-            setDepartment(snapshot.val());
-          });
-        });
+        .then(async (snapshot) => setDepartment(snapshot.val()));
     }
   };
 
   const _licenseCheck = async (company: string) => {
-    const date = new Date()
-    const currentDay = date.getDate()
-    const currentMonth = date.getMonth() + 1
-    const currentYear = date.getFullYear()
-    const [expireAt, setExpireAt] = useState("")
+    const date = new Date();
+    const currentDay = date.getDate();
+    const currentMonth = date.getMonth() + 1;
+    const currentYear = date.getFullYear();
+
     await realtime
       .ref("companies")
       .child(company)
       .once("value")
-      .then(snapshot => {
-        setExpireAt(snapshot.val().expireAt)
-      })
-    const expireAtDay = parseInt((expireAt[0] + expireAt[1]))
-    const expireAtMonth = parseInt((expireAt[3] + expireAt[4]))
-    const expireAtYear = parseInt((expireAt[5] + expireAt[6] + expireAt[7] + expireAt[8]))
-    if ((expireAtYear <= currentYear) && (expireAtMonth <= currentMonth) && (expireAtDay <= currentDay)) {
-      Alert("Licença", "Sua licença expirou em " + expireAt)
-      signOut()
+      .then((snapshot) => {
+        setExpireAt(snapshot.val().expireAt);
+      });
+    const expireAtDay = parseInt(expireAt[0] + expireAt[1]);
+    const expireAtMonth = parseInt(expireAt[3] + expireAt[4]);
+    const expireAtYear = parseInt(
+      expireAt[5] + expireAt[6] + expireAt[7] + expireAt[8]
+    );
+    if (
+      expireAtYear <= currentYear &&
+      expireAtMonth <= currentMonth &&
+      expireAtDay <= currentDay
+    ) {
+      Alert("Licença", "Sua licença expirou em " + expireAt);
+      signOut();
     }
-  }
+  };
 
-  const contextValue = useMemo(() => ({
-    user,
-    company,
-    department,
-    urlBackend,
-    loading,
-    signUp,
-    signIn,
-    signOut,
-    recoverPassword,
-    userUpdate,
-    addLog,
-  }), [
-    user,
-    company,
-    department,
-    urlBackend,
-    loading,
-    signUp,
-    signIn,
-    signOut,
-    recoverPassword,
-    userUpdate,
-    addLog,
-  ])
+  const contextValue = useMemo(
+    () => ({
+      user,
+      company,
+      department,
+      urlBackend,
+      loading,
+      signUp,
+      signIn,
+      signOut,
+      recoverPassword,
+      userUpdate,
+      addLog,
+    }),
+    [
+      user,
+      company,
+      department,
+      urlBackend,
+      loading,
+      signUp,
+      signIn,
+      signOut,
+      recoverPassword,
+      userUpdate,
+      addLog,
+    ]
+  );
 
   return (
-    <AuthContext.Provider
-      value={contextValue}
-    >
+    <AuthContext.Provider value={contextValue}>
       <Dialog
         title={dialog.title}
         content={dialog.content}
