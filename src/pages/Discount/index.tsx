@@ -14,39 +14,33 @@ import { GetTokenJWT } from "../../services/token-jwt.service";
 import { LoadBudget } from "../../services/budget.service";
 import { AuthContext } from "../../contexts/auth.provider";
 
-interface Properties
-  extends StackScreenProps<StackParams, "Discount"> { }
+interface Properties extends StackScreenProps<StackParams, "Discount"> {}
 
 export default function Discount({ route, navigation }: Properties) {
-  const { _budget, _branch, _discountValue } = route.params
-  const authContext = useContext(AuthContext)
-  const [visible, setVisible] = useState(false)
-  const [budgetData, setBudgetData] = useState<Orcamento>()
-  const defaultDialog = { title: "", content: "", visible: false }
+  const { _budget, _branch, _discountValue } = route.params;
+  const authContext = useContext(AuthContext);
+  const [visible, setVisible] = useState(false);
+  const [budgetData, setBudgetData] = useState<Orcamento>();
+  const defaultDialog = { title: "", content: "", visible: false };
   const [dialog, setDialog] = useState(defaultDialog);
 
   useEffect(() => {
-    GetTokenJWT(
-      authContext.user?.email!,
-      authContext.user?.uid!,
-      authContext.urlBackend!
-    ).then((authToken) => {
-      LoadBudget(
-        _budget,
-        _branch,
-        authToken?.token!,
-        authContext.urlBackend!
-      ).then(budget => setBudgetData(budget)).catch(result => {
-        Alert("Erro", result.response.data.error)
+    GetTokenJWT(authContext.user?.uid!, authContext.urlBackend!)
+      .then((authToken) => {
+        LoadBudget(_budget, _branch, authToken?.token!, authContext.urlBackend!)
+          .then((budget) => setBudgetData(budget))
+          .catch((result) => {
+            Alert("Erro", result.response.data.error);
+          });
       })
-    }).catch(result => {
-      if (result.data == undefined) {
-        Alert("Erro", "Servidor indisponível")
-      } else {
-        Alert("Erro", result.response.data.error)
-      }
-    })
-  }, [])
+      .catch((result) => {
+        if (result.data == undefined) {
+          Alert("Erro", "Servidor indisponível");
+        } else {
+          Alert("Erro", result.response.data.error);
+        }
+      });
+  }, []);
 
   const Alert = (title: string, content: string) => {
     setDialog({ title: title, content: content, visible: true });
@@ -68,57 +62,79 @@ export default function Discount({ route, navigation }: Properties) {
             />
             <Text style={styles.headerText}>Orçamento #{_budget}</Text>
           </View>
-          <View style={{ flex: 4, justifyContent: "space-between", paddingBottom: 8 }}>
+          <View
+            style={{
+              flex: 4,
+              justifyContent: "space-between",
+              paddingBottom: 8,
+            }}
+          >
             <View>
               <Text style={styles.title}>Vendedor</Text>
-              <Text style={styles.subTitle}>{budgetData?.vendedor} - {budgetData?.nomeVendedor}</Text>
+              <Text style={styles.subTitle}>
+                {budgetData?.vendedor} - {budgetData?.nomeVendedor}
+              </Text>
               <Text style={styles.title}>Cliente</Text>
-              <Text style={styles.subTitle}>{budgetData?.cliente} - {budgetData?.nomeCliente}</Text>
+              <Text style={styles.subTitle}>
+                {budgetData?.cliente} - {budgetData?.nomeCliente}
+              </Text>
             </View>
             <View style={styles.budget}>
-              <View style={{ flexDirection: "row", alignItems: 'flex-end' }}>
+              <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
                 <View style={[{ backgroundColor: "limegreen" }, styles.box]}>
-                  <Text style={styles.headerText}>{budgetData?.tipoOrcamento}</Text>
+                  <Text style={styles.headerText}>
+                    {budgetData?.tipoOrcamento}
+                  </Text>
                 </View>
                 <View style={[{ backgroundColor: "red" }, styles.box]}>
-                  <Text style={styles.headerText}>{budgetData?.statusOrcamento}</Text>
+                  <Text style={styles.headerText}>
+                    {budgetData?.statusOrcamento}
+                  </Text>
                 </View>
               </View>
-              {budgetData?.desconto! > 0 ?
+              {budgetData?.desconto! > 0 ? (
                 <View>
-                  <Text style={{
-                    fontSize: 18,
-                    fontWeight: "bold",
-                    color: "grey",
-                    textDecorationLine: "line-through",
-                  }}>R$ {budgetData?.totalBruto.toFixed(2).replace('.', ',')}</Text>
-                  <Text style={{
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: "bold",
+                      color: "grey",
+                      textDecorationLine: "line-through",
+                    }}
+                  >
+                    R$ {budgetData?.totalBruto.toFixed(2).replace(".", ",")}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 24,
+                      fontWeight: "bold",
+                      color: "red",
+                    }}
+                  >
+                    R$ {budgetData?.totalLiquido.toFixed(2).replace(".", ",")}
+                  </Text>
+                </View>
+              ) : (
+                <Text
+                  style={{
                     fontSize: 24,
                     fontWeight: "bold",
-                    color: "red",
-                  }}>R$ {budgetData?.totalLiquido.toFixed(2).replace('.', ',')}</Text>
-                </View>
-                :
-                <Text style={{
-                  fontSize: 24,
-                  fontWeight: "bold",
-                  color: "white",
-                }}>R$ {budgetData?.totalLiquido.toFixed(2).replace('.', ',')}</Text>
-              }
+                    color: "white",
+                  }}
+                >
+                  R$ {budgetData?.totalLiquido.toFixed(2).replace(".", ",")}
+                </Text>
+              )}
             </View>
           </View>
         </View>
         <View style={styles.bottomField}>
           <View style={{ flex: 5, paddingTop: "2.5%" }}>
-            <ItemsDropdown
-              data={budgetData?.itens} />
-            <PaymentMethodDropdown
-              data={budgetData?.pagamentos} />
+            <ItemsDropdown data={budgetData?.itens} />
+            <PaymentMethodDropdown data={budgetData?.pagamentos} />
           </View>
           <View style={{ flex: 1 }}>
-            <Button
-              onPress={() => setVisible(true)}
-              title="CONTINUAR" />
+            <Button onPress={() => setVisible(true)} title="CONTINUAR" />
           </View>
         </View>
         <ApplyDiscountModal
@@ -127,20 +143,26 @@ export default function Discount({ route, navigation }: Properties) {
               _budget: _budget,
               _branch: _branch,
               _budgetObject: budgetData!,
-              _discountValue: _discountValue!
-            })
-            setVisible(false)
+              _discountValue: _discountValue!,
+            });
+            setVisible(false);
           }}
           visible={visible}
           budget={_budget}
           branch={_branch}
-          total={budgetData?.totalBruto!} />
+          total={budgetData?.totalBruto!}
+        />
         <Dialog
           visible={dialog.visible}
           title={dialog.title}
           content={dialog.content}
-          dismiss={() => setDialog(defaultDialog)} />
-        <StatusBar style="light" translucent={false} backgroundColor="#212A4D" />
+          dismiss={() => setDialog(defaultDialog)}
+        />
+        <StatusBar
+          style="light"
+          translucent={false}
+          backgroundColor="#212A4D"
+        />
       </View>
     );
   } else {
@@ -151,11 +173,12 @@ export default function Discount({ route, navigation }: Properties) {
           title={dialog.title}
           content={dialog.content}
           dismiss={() => {
-            navigation.navigate("Home")
-            setDialog(defaultDialog)
-          }} />
+            navigation.navigate("Home");
+            setDialog(defaultDialog);
+          }}
+        />
       </View>
-    )
+    );
   }
 }
 
