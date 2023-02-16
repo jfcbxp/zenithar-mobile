@@ -6,13 +6,12 @@ import { StackParams } from "../../types/stack.params";
 import { MaterialIcons as Icon } from "@expo/vector-icons";
 import { Button } from "../../components/buttons/button";
 import { ApplyDiscountModal } from "../../components/modals/apply-discount";
-import { PaymentMethodDropdown } from "../../components/dropdowns/discount/payment-method-dropdown";
-import { ItemsDropdown } from "../../components/dropdowns/discount/items-dropdown";
 import { Orcamento } from "../../models/from-api/orcamento.model";
 import { Dialog } from "../../components/modals/dialog";
 import { GetTokenJWT } from "../../services/token-jwt.service";
 import { LoadBudget } from "../../services/budget.service";
 import { AuthContext } from "../../contexts/auth.provider";
+import { Dropdown } from "../../components/dropdowns/dropdown";
 
 interface Properties extends StackScreenProps<StackParams, "Discount"> {}
 
@@ -130,8 +129,8 @@ export default function Discount({ route, navigation }: Properties) {
         </View>
         <View style={styles.bottomField}>
           <View style={{ flex: 5, paddingTop: "2.5%" }}>
-            <ItemsDropdown data={budgetData?.itens} />
-            <PaymentMethodDropdown data={budgetData?.pagamentos} />
+            <Dropdown title="Itens" data={budgetData?.itens} />
+            <Dropdown title="Forma de pagamento" data={budgetData?.pagamentos} />
           </View>
           <View style={{ flex: 1 }}>
             <Button onPress={() => setVisible(true)} title="CONTINUAR" />

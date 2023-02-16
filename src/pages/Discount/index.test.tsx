@@ -5,8 +5,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import Discount from ".";
-import { ItemsDropdown } from "../../components/dropdowns/discount/items-dropdown";
-import { PaymentMethodDropdown } from "../../components/dropdowns/discount/payment-method-dropdown";
+import { Dropdown } from "../../components/dropdowns/dropdown";
 
 describe("Discount test", () => {
   const navigation =
@@ -28,10 +27,9 @@ describe("Discount test", () => {
   );
 
   it("test Discount Dropdowns", async () => {
-    const itemsDropdown = rendered.root.findByType(ItemsDropdown);
-    const paymentMethodDropdown = rendered.root.findByType(
-      PaymentMethodDropdown
-    );
+    const dropdowns = rendered.root.findAllByType(Dropdown)
+    const itemsDropdown = dropdowns[0];
+    const paymentMethodDropdown = dropdowns[1];
     const button = rendered.root.findByType(Button);
 
     await act(() => button.props.onPress());
