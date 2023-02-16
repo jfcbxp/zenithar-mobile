@@ -1,20 +1,17 @@
 import { useEffect, useState } from "react";
-import { ListRenderItem, Pressable, Text, View } from "react-native";
+import { FlatList, ListRenderItem, Pressable, Text, View } from "react-native";
 import { DropdownStyles as styles } from "../dropdown-styles";
 import { Feather as Icon } from "@expo/vector-icons";
-import { FlatList } from "react-native-gesture-handler";
 import { Itens } from "../../../models/from-api/itens.model";
 import { ItemsItem } from "../../lists/discount/items-item";
-import { Pagamentos } from "../../../models/from-api/pagamentos.model";
 
 interface Properties {
-  data: Itens[] | Pagamentos[] | undefined;
-  title: string;
+  data: Itens[] | undefined;
 }
 
 export function ItemsDropdown(properties: Properties) {
   const [visible, setVisible] = useState(false);
-  const [data, setData] = useState<Itens[] | Pagamentos[] | undefined>();
+  const [data, setData] = useState<typeof properties.data>();
 
   useEffect(() => {
     setData(properties.data);
@@ -24,20 +21,16 @@ export function ItemsDropdown(properties: Properties) {
     setVisible((current) => !current);
   };
 
-  const renderItem: ListRenderItem<Itens> = ({ item }) => (
-    <ItemsItem data={item} />
-  );
+  const renderItem: ListRenderItem<Itens> = ({ item }) => <ItemsItem data={item} />;
 
   return (
     <View>
       <Pressable style={styles.container} onPress={expand}>
         <View style={styles.area}>
-          <Text style={styles.text}>{properties.title}</Text>
+          <Text style={styles.text}>Itens</Text>
           <Icon
-            testID="icon"
-            name={visible === false ? "chevron-down" : "chevron-up"}
-            size={32}
-          />
+            testID="icon" size={32}
+            name={visible === false ? "chevron-down" : "chevron-up"} />
         </View>
       </Pressable>
       {visible && (

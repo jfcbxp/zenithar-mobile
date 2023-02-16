@@ -11,7 +11,7 @@ interface Properties {
 
 export function PaymentMethodDropdown(properties: Properties) {
   const [visible, setVisible] = useState(false);
-  const [data, setData] = useState<Pagamentos[] | undefined>()
+  const [data, setData] = useState<typeof properties.data>()
 
   useEffect(() => {
     setData(properties.data)
@@ -29,9 +29,8 @@ export function PaymentMethodDropdown(properties: Properties) {
         <View style={styles.area}>
           <Text style={styles.text}>Forma de pagamento</Text>
           <Icon
-            testID="icon"
-            name={visible === false ? "chevron-down" : "chevron-up"}
-            size={32} />
+            testID="icon" size={32}
+            name={visible === false ? "chevron-down" : "chevron-up"} />
         </View>
       </Pressable>
       {visible && (
