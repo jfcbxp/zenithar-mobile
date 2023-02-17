@@ -9,7 +9,7 @@ import { EmailInput } from "../../components/inputs/email-input";
 import { StatusBar } from "expo-status-bar";
 
 interface Properties
-  extends StackScreenProps<StackParams, "PasswordRecovery"> {}
+  extends StackScreenProps<StackParams, "PasswordRecovery"> { }
 
 export default function PasswordRecovery({ navigation }: Properties) {
   const authContext = useContext(AuthContext);
@@ -49,16 +49,14 @@ export default function PasswordRecovery({ navigation }: Properties) {
                 "Recuperação de senha",
                 "Em alguns instantes uma mensagem de e-mail chegará em sua caixa de entrada com as instruções para redefinição da sua senha."
               );
-            }}
-          />
+            }} />
         </View>
       </View>
       <Dialog
         title={dialogTitle}
         content={dialogContent}
         visible={dialogVisible}
-        dismiss={handleRecoverPassword}
-      />
+        dismiss={handleRecoverPassword} />
       <StatusBar style="light" translucent={false} backgroundColor="silver" />
     </View>
   );

@@ -12,7 +12,9 @@ export function Portrait(properties: Properties) {
             <Image
                 source={
                     properties.source == '' ?
-                        require('../../../assets/no-user.png') : { uri: properties.source }
+                        require('../../../assets/no-user.png')
+                        :
+                        { uri: properties.source }
                 }
                 style={styles.image} />
             <Button title="SELECIONAR" onPress={properties.onPress} />

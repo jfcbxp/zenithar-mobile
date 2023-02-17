@@ -12,7 +12,7 @@ import { AuthContext } from "../../contexts/auth.provider";
 import { Dialog } from "../../components/modals/dialog";
 import { UserLogs } from "../../models/user.logs.model";
 
-interface Properties extends StackScreenProps<StackParams, "Home"> {}
+interface Properties extends StackScreenProps<StackParams, "Home"> { }
 
 export default function Home({ navigation }: Properties) {
   const authContext = useContext(AuthContext);
@@ -61,13 +61,11 @@ export default function Home({ navigation }: Properties) {
       <ScrollView
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        style={styles.menu}
-      >
+        style={styles.menu}>
         <NavigationButton
           icon="attach-money"
           title="Desconto"
-          onPress={NavigationButtonOnPress}
-        />
+          onPress={NavigationButtonOnPress} />
       </ScrollView>
       <View style={styles.field}>
         <HomeContainer title={containerTitle}>{containerChild}</HomeContainer>
@@ -77,8 +75,7 @@ export default function Home({ navigation }: Properties) {
           visible={discount}
           dismiss={() => {
             setDiscount(false);
-          }}
-        />
+          }} />
       )}
       <Dialog
         title={dialog.title}
@@ -86,8 +83,7 @@ export default function Home({ navigation }: Properties) {
         visible={dialog.visible}
         dismiss={() => {
           setDialog(defaultDialog);
-        }}
-      />
+        }} />
       <StatusBar style="light" translucent={false} backgroundColor="#212A4D" />
     </View>
   );

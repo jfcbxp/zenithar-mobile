@@ -13,7 +13,7 @@ import { LoadBudget } from "../../services/budget.service";
 import { AuthContext } from "../../contexts/auth.provider";
 import { Dropdown } from "../../components/dropdowns/dropdown";
 
-interface Properties extends StackScreenProps<StackParams, "Discount"> {}
+interface Properties extends StackScreenProps<StackParams, "Discount"> { }
 
 export default function Discount({ route, navigation }: Properties) {
   const { _budget, _branch, _discountValue } = route.params;
@@ -24,21 +24,19 @@ export default function Discount({ route, navigation }: Properties) {
   const [dialog, setDialog] = useState(defaultDialog);
 
   useEffect(() => {
-    GetTokenJWT(authContext.user?.uid!, authContext.urlBackend!)
-      .then((authToken) => {
-        LoadBudget(_budget, _branch, authToken?.token!, authContext.urlBackend!)
-          .then((budget) => setBudgetData(budget))
-          .catch((result) => {
-            Alert("Erro", result.response.data.error);
-          });
-      })
-      .catch((result) => {
-        if (result.data == undefined) {
-          Alert("Erro", "Servidor indisponível");
-        } else {
+    GetTokenJWT(authContext.user?.uid!, authContext.urlBackend!).then((authToken) => {
+      LoadBudget(_budget, _branch, authToken?.token!, authContext.urlBackend!)
+        .then((budget) => setBudgetData(budget))
+        .catch((result) => {
           Alert("Erro", result.response.data.error);
-        }
-      });
+        });
+    }).catch((result) => {
+      if (result.data == undefined) {
+        Alert("Erro", "Servidor indisponível");
+      } else {
+        Alert("Erro", result.response.data.error);
+      }
+    });
   }, []);
 
   const Alert = (title: string, content: string) => {
@@ -57,8 +55,7 @@ export default function Discount({ route, navigation }: Properties) {
               color="white"
               onPress={() => {
                 navigation && navigation.navigate("Home");
-              }}
-            />
+              }} />
             <Text style={styles.headerText}>Orçamento #{_budget}</Text>
           </View>
           <View
@@ -66,8 +63,7 @@ export default function Discount({ route, navigation }: Properties) {
               flex: 4,
               justifyContent: "space-between",
               paddingBottom: 8,
-            }}
-          >
+            }}>
             <View>
               <Text style={styles.title}>Vendedor</Text>
               <Text style={styles.subTitle}>
@@ -99,8 +95,7 @@ export default function Discount({ route, navigation }: Properties) {
                       fontWeight: "bold",
                       color: "grey",
                       textDecorationLine: "line-through",
-                    }}
-                  >
+                    }}>
                     R$ {budgetData?.totalBruto.toFixed(2).replace(".", ",")}
                   </Text>
                   <Text
@@ -108,8 +103,7 @@ export default function Discount({ route, navigation }: Properties) {
                       fontSize: 24,
                       fontWeight: "bold",
                       color: "red",
-                    }}
-                  >
+                    }}>
                     R$ {budgetData?.totalLiquido.toFixed(2).replace(".", ",")}
                   </Text>
                 </View>
@@ -119,8 +113,7 @@ export default function Discount({ route, navigation }: Properties) {
                     fontSize: 24,
                     fontWeight: "bold",
                     color: "white",
-                  }}
-                >
+                  }}>
                   R$ {budgetData?.totalLiquido.toFixed(2).replace(".", ",")}
                 </Text>
               )}
@@ -149,19 +142,16 @@ export default function Discount({ route, navigation }: Properties) {
           visible={visible}
           budget={_budget}
           branch={_branch}
-          total={budgetData?.totalBruto!}
-        />
+          total={budgetData?.totalBruto!} />
         <Dialog
           visible={dialog.visible}
           title={dialog.title}
           content={dialog.content}
-          dismiss={() => setDialog(defaultDialog)}
-        />
+          dismiss={() => setDialog(defaultDialog)} />
         <StatusBar
           style="light"
           translucent={false}
-          backgroundColor="#212A4D"
-        />
+          backgroundColor="#212A4D" />
       </View>
     );
   } else {
@@ -174,8 +164,7 @@ export default function Discount({ route, navigation }: Properties) {
           dismiss={() => {
             navigation.navigate("Home");
             setDialog(defaultDialog);
-          }}
-        />
+          }} />
       </View>
     );
   }
