@@ -9,10 +9,10 @@ import { Dialog } from "../../../components/modals/dialog";
 import { GetTokenJWT } from "../../../services/token-jwt.service";
 import { ReleaseDiscount } from "../../../services/discount.service";
 import { AuthContext } from "../../../contexts/auth.provider";
-import { UserLogs } from "../../../models/user.logs.model";
+import { LogTypeEnum, UserLogs } from "../../../models/user.logs.model";
 
 interface Properties
-  extends StackScreenProps<StackParams, "DiscountConfirmation"> { }
+  extends StackScreenProps<StackParams, "DiscountConfirmation"> {}
 
 export default function DiscountConfirmation({
   navigation,
@@ -29,31 +29,35 @@ export default function DiscountConfirmation({
   const year = date.getFullYear();
 
   const releaseDiscount = () => {
-    GetTokenJWT(authContext.user?.uid!, authContext.urlBackend!).then((authToken) => {
-      ReleaseDiscount(
-        _budget,
-        _branch,
-        _discountValue,
-        authToken?.token!,
-        authContext.urlBackend!
-      ).then(() => {
-        let i = data.length.toString();
-        let newLog: UserLogs = {
-          id: i,
-          title: `Desconto no orçamento ${_budget}`,
-          date: `${day}/${month}/${year}`,
-          description: `R$ ${_budgetObject.totalBruto - _discountValue}`,
-          type: "DESCONTO_ORCAMENTO",
-        };
-        data.push(newLog);
-        authContext.addLog(data);
-        Alert("Sucesso", "Efetuado desconto para o orçamento: " + _budget);
-      }).catch((result) => {
+    GetTokenJWT(authContext.user?.uid!, authContext.urlBackend!)
+      .then((authToken) => {
+        ReleaseDiscount(
+          _budget,
+          _branch,
+          _discountValue,
+          authToken?.token!,
+          authContext.urlBackend!
+        )
+          .then(() => {
+            let i = data.length.toString();
+            let newLog: UserLogs = {
+              id: i,
+              title: `Desconto no orçamento ${_budget}`,
+              date: `${day}/${month}/${year}`,
+              description: `R$ ${_budgetObject.totalBruto - _discountValue}`,
+              type: LogTypeEnum.DESCONTO_ORCAMENTO,
+            };
+            data.push(newLog);
+            authContext.addLog(data);
+            Alert("Sucesso", "Efetuado desconto para o orçamento: " + _budget);
+          })
+          .catch((result) => {
+            Alert("Erro", result.response.data.error);
+          });
+      })
+      .catch((result) => {
         Alert("Erro", result.response.data.error);
       });
-    }).catch((result) => {
-      Alert("Erro", result.response.data.error);
-    });
   };
 
   const Alert = (title: string, content: string) => {
@@ -64,7 +68,8 @@ export default function DiscountConfirmation({
     return (
       <ScrollView
         contentContainerStyle={styles.container}
-        scrollEnabled={false}>
+        scrollEnabled={false}
+      >
         <View style={styles.topField}>
           <View style={styles.header}>
             <Icon
@@ -74,7 +79,8 @@ export default function DiscountConfirmation({
               color="white"
               onPress={() => {
                 navigation && navigation.navigate("Home");
-              }} />
+              }}
+            />
             <Text style={styles.headerText}>Desconto</Text>
           </View>
           <Text style={styles.client}>{_budgetObject.nomeCliente}</Text>
@@ -91,7 +97,10 @@ export default function DiscountConfirmation({
           </View>
           <View>
             <Text style={styles.result}>
-              Total R$ {(_budgetObject.totalBruto - _discountValue).toFixed(2).replace(".", ",")}
+              Total R${" "}
+              {(_budgetObject.totalBruto - _discountValue)
+                .toFixed(2)
+                .replace(".", ",")}
             </Text>
             <Text style={styles.description}>
               Pagamento

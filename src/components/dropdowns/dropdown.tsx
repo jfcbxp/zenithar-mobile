@@ -1,39 +1,25 @@
-import { useEffect, useState } from "react";
-import { ListRenderItem, Pressable, Text, View } from "react-native";
+import { useState } from "react";
+import {
+  ListRenderItem,
+  Pressable,
+  Text,
+  View,
+  StyleSheet,
+} from "react-native";
 import { Feather as Icon } from "@expo/vector-icons";
 import { FlatList } from "react-native-gesture-handler";
-import { Itens } from "../../models/from-api/itens.model";
-import { Pagamentos } from "../../models/from-api/pagamentos.model";
-import { ItemsItem } from "../lists/discount/items-item";
-import { PaymentMethodItem } from "../lists/discount/payment-method-item";
-import { DropdownStyles as styles } from "./dropdown-styles";
 
-interface Properties {
-  data: Itens[] | Pagamentos[] | undefined;
+interface Properties<T> {
+  data: T[] | undefined;
+  renderItem: ListRenderItem<T>;
   title: string;
 }
 
-export function Dropdown(properties: Properties) {
+export function Dropdown<T extends unknown>(properties: Properties<T>) {
   const [visible, setVisible] = useState(false);
-  const [data, setData] = useState<any[] | undefined>();
-
-  useEffect(() => {
-    setData(properties.data);
-  }, [visible]);
 
   const expand = () => {
     setVisible((current) => !current);
-  };
-
-  const isPagamento = (item: Itens | Pagamentos): item is Pagamentos =>
-    Object.keys(item).includes("parcelas");
-
-  const renderItem: ListRenderItem<Itens | Pagamentos> = ({ item }) => {
-    if (isPagamento(item)) {
-      return <PaymentMethodItem data={item} />;
-    } else {
-      return <ItemsItem data={item} />;
-    }
   };
 
   return (
@@ -50,9 +36,34 @@ export function Dropdown(properties: Properties) {
       </Pressable>
       {visible && (
         <View style={styles.children}>
-          <FlatList data={data} renderItem={renderItem} />
+          <FlatList data={properties.data} renderItem={properties.renderItem} />
         </View>
       )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginVertical: "1.25%",
+    paddingHorizontal: "5%",
+    paddingVertical: "2.5%",
+    borderTopStartRadius: 9,
+    borderTopEndRadius: 9,
+    justifyContent: "center",
+    backgroundColor: "#DFE1E6",
+  },
+  area: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  children: {
+    justifyContent: "center",
+  },
+  text: {
+    fontSize: 20,
+  },
+  subText: {
+    fontSize: 13,
+  },
+});
