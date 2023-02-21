@@ -66,27 +66,27 @@ describe("Discount test", () => {
     };
   };
 
-  const rendered = renderer.create(
-    <AuthContext.Provider
-      value={{
-        user,
-        company,
-        department,
-        urlBackend,
-        loading,
-        signUp,
-        signIn,
-        signOut,
-        recoverPassword,
-        userUpdate,
-        addLog,
-      }}
-    >
-      <Discount navigation={navigation} route={mockRoute()} />
-    </AuthContext.Provider>
-  );
-
   it("test Discount ActivityIndicator", async () => {
+    const rendered = await renderer.create(
+      <AuthContext.Provider
+        value={{
+          user,
+          company,
+          department,
+          urlBackend,
+          loading,
+          signUp,
+          signIn,
+          signOut,
+          recoverPassword,
+          userUpdate,
+          addLog,
+        }}
+      >
+        <Discount navigation={navigation} route={mockRoute()} />
+      </AuthContext.Provider>
+    );
+
     const activityIndicator = rendered.root.findAllByType(ActivityIndicator);
     expect(activityIndicator).toBeTruthy();
   });

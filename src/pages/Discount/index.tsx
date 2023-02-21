@@ -56,7 +56,7 @@ export default function Discount({ route, navigation }: Properties) {
   }, []);
 
   const Alert = (title: string, content: string) => {
-    navigation && setDialog({ title: title, content: content, visible: true });
+    setDialog({ title: title, content: content, visible: true });
   };
 
   if (budgetData) {
