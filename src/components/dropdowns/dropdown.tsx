@@ -5,9 +5,9 @@ import {
   Text,
   View,
   StyleSheet,
+  FlatList
 } from "react-native";
 import { Feather as Icon } from "@expo/vector-icons";
-import { FlatList } from "react-native-gesture-handler";
 
 interface Properties<T> {
   data: T[] | undefined;
