@@ -26,7 +26,7 @@ type AuthContextProps = {
     _currentPassword?: string,
     _newPassword?: string
   ): Promise<void>;
-  addLog(_logs: UserLogs[]): Promise<void>;
+  addLog(log: UserLogs): Promise<void>;
 };
 
 const defaultState = {
@@ -186,51 +186,19 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setLoading(false);
   };
 
-  const addLog = async (_logs: UserLogs[]) => {
+  const addLog = async (log: UserLogs) => {
     setLoading(true);
-    let _user = firebaseAuth.currentUser!;
-    let currentLogs = user?.logs;
-
-    if (currentLogs && _logs.length > currentLogs.length) {
-      _logs.forEach((element, index) => {
-        if (element.id == "0") _logs.splice(index, 1);
-      });
-      _logs.forEach((element) => {
-        switch (element.id) {
-          case "1": {
-            element.id = "0";
-            break;
-          }
-          case "2": {
-            element.id = "1";
-            break;
-          }
-          case "3": {
-            element.id = "2";
-            break;
-          }
-          case "4": {
-            element.id = "3";
-            break;
-          }
-          case "5": {
-            element.id = "4";
-            break;
-          }
-        }
-      });
+    let _user: User = user!;
+    let logs = _user.logs ? _user.logs : [];
+    logs.reverse();
+    logs.push(log);
+    if (logs.length > 5) {
+      logs.shift();
     }
-    await realtime
-      .ref("users")
-      .child(_user.uid)
-      .update({
-        logs: _logs,
-      })
-      .then(() => {
-        let _user: User = user!;
-        _user.logs = _logs;
-        setUser(_user);
-      });
+
+    await realtime.ref("users").child(_user.uid).child("logs").update(logs);
+    _user.logs = logs;
+    setUser(_user);
     setLoading(false);
   };
 

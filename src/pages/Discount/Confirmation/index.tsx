@@ -22,7 +22,6 @@ export default function DiscountConfirmation({
   const authContext = useContext(AuthContext);
   const defaultDialog = { title: "", content: "", visible: false };
   const [dialog, setDialog] = useState(defaultDialog);
-  const data = authContext.user?.logs!;
   const date = new Date();
   const day = date.getDate();
   const month = date.getMonth() + 1;
@@ -33,16 +32,13 @@ export default function DiscountConfirmation({
     service
       .releaseDiscount(_budget, _branch, _discountValue)
       .then(() => {
-        let i = data.length.toString();
         let newLog: UserLogs = {
-          id: i,
           title: `Desconto no orçamento ${_budget}`,
           date: `${day}/${month}/${year}`,
           description: `R$ ${_budgetObject.totalBruto - _discountValue}`,
           type: LogTypeEnum.DESCONTO_ORCAMENTO,
         };
-        data.push(newLog);
-        authContext.addLog(data);
+        authContext.addLog(newLog);
         Alert("Sucesso", "Efetuado desconto para o orçamento: " + _budget);
       })
       .catch((error) => {
@@ -115,7 +111,7 @@ export default function DiscountConfirmation({
           title={dialog.title}
           content={dialog.content}
           dismiss={() => {
-            navigation.navigate("Discount", { _branch, _budget });
+            navigation && navigation.navigate("Discount", { _branch, _budget });
             setDialog(defaultDialog);
           }}
         />
@@ -134,7 +130,7 @@ export default function DiscountConfirmation({
           title={dialog.title}
           content={dialog.content}
           dismiss={() => {
-            navigation.navigate("Home");
+            navigation && navigation.navigate("Home");
             setDialog(defaultDialog);
           }}
         />
