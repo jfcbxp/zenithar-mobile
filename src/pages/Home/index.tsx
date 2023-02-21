@@ -40,6 +40,7 @@ export default function Home({ navigation }: Properties) {
     <View style={styles.container}>
       <View>
         <Header
+          userUpdate={authContext.userUpdate}
           signOut={authContext.signOut}
           fullName={authContext.user?.fullName}
           portrait={authContext.user?.portrait}

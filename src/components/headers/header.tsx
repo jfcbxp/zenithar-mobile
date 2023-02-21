@@ -5,6 +5,12 @@ import { UserSettings } from "../modals/user-settings";
 
 interface Properties {
   signOut: Function;
+  userUpdate(
+    _fullName: string,
+    _portrait?: string | undefined,
+    _currentPassword?: string | undefined,
+    _newPassword?: string | undefined
+  ): Promise<void>;
   fullName?: string;
   company?: string;
   department?: string;
@@ -49,6 +55,9 @@ export function Header(properties: Properties) {
       </Pressable>
       {visible && (
         <UserSettings
+          fullName={properties.fullName}
+          portrait={properties.portrait}
+          userUpdate={properties.userUpdate}
           visible={visible}
           dismiss={() => {
             setVisible(false);

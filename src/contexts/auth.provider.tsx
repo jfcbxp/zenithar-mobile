@@ -86,7 +86,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     await firebaseAuth
       .createUserWithEmailAndPassword(_email, _password)
       .then(async (result) => {
-        if (result.user != null) {
+        if (result.user) {
           let validate = true;
           firebaseAuth.languageCode = "pt";
           result.user.sendEmailVerification().catch((error) => {
@@ -336,13 +336,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const _storeDepartment = async (_department: string) => {
-    if (_department != "") {
-      await realtime
-        .ref("departments")
-        .child(_department)
-        .once("value")
-        .then(async (snapshot) => setDepartment(snapshot.val()));
-    }
+    await realtime
+      .ref("departments")
+      .child(_department)
+      .once("value")
+      .then(async (snapshot) => setDepartment(snapshot.val()));
   };
 
   const _licenseCheck = async (company: string) => {

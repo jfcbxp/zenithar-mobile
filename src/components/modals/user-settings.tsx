@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { GestureResponderEvent, Modal, ModalProps, View } from "react-native";
 import { Dialog, DialogStyles as styles } from "./dialog";
 import { Button } from "../buttons/button";
@@ -6,18 +6,24 @@ import { FullNameInput } from "../inputs/fullname-input";
 import { PasswordInput } from "../inputs/password-input";
 import { Portrait } from "../portrait/portrait";
 import * as ImagePicker from "expo-image-picker";
-import { AuthContext } from "../../contexts/auth.provider";
 import { CommandLink } from "../buttons/command-link";
 
 interface Properties extends ModalProps {
   visible: boolean | undefined;
+  userUpdate(
+    _fullName: string,
+    _portrait?: string | undefined,
+    _currentPassword?: string | undefined,
+    _newPassword?: string | undefined
+  ): Promise<void>;
+  fullName?: string;
+  portrait?: string;
   dismiss: ((event: GestureResponderEvent) => void) | undefined;
 }
 
 export function UserSettings(properties: Properties) {
-  const authContext = useContext(AuthContext);
-  const FULLNAME = authContext.user?.fullName;
-  const PORTRAIT = authContext.user?.portrait;
+  const FULLNAME = properties.fullName;
+  const PORTRAIT = properties.portrait;
   const [fullName, setFullName] = useState<string | undefined>(FULLNAME);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -25,13 +31,8 @@ export function UserSettings(properties: Properties) {
   const [portrait, setPortrait] = useState<string | undefined>(PORTRAIT);
   const [changePassword, setChangePassword] = useState<boolean | undefined>();
   const [disabled, setDisabled] = useState(false);
-  const defaultDialog = { title: "", content: "", visible: false }
+  const defaultDialog = { title: "", content: "", visible: false };
   const [dialog, setDialog] = useState(defaultDialog);
-
-  useEffect(() => {
-    setFullName(FULLNAME);
-    setPortrait(PORTRAIT);
-  }, []);
 
   useEffect(() => {
     if (!changePassword) {
@@ -75,7 +76,7 @@ export function UserSettings(properties: Properties) {
     if (fullName == "") {
       Alert("Dados mandatórios", "Por favor, preencher todos os campos");
     } else {
-      await authContext.userUpdate(
+      await properties.userUpdate(
         fullName!,
         portrait,
         currentPassword,
