@@ -94,27 +94,27 @@ export default function Discount({ route, navigation }: Properties) {
             <View>
               <Text style={styles.title}>Vendedor</Text>
               <Text style={styles.subTitle}>
-                {budgetData?.vendedor} - {budgetData?.nomeVendedor}
+                {budgetData.vendedor} - {budgetData.nomeVendedor}
               </Text>
               <Text style={styles.title}>Cliente</Text>
               <Text style={styles.subTitle}>
-                {budgetData?.cliente} - {budgetData?.nomeCliente}
+                {budgetData.cliente} - {budgetData.nomeCliente}
               </Text>
             </View>
             <View style={styles.budget}>
               <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
                 <View style={[{ backgroundColor: "limegreen" }, styles.box]}>
                   <Text style={styles.headerText}>
-                    {budgetData?.tipoOrcamento}
+                    {budgetData.tipoOrcamento}
                   </Text>
                 </View>
                 <View style={[{ backgroundColor: "red" }, styles.box]}>
                   <Text style={styles.headerText}>
-                    {budgetData?.statusOrcamento}
+                    {budgetData.statusOrcamento}
                   </Text>
                 </View>
               </View>
-              {budgetData?.desconto! > 0 ? (
+              {budgetData.desconto > 0 ? (
                 <View>
                   <Text
                     style={{
@@ -124,7 +124,7 @@ export default function Discount({ route, navigation }: Properties) {
                       textDecorationLine: "line-through",
                     }}
                   >
-                    R$ {budgetData?.totalBruto.toFixed(2).replace(".", ",")}
+                    R$ {budgetData.totalBruto.toFixed(2).replace(".", ",")}
                   </Text>
                   <Text
                     style={{
@@ -133,7 +133,7 @@ export default function Discount({ route, navigation }: Properties) {
                       color: "red",
                     }}
                   >
-                    R$ {budgetData?.totalLiquido.toFixed(2).replace(".", ",")}
+                    R$ {budgetData.totalLiquido.toFixed(2).replace(".", ",")}
                   </Text>
                 </View>
               ) : (
@@ -144,7 +144,7 @@ export default function Discount({ route, navigation }: Properties) {
                     color: "white",
                   }}
                 >
-                  R$ {budgetData?.totalLiquido.toFixed(2).replace(".", ",")}
+                  R$ {budgetData.totalLiquido.toFixed(2).replace(".", ",")}
                 </Text>
               )}
             </View>
@@ -155,12 +155,12 @@ export default function Discount({ route, navigation }: Properties) {
             <Dropdown
               title="Itens"
               renderItem={renderItemItens}
-              data={budgetData?.itens}
+              data={budgetData.itens}
             />
             <Dropdown
               renderItem={renderItemPagamentos}
               title="Forma de pagamento"
-              data={budgetData?.pagamentos}
+              data={budgetData.pagamentos}
             />
           </View>
           <View style={{ flex: 1 }}>
@@ -172,7 +172,7 @@ export default function Discount({ route, navigation }: Properties) {
             navigation.navigate("DiscountConfirmation", {
               _budget: _budget,
               _branch: _branch,
-              _budgetObject: budgetData!,
+              _budgetObject: budgetData,
               _discountValue: _discountValue!,
             });
             setVisible(false);
@@ -181,7 +181,7 @@ export default function Discount({ route, navigation }: Properties) {
           visible={visible}
           budget={_budget}
           branch={_branch}
-          total={budgetData?.totalBruto!}
+          total={budgetData.totalBruto}
         />
         <Dialog
           visible={dialog.visible}
