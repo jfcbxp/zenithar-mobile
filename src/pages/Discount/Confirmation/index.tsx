@@ -6,8 +6,7 @@ import { MaterialIcons as Icon } from "@expo/vector-icons";
 import { SwipeButton } from "../../../components/buttons/swipe-button";
 import { useContext, useState } from "react";
 import { Dialog } from "../../../components/modals/dialog";
-import { GetTokenJWT } from "../../../services/token-jwt.service";
-import { ReleaseDiscount } from "../../../services/budget.service";
+import { useBudgetService } from "../../../services/budget.service";
 import { AuthContext } from "../../../contexts/auth.provider";
 import { LogTypeEnum, UserLogs } from "../../../models/user.logs.model";
 import axios from "axios";
@@ -28,37 +27,23 @@ export default function DiscountConfirmation({
   const day = date.getDate();
   const month = date.getMonth() + 1;
   const year = date.getFullYear();
+  const service = useBudgetService();
 
   const releaseDiscount = () => {
-    GetTokenJWT(authContext.user?.uid!, authContext.urlBackend!)
-      .then((authToken) => {
-        ReleaseDiscount(
-          _budget,
-          _branch,
-          _discountValue,
-          authToken?.token!,
-          authContext.urlBackend!
-        )
-          .then(() => {
-            let i = data.length.toString();
-            let newLog: UserLogs = {
-              id: i,
-              title: `Desconto no orçamento ${_budget}`,
-              date: `${day}/${month}/${year}`,
-              description: `R$ ${_budgetObject.totalBruto - _discountValue}`,
-              type: LogTypeEnum.DESCONTO_ORCAMENTO,
-            };
-            data.push(newLog);
-            authContext.addLog(data);
-            Alert("Sucesso", "Efetuado desconto para o orçamento: " + _budget);
-          })
-          .catch((error) => {
-            if (axios.isAxiosError(error)) {
-              Alert("Erro", "Servidor indisponível");
-            } else {
-              Alert("Erro", error.response.data.error);
-            }
-          });
+    service
+      .releaseDiscount(_budget, _branch, _discountValue)
+      .then(() => {
+        let i = data.length.toString();
+        let newLog: UserLogs = {
+          id: i,
+          title: `Desconto no orçamento ${_budget}`,
+          date: `${day}/${month}/${year}`,
+          description: `R$ ${_budgetObject.totalBruto - _discountValue}`,
+          type: LogTypeEnum.DESCONTO_ORCAMENTO,
+        };
+        data.push(newLog);
+        authContext.addLog(data);
+        Alert("Sucesso", "Efetuado desconto para o orçamento: " + _budget);
       })
       .catch((error) => {
         if (axios.isAxiosError(error)) {

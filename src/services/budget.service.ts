@@ -1,27 +1,35 @@
 import { AxiosResponse } from "axios";
 import { Orcamento } from "../models/from-api/orcamento.model";
 import { API } from "./api";
+import { useTokenService } from "./token-jwt.service";
 
-export async function LoadBudget(
-  budget: string,
-  branch: string,
-  token: string,
-  urlBackend: string
-): Promise<Orcamento> {
-  const api = API(urlBackend, token);
-  const url: string = `orcamento/consultar?numeroOrcamento=${budget}&empresa=${branch}`;
-  const response: AxiosResponse<Orcamento> = await api.get<Orcamento>(url);
-  return response.data;
-}
+export const useBudgetService = () => {
+  const tokenService = useTokenService();
 
-export async function ReleaseDiscount(
-  budget: string,
-  branch: string,
-  discountValue: number,
-  token: string,
-  urlBackend: string
-) {
-  const api = API(urlBackend, token);
-  const url: string = `orcamento/efetuarDesconto?numeroOrcamento=${budget}&empresa=${branch}&valorDesconto=${discountValue}`;
-  await api.patch<Orcamento>(url, token);
-}
+  const loadBudget = async (
+    budget: string,
+    branch: string
+  ): Promise<Orcamento> => {
+    const secret = (await tokenService.getToken())?.data.secret;
+    const api = API(tokenService.getUrl(), secret);
+    const url: string = `orcamento/consultar?numeroOrcamento=${budget}&empresa=${branch}`;
+    const response: AxiosResponse<Orcamento> = await api.get<Orcamento>(url);
+    return response.data;
+  };
+
+  const releaseDiscount = async (
+    budget: string,
+    branch: string,
+    discountValue: number
+  ): Promise<void> => {
+    const secret = (await tokenService.getToken())?.data.secret;
+    const api = API(tokenService.getUrl(), secret);
+    const url: string = `orcamento/efetuarDesconto?numeroOrcamento=${budget}&empresa=${branch}&valorDesconto=${discountValue}`;
+    await api.patch<Orcamento>(url);
+  };
+
+  return {
+    loadBudget,
+    releaseDiscount,
+  };
+};
