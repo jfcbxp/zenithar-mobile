@@ -50,14 +50,13 @@ export default function Discount({ route, navigation }: Properties) {
         if (axios.isAxiosError(error)) {
           Alert("Erro", "Servidor indisponível");
         } else {
-          console.log(error);
           Alert("Erro", error.response.data.error);
         }
       });
   }, []);
 
   const Alert = (title: string, content: string) => {
-    setDialog({ title: title, content: content, visible: true });
+    navigation && setDialog({ title: title, content: content, visible: true });
   };
 
   if (budgetData) {
@@ -161,12 +160,13 @@ export default function Discount({ route, navigation }: Properties) {
         </View>
         <ApplyDiscountModal
           dismiss={() => {
-            navigation.navigate("DiscountConfirmation", {
-              _budget: _budget,
-              _branch: _branch,
-              _budgetObject: budgetData,
-              _discountValue: _discountValue!,
-            });
+            navigation &&
+              navigation.navigate("DiscountConfirmation", {
+                _budget: _budget,
+                _branch: _branch,
+                _budgetObject: budgetData,
+                _discountValue: _discountValue!,
+              });
             setVisible(false);
           }}
           discountLimit={authContext.user?.discountLimit!}
@@ -197,8 +197,7 @@ export default function Discount({ route, navigation }: Properties) {
           title={dialog.title}
           content={dialog.content}
           dismiss={() => {
-            navigation.navigate("Home");
-            setDialog(defaultDialog);
+            navigation && navigation.navigate("Home");
           }}
         />
       </View>
