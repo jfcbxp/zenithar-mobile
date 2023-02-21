@@ -12,8 +12,8 @@ export function Portrait(properties: Properties) {
       <Image
         source={
           properties.source
-            ? require("../../../assets/no-user.png")
-            : { uri: properties.source }
+            ? { uri: properties.source }
+            : require("../../../assets/no-user.png")
         }
         style={styles.image}
       />

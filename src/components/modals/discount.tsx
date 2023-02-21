@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import {
   StyleSheet,
   Modal,
@@ -98,7 +98,7 @@ export function DiscountModal(properties: Properties) {
             maxLength={6}
             type="custom"
             options={{
-              mask: "999999",
+              mask: "SSSSSS",
             }}
           />
           <Picker
@@ -114,7 +114,7 @@ export function DiscountModal(properties: Properties) {
             onPressIn={() => {
               navigation &&
                 navigation.navigate("Discount", {
-                  _budget: budget,
+                  _budget: budget.toUpperCase(),
                   _branch: branch,
                 });
               translation.setValue(400);

@@ -1,6 +1,12 @@
 import { useState, useEffect, useContext } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, Text, ListRenderItem } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  ListRenderItem,
+  ActivityIndicator,
+} from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { MaterialIcons as Icon } from "@expo/vector-icons";
@@ -62,7 +68,7 @@ export default function Discount({ route, navigation }: Properties) {
     setDialog({ title: title, content: content, visible: true });
   };
 
-  if (dialog.title != "Erro") {
+  if (budgetData) {
     return (
       <View style={styles.container}>
         <View style={styles.topField}>
@@ -192,7 +198,8 @@ export default function Discount({ route, navigation }: Properties) {
     );
   } else {
     return (
-      <View style={styles.container}>
+      <View style={styles.loading}>
+        <ActivityIndicator size={128} color="white" />
         <Dialog
           visible={dialog.visible}
           title={dialog.title}
@@ -212,6 +219,13 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     backgroundColor: "#F0F2F7",
+  },
+  loading: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#212A4D",
   },
   header: {
     flex: 1,
