@@ -16,6 +16,7 @@ import { Itens } from "../../models/from-api/itens.model";
 import { Pagamentos } from "../../models/from-api/pagamentos.model";
 import { ItemsItem } from "../../components/lists/discount/items-item";
 import { PaymentMethodItem } from "../../components/lists/discount/payment-method-item";
+import axios from "axios";
 
 interface Properties extends StackScreenProps<StackParams, "Discount"> {}
 
@@ -40,15 +41,19 @@ export default function Discount({ route, navigation }: Properties) {
       .then((authToken) => {
         LoadBudget(_budget, _branch, authToken?.token!, authContext.urlBackend!)
           .then((budget) => setBudgetData(budget))
-          .catch((result) => {
-            Alert("Erro", result.response.data.error);
+          .catch((error) => {
+            if (axios.isAxiosError(error)) {
+              Alert("Erro", "Servidor indisponível");
+            } else {
+              Alert("Erro", error.response.data.error);
+            }
           });
       })
-      .catch((result) => {
-        if (result.data == undefined) {
+      .catch((error) => {
+        if (axios.isAxiosError(error)) {
           Alert("Erro", "Servidor indisponível");
         } else {
-          Alert("Erro", result.response.data.error);
+          Alert("Erro", error.response.data.error);
         }
       });
   }, []);
@@ -166,6 +171,7 @@ export default function Discount({ route, navigation }: Properties) {
             });
             setVisible(false);
           }}
+          discountLimit={authContext.user?.discountLimit!}
           visible={visible}
           budget={_budget}
           branch={_branch}
@@ -186,7 +192,7 @@ export default function Discount({ route, navigation }: Properties) {
     );
   } else {
     return (
-      <View>
+      <View style={styles.container}>
         <Dialog
           visible={dialog.visible}
           title={dialog.title}

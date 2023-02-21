@@ -7,9 +7,10 @@ import { SwipeButton } from "../../../components/buttons/swipe-button";
 import { useContext, useState } from "react";
 import { Dialog } from "../../../components/modals/dialog";
 import { GetTokenJWT } from "../../../services/token-jwt.service";
-import { ReleaseDiscount } from "../../../services/discount.service";
+import { ReleaseDiscount } from "../../../services/budget.service";
 import { AuthContext } from "../../../contexts/auth.provider";
 import { LogTypeEnum, UserLogs } from "../../../models/user.logs.model";
+import axios from "axios";
 
 interface Properties
   extends StackScreenProps<StackParams, "DiscountConfirmation"> {}
@@ -51,12 +52,20 @@ export default function DiscountConfirmation({
             authContext.addLog(data);
             Alert("Sucesso", "Efetuado desconto para o orçamento: " + _budget);
           })
-          .catch((result) => {
-            Alert("Erro", result.response.data.error);
+          .catch((error) => {
+            if (axios.isAxiosError(error)) {
+              Alert("Erro", "Servidor indisponível");
+            } else {
+              Alert("Erro", error.response.data.error);
+            }
           });
       })
-      .catch((result) => {
-        Alert("Erro", result.response.data.error);
+      .catch((error) => {
+        if (axios.isAxiosError(error)) {
+          Alert("Erro", "Servidor indisponível");
+        } else {
+          Alert("Erro", error.response.data.error);
+        }
       });
   };
 
@@ -134,7 +143,7 @@ export default function DiscountConfirmation({
     );
   } else {
     return (
-      <View>
+      <View style={styles.container}>
         <Dialog
           visible={dialog.visible}
           title={dialog.title}

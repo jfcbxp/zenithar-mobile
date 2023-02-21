@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
   Modal,
@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationParams } from "../../types/navigation.params";
-import { AuthContext } from "../../contexts/auth.provider";
 import { Button } from "../buttons/button";
 import { Picker } from "../pickers/picker";
 import { ItemType } from "react-native-dropdown-picker";
@@ -23,12 +22,12 @@ import { MaskedInput } from "../inputs/masked-input";
 interface Properties extends ModalProps {
   visible?: boolean;
   dismiss?: (event: GestureResponderEvent) => void | null;
+  branches?: UserBranch[];
 }
 
 export function DiscountModal(properties: Properties) {
-  const authContext = useContext(AuthContext);
   const navigation = useNavigation<NavigationParams>();
-  const [budget, setBudget] = useState("000001");
+  const [budget, setBudget] = useState("");
   const [branch, setBranch] = useState("");
   const [branches, setBranches] = useState<ItemType<UserBranch>[]>();
   const translation = useRef(new Animated.Value(400)).current;
@@ -36,7 +35,7 @@ export function DiscountModal(properties: Properties) {
   const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
-    let data = authContext.user?.branches;
+    let data = properties.branches;
     if (data) {
       let array: ItemType<any>[] = [];
       Object.entries(data).forEach(([key, value]) => {
@@ -99,8 +98,9 @@ export function DiscountModal(properties: Properties) {
             maxLength={6}
             type="custom"
             options={{
-              mask: '999999'
-            }} />
+              mask: "999999",
+            }}
+          />
           <Picker
             items={branches!}
             value={branch}
@@ -112,10 +112,11 @@ export function DiscountModal(properties: Properties) {
           <Button
             title="CONTINUAR"
             onPressIn={() => {
-              navigation && navigation.navigate("Discount", {
-                _budget: budget,
-                _branch: branch,
-              });
+              navigation &&
+                navigation.navigate("Discount", {
+                  _budget: budget,
+                  _branch: branch,
+                });
               translation.setValue(400);
               setOpen(false);
               setBranch("");
