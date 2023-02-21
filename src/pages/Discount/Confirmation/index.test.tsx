@@ -31,8 +31,8 @@ describe("DiscountConfirmation test", () => {
               quantidade: 0,
               tipoEntrega: "",
               total: 0,
-              valorDesconto: 0
-            }
+              valorDesconto: 0,
+            },
           ],
           loja: "",
           nomeCliente: "",
@@ -45,17 +45,17 @@ describe("DiscountConfirmation test", () => {
               forma: "",
               numero: "",
               parcelas: 1,
-              valor: 0
-            }
+              valor: 0,
+            },
           ],
           statusOrcamento: "",
           tipoOrcamento: "",
           totalBruto: 0,
           totalLiquido: 0,
           valorDesconto: 0,
-          vendedor: ""
+          vendedor: "",
         },
-        _discountValue: 0
+        _discountValue: 0,
       },
       name: "DiscountConfirmation",
       key: "DiscountConfirmation",

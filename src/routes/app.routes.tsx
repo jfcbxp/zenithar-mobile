@@ -8,15 +8,12 @@ export default function AppRoutes() {
   const Stack = createStackNavigator<StackParams>();
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen
-        name="Home"
-        component={Home} />
-      <Stack.Screen
-        name="Discount"
-        component={Discount} />
+      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="Discount" component={Discount} />
       <Stack.Screen
         name="DiscountConfirmation"
-        component={DiscountConfirmation} />
-    </Stack.Navigator >
-  )
+        component={DiscountConfirmation}
+      />
+    </Stack.Navigator>
+  );
 }

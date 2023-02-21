@@ -8,11 +8,17 @@ export default function Routes() {
   const authContext = useContext(AuthContext);
   if (authContext.loading) {
     return (
-      <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <SafeAreaView
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      >
         <ActivityIndicator size={128} color="white" />
       </SafeAreaView>
-    )
+    );
   } else {
-    return (authContext.user && authContext.user.verified ? <AppRoutes /> : <AuthRoutes />)
+    return authContext.user && authContext.user.verified ? (
+      <AppRoutes />
+    ) : (
+      <AuthRoutes />
+    );
   }
 }
