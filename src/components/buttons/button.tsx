@@ -9,14 +9,12 @@ interface Properties extends TouchableOpacityProps {
 export function Button(properties: Properties) {
     const [opacity, setOpacity] = useState(1)
     useEffect(() => {
-        if (properties.disabled) {
-            setOpacity(0.5)
-        } else {
-            setOpacity(1)
-        }
+        setOpacity(properties.disabled ? 0.5 : 1)
     }, [properties.disabled])
     return (
-        <TouchableOpacity {...properties} style={[styles.button, { opacity: opacity }]} disabled={properties.disabled}>
+        <TouchableOpacity {...properties}
+            disabled={properties.disabled}
+            style={[styles.button, { opacity: opacity }]} >
             <Text style={styles.text}>{properties.title}</Text>
         </TouchableOpacity>
     )
