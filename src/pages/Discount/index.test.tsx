@@ -1,11 +1,9 @@
 import React from "react";
-import renderer, { act } from "react-test-renderer";
-import { Button } from "../../components/buttons/button";
+import renderer from "react-test-renderer";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import Discount from ".";
-import { Dropdown } from "../../components/dropdowns/dropdown";
 import { ActivityIndicator } from "react-native";
 
 describe("Discount test", () => {

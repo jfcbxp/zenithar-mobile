@@ -10,7 +10,7 @@ export const useBudgetService = () => {
     budget: string,
     branch: string
   ): Promise<Orcamento> => {
-    const secret = (await tokenService.getToken())?.data.secret;
+    const secret = (await tokenService.getToken())?.secret;
     const api = API(tokenService.getUrl(), secret);
     const url: string = `orcamento/consultar?numeroOrcamento=${budget}&empresa=${branch}`;
     const response: AxiosResponse<Orcamento> = await api.get<Orcamento>(url);
@@ -22,7 +22,7 @@ export const useBudgetService = () => {
     branch: string,
     discountValue: number
   ): Promise<void> => {
-    const secret = (await tokenService.getToken())?.data.secret;
+    const secret = (await tokenService.getToken())?.secret;
     const api = API(tokenService.getUrl(), secret);
     const url: string = `orcamento/efetuarDesconto?numeroOrcamento=${budget}&empresa=${branch}&valorDesconto=${discountValue}`;
     await api.patch<Orcamento>(url);

@@ -2,13 +2,16 @@ import { AuthToken } from "../models/from-api/authtoken.model";
 import { API } from "./api";
 import { useContext } from "react";
 import { AuthContext } from "../contexts/auth.provider";
+import { AxiosResponse } from "axios";
 
 export const useTokenService = () => {
   const authContext = useContext(AuthContext);
 
-  const getToken = async () => {
+  const getToken = async (): Promise<AuthToken> => {
     let times = 4;
-    let secret = Buffer.from(authContext.urlBackend!).toString("base64");
+    let secret = authContext.urlBackend
+      ? Buffer.from(authContext.urlBackend).toString("base64")
+      : "";
 
     while (times--) secret = Buffer.from(secret).toString("base64");
 
@@ -19,7 +22,11 @@ export const useTokenService = () => {
 
     const api = API(authContext.urlBackend!);
     const url: string = `auth/token`;
-    return api.post<AuthToken>(url, authToken);
+    const response: AxiosResponse<AuthToken> = await api.post<AuthToken>(
+      url,
+      authToken
+    );
+    return response.data;
   };
 
   const getUrl = () => {
