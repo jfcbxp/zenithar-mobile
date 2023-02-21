@@ -21,7 +21,7 @@ export function LogsItem({ data }: { data: UserLogs }) {
           />
           <View>
             <Text testID="title" style={styles.text}>
-              {`${data.title} - ${data.id}`}
+              {`${data.title}`}
             </Text>
             <Text testID="description" style={styles.sub}>
               {data.description}

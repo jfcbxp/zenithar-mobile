@@ -23,6 +23,7 @@ import { AuthContext } from "../../contexts/auth.provider";
 import { User } from "../../models/user.model";
 import { Dialog } from "../../components/modals/dialog";
 import { MaskedInput } from "../../components/inputs/masked-input";
+import { LogTypeEnum } from "../../models/user.logs.model";
 
 const company = "companyTest";
 const department = "departmentTest";
@@ -33,9 +34,9 @@ const signIn = jest.fn();
 const signOut = jest.fn();
 const recoverPassword = jest.fn();
 const userUpdate = jest.fn();
+const addLog = jest.fn();
 const user: User = {
   uid: "uuidTest",
-  email: "emailTest",
   fullName: "fullNameTest",
   company: "companyTest",
   department: "departmentTest",
@@ -54,14 +55,14 @@ const user: User = {
       date: "Test",
       title: "Test",
       description: "Test",
-      type: "LIBERACAO_ORCAMENTO",
+      type: LogTypeEnum.LIBERACAO_ORCAMENTO,
     },
     {
       id: "2",
       date: "Test 2",
       title: "Test 2",
       description: "Test 2",
-      type: "DESCONTO_ORCAMENTO",
+      type: LogTypeEnum.DESCONTO_ORCAMENTO,
     },
   ],
 };
@@ -82,7 +83,9 @@ describe("Home test", () => {
         signOut,
         recoverPassword,
         userUpdate,
-      }}>
+        addLog,
+      }}
+    >
       <Home navigation={navigation} route={route} />
     </AuthContext.Provider>
   );
@@ -205,7 +208,9 @@ describe("Home test", () => {
             signOut,
             recoverPassword,
             userUpdate,
-          }}>
+            addLog,
+          }}
+        >
           <Home navigation={navigation} route={route} />
         </AuthContext.Provider>
       )

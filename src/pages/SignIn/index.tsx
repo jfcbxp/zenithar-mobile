@@ -9,7 +9,7 @@ import { EmailInput } from "../../components/inputs/email-input";
 import { PasswordInput } from "../../components/inputs/password-input";
 import { StatusBar } from "expo-status-bar";
 
-interface Properties extends StackScreenProps<StackParams, "SignIn"> { }
+interface Properties extends StackScreenProps<StackParams, "SignIn"> {}
 
 export default function SignIn({ navigation }: Properties) {
   const [email, setEmail] = useState("");
@@ -26,7 +26,8 @@ export default function SignIn({ navigation }: Properties) {
         <View style={{ marginBottom: 32 }}>
           <Image
             source={require("../../../assets/adaptive-icon.png")}
-            style={{ width: 64, height: 64 }} />
+            style={{ width: 64, height: 64 }}
+          />
           <Text style={styles.title}>Olá,</Text>
           <Text style={styles.title}>seja bem-vindo(a).</Text>
         </View>
@@ -40,13 +41,15 @@ export default function SignIn({ navigation }: Properties) {
           onPress={() => {
             navigation && navigation.navigate("SignUp");
           }}
-          title="Cadastre-se" />
+          title="Cadastre-se"
+        />
         <CommandLink
           testID="link-recuperar-senha"
           onPress={() => {
             navigation && navigation.navigate("PasswordRecovery");
           }}
-          title="Esqueceu sua senha?" />
+          title="Esqueceu sua senha?"
+        />
       </View>
       <StatusBar style="light" translucent={false} backgroundColor="silver" />
     </View>

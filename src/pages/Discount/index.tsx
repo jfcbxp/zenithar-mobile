@@ -14,8 +14,7 @@ import { Button } from "../../components/buttons/button";
 import { ApplyDiscountModal } from "../../components/modals/apply-discount";
 import { Orcamento } from "../../models/from-api/orcamento.model";
 import { Dialog } from "../../components/modals/dialog";
-import { GetTokenJWT } from "../../services/token-jwt.service";
-import { LoadBudget } from "../../services/budget.service";
+import { useBudgetService } from "../../services/budget.service";
 import { AuthContext } from "../../contexts/auth.provider";
 import { Dropdown } from "../../components/dropdowns/dropdown";
 import { Itens } from "../../models/from-api/itens.model";
@@ -33,6 +32,7 @@ export default function Discount({ route, navigation }: Properties) {
   const [budgetData, setBudgetData] = useState<Orcamento>();
   const defaultDialog = { title: "", content: "", visible: false };
   const [dialog, setDialog] = useState(defaultDialog);
+  const service = useBudgetService();
 
   const renderItemItens: ListRenderItem<Itens> = ({ item }) => {
     return <ItemsItem data={item} />;
@@ -43,18 +43,9 @@ export default function Discount({ route, navigation }: Properties) {
   };
 
   useEffect(() => {
-    GetTokenJWT(authContext.user?.uid!, authContext.urlBackend!)
-      .then((authToken) => {
-        LoadBudget(_budget, _branch, authToken?.token!, authContext.urlBackend!)
-          .then((budget) => setBudgetData(budget))
-          .catch((error) => {
-            if (axios.isAxiosError(error)) {
-              Alert("Erro", "Servidor indisponível");
-            } else {
-              Alert("Erro", error.response.data.error);
-            }
-          });
-      })
+    service
+      .loadBudget(_budget, _branch)
+      .then((budget) => setBudgetData(budget))
       .catch((error) => {
         if (axios.isAxiosError(error)) {
           Alert("Erro", "Servidor indisponível");
@@ -169,12 +160,13 @@ export default function Discount({ route, navigation }: Properties) {
         </View>
         <ApplyDiscountModal
           dismiss={() => {
-            navigation.navigate("DiscountConfirmation", {
-              _budget: _budget,
-              _branch: _branch,
-              _budgetObject: budgetData,
-              _discountValue: _discountValue!,
-            });
+            navigation &&
+              navigation.navigate("DiscountConfirmation", {
+                _budget: _budget,
+                _branch: _branch,
+                _budgetObject: budgetData,
+                _discountValue: _discountValue!,
+              });
             setVisible(false);
           }}
           discountLimit={authContext.user?.discountLimit!}
@@ -205,8 +197,7 @@ export default function Discount({ route, navigation }: Properties) {
           title={dialog.title}
           content={dialog.content}
           dismiss={() => {
-            navigation.navigate("Home");
-            setDialog(defaultDialog);
+            navigation && navigation.navigate("Home");
           }}
         />
       </View>
