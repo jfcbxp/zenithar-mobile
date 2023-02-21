@@ -29,17 +29,16 @@ export default function SignUp({ navigation }: Properties) {
       aspect: [1, 1],
       quality: 0.1,
     });
-
     if (!result.canceled) {
       setPortrait(result.assets[0].uri);
     }
   };
 
   const handleSignUp = () => {
-    if (email == "" || password == "" || fullName == "" || portrait == "") {
-      alert("Por favor, preencher todos os campos");
-    } else {
+    if (email && password && fullName && portrait) {
       setVisible(true);
+    } else {
+      alert("Por favor, preencher todos os campos");
     }
   };
 

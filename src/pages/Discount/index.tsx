@@ -1,58 +1,74 @@
 import { useState, useEffect, useContext } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, Text } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  ListRenderItem,
+  ActivityIndicator,
+} from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { MaterialIcons as Icon } from "@expo/vector-icons";
 import { Button } from "../../components/buttons/button";
 import { ApplyDiscountModal } from "../../components/modals/apply-discount";
-import { PaymentMethodDropdown } from "../../components/dropdowns/discount/payment-method-dropdown";
-import { ItemsDropdown } from "../../components/dropdowns/discount/items-dropdown";
 import { Orcamento } from "../../models/from-api/orcamento.model";
 import { Dialog } from "../../components/modals/dialog";
 import { GetTokenJWT } from "../../services/token-jwt.service";
 import { LoadBudget } from "../../services/budget.service";
 import { AuthContext } from "../../contexts/auth.provider";
+import { Dropdown } from "../../components/dropdowns/dropdown";
+import { Itens } from "../../models/from-api/itens.model";
+import { Pagamentos } from "../../models/from-api/pagamentos.model";
+import { ItemsItem } from "../../components/lists/discount/items-item";
+import { PaymentMethodItem } from "../../components/lists/discount/payment-method-item";
+import axios from "axios";
 
-interface Properties
-  extends StackScreenProps<StackParams, "Discount"> { }
+interface Properties extends StackScreenProps<StackParams, "Discount"> {}
 
 export default function Discount({ route, navigation }: Properties) {
-  const { _budget, _branch, _discountValue } = route.params
-  const authContext = useContext(AuthContext)
-  const [visible, setVisible] = useState(false)
-  const [budgetData, setBudgetData] = useState<Orcamento>()
-  const defaultDialog = { title: "", content: "", visible: false }
+  const { _budget, _branch, _discountValue } = route.params;
+  const authContext = useContext(AuthContext);
+  const [visible, setVisible] = useState(false);
+  const [budgetData, setBudgetData] = useState<Orcamento>();
+  const defaultDialog = { title: "", content: "", visible: false };
   const [dialog, setDialog] = useState(defaultDialog);
 
+  const renderItemItens: ListRenderItem<Itens> = ({ item }) => {
+    return <ItemsItem data={item} />;
+  };
+
+  const renderItemPagamentos: ListRenderItem<Pagamentos> = ({ item }) => {
+    return <PaymentMethodItem data={item} />;
+  };
+
   useEffect(() => {
-    GetTokenJWT(
-      authContext.user?.email!,
-      authContext.user?.uid!,
-      authContext.urlBackend!
-    ).then((authToken) => {
-      LoadBudget(
-        _budget,
-        _branch,
-        authToken?.token!,
-        authContext.urlBackend!
-      ).then(budget => setBudgetData(budget)).catch(result => {
-        Alert("Erro", result.response.data.error)
+    GetTokenJWT(authContext.user?.uid!, authContext.urlBackend!)
+      .then((authToken) => {
+        LoadBudget(_budget, _branch, authToken?.token!, authContext.urlBackend!)
+          .then((budget) => setBudgetData(budget))
+          .catch((error) => {
+            if (axios.isAxiosError(error)) {
+              Alert("Erro", "Servidor indisponível");
+            } else {
+              Alert("Erro", error.response.data.error);
+            }
+          });
       })
-    }).catch(result => {
-      if (result.data == undefined) {
-        Alert("Erro", "Servidor indisponível")
-      } else {
-        Alert("Erro", result.response.data.error)
-      }
-    })
-  }, [])
+      .catch((error) => {
+        if (axios.isAxiosError(error)) {
+          Alert("Erro", "Servidor indisponível");
+        } else {
+          Alert("Erro", error.response.data.error);
+        }
+      });
+  }, []);
 
   const Alert = (title: string, content: string) => {
     setDialog({ title: title, content: content, visible: true });
   };
 
-  if (dialog.title != "Erro") {
+  if (budgetData) {
     return (
       <View style={styles.container}>
         <View style={styles.topField}>
@@ -68,57 +84,87 @@ export default function Discount({ route, navigation }: Properties) {
             />
             <Text style={styles.headerText}>Orçamento #{_budget}</Text>
           </View>
-          <View style={{ flex: 4, justifyContent: "space-between", paddingBottom: 8 }}>
+          <View
+            style={{
+              flex: 4,
+              justifyContent: "space-between",
+              paddingBottom: 8,
+            }}
+          >
             <View>
               <Text style={styles.title}>Vendedor</Text>
-              <Text style={styles.subTitle}>{budgetData?.vendedor} - {budgetData?.nomeVendedor}</Text>
+              <Text style={styles.subTitle}>
+                {budgetData.vendedor} - {budgetData.nomeVendedor}
+              </Text>
               <Text style={styles.title}>Cliente</Text>
-              <Text style={styles.subTitle}>{budgetData?.cliente} - {budgetData?.nomeCliente}</Text>
+              <Text style={styles.subTitle}>
+                {budgetData.cliente} - {budgetData.nomeCliente}
+              </Text>
             </View>
             <View style={styles.budget}>
-              <View style={{ flexDirection: "row", alignItems: 'flex-end' }}>
+              <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
                 <View style={[{ backgroundColor: "limegreen" }, styles.box]}>
-                  <Text style={styles.headerText}>{budgetData?.tipoOrcamento}</Text>
+                  <Text style={styles.headerText}>
+                    {budgetData.tipoOrcamento}
+                  </Text>
                 </View>
                 <View style={[{ backgroundColor: "red" }, styles.box]}>
-                  <Text style={styles.headerText}>{budgetData?.statusOrcamento}</Text>
+                  <Text style={styles.headerText}>
+                    {budgetData.statusOrcamento}
+                  </Text>
                 </View>
               </View>
-              {budgetData?.desconto! > 0 ?
+              {budgetData.desconto > 0 ? (
                 <View>
-                  <Text style={{
-                    fontSize: 18,
-                    fontWeight: "bold",
-                    color: "grey",
-                    textDecorationLine: "line-through",
-                  }}>R$ {budgetData?.totalBruto.toFixed(2).replace('.', ',')}</Text>
-                  <Text style={{
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: "bold",
+                      color: "grey",
+                      textDecorationLine: "line-through",
+                    }}
+                  >
+                    R$ {budgetData.totalBruto.toFixed(2).replace(".", ",")}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 24,
+                      fontWeight: "bold",
+                      color: "red",
+                    }}
+                  >
+                    R$ {budgetData.totalLiquido.toFixed(2).replace(".", ",")}
+                  </Text>
+                </View>
+              ) : (
+                <Text
+                  style={{
                     fontSize: 24,
                     fontWeight: "bold",
-                    color: "red",
-                  }}>R$ {budgetData?.totalLiquido.toFixed(2).replace('.', ',')}</Text>
-                </View>
-                :
-                <Text style={{
-                  fontSize: 24,
-                  fontWeight: "bold",
-                  color: "white",
-                }}>R$ {budgetData?.totalLiquido.toFixed(2).replace('.', ',')}</Text>
-              }
+                    color: "white",
+                  }}
+                >
+                  R$ {budgetData.totalLiquido.toFixed(2).replace(".", ",")}
+                </Text>
+              )}
             </View>
           </View>
         </View>
         <View style={styles.bottomField}>
           <View style={{ flex: 5, paddingTop: "2.5%" }}>
-            <ItemsDropdown
-              data={budgetData?.itens} />
-            <PaymentMethodDropdown
-              data={budgetData?.pagamentos} />
+            <Dropdown
+              title="Itens"
+              renderItem={renderItemItens}
+              data={budgetData.itens}
+            />
+            <Dropdown
+              renderItem={renderItemPagamentos}
+              title="Forma de pagamento"
+              data={budgetData.pagamentos}
+            />
           </View>
           <View style={{ flex: 1 }}>
-            <Button
-              onPress={() => setVisible(true)}
-              title="CONTINUAR" />
+            <Button onPress={() => setVisible(true)} title="CONTINUAR" />
           </View>
         </View>
         <ApplyDiscountModal
@@ -126,36 +172,45 @@ export default function Discount({ route, navigation }: Properties) {
             navigation.navigate("DiscountConfirmation", {
               _budget: _budget,
               _branch: _branch,
-              _budgetObject: budgetData!,
-              _discountValue: _discountValue!
-            })
-            setVisible(false)
+              _budgetObject: budgetData,
+              _discountValue: _discountValue!,
+            });
+            setVisible(false);
           }}
+          discountLimit={authContext.user?.discountLimit!}
           visible={visible}
           budget={_budget}
           branch={_branch}
-          total={budgetData?.totalBruto!} />
+          total={budgetData.totalBruto}
+        />
         <Dialog
           visible={dialog.visible}
           title={dialog.title}
           content={dialog.content}
-          dismiss={() => setDialog(defaultDialog)} />
-        <StatusBar style="light" translucent={false} backgroundColor="#212A4D" />
+          dismiss={() => setDialog(defaultDialog)}
+        />
+        <StatusBar
+          style="light"
+          translucent={false}
+          backgroundColor="#212A4D"
+        />
       </View>
     );
   } else {
     return (
-      <View>
+      <View style={styles.loading}>
+        <ActivityIndicator size={128} color="white" />
         <Dialog
           visible={dialog.visible}
           title={dialog.title}
           content={dialog.content}
           dismiss={() => {
-            navigation.navigate("Home")
-            setDialog(defaultDialog)
-          }} />
+            navigation.navigate("Home");
+            setDialog(defaultDialog);
+          }}
+        />
       </View>
-    )
+    );
   }
 }
 
@@ -164,6 +219,13 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     backgroundColor: "#F0F2F7",
+  },
+  loading: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#212A4D",
   },
   header: {
     flex: 1,

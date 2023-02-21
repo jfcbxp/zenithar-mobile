@@ -7,9 +7,10 @@ import { SwipeButton } from "../../../components/buttons/swipe-button";
 import { useContext, useState } from "react";
 import { Dialog } from "../../../components/modals/dialog";
 import { GetTokenJWT } from "../../../services/token-jwt.service";
-import { ReleaseDiscount } from "../../../services/discount.service";
+import { ReleaseDiscount } from "../../../services/budget.service";
 import { AuthContext } from "../../../contexts/auth.provider";
-import { UserLogs } from "../../../models/user.logs.model";
+import { LogTypeEnum, UserLogs } from "../../../models/user.logs.model";
+import axios from "axios";
 
 interface Properties
   extends StackScreenProps<StackParams, "DiscountConfirmation"> {}
@@ -45,18 +46,26 @@ export default function DiscountConfirmation({
               title: `Desconto no orçamento ${_budget}`,
               date: `${day}/${month}/${year}`,
               description: `R$ ${_budgetObject.totalBruto - _discountValue}`,
-              type: "DESCONTO_ORCAMENTO",
+              type: LogTypeEnum.DESCONTO_ORCAMENTO,
             };
             data.push(newLog);
             authContext.addLog(data);
             Alert("Sucesso", "Efetuado desconto para o orçamento: " + _budget);
           })
-          .catch((result) => {
-            Alert("Erro", result.response.data.error);
+          .catch((error) => {
+            if (axios.isAxiosError(error)) {
+              Alert("Erro", "Servidor indisponível");
+            } else {
+              Alert("Erro", error.response.data.error);
+            }
           });
       })
-      .catch((result) => {
-        Alert("Erro", result.response.data.error);
+      .catch((error) => {
+        if (axios.isAxiosError(error)) {
+          Alert("Erro", "Servidor indisponível");
+        } else {
+          Alert("Erro", error.response.data.error);
+        }
       });
   };
 
@@ -88,10 +97,8 @@ export default function DiscountConfirmation({
         </View>
         <View style={styles.bottomField}>
           <View>
-            <Text style={styles.result}>Normal</Text>
-            <Text style={styles.description}>
-              {_budgetObject.tipoOrcamento}
-            </Text>
+            <Text style={styles.result}>{_budgetObject.tipoOrcamento}</Text>
+            <Text style={styles.description}>Tipo do orçamento</Text>
           </View>
           <View>
             <Text style={styles.result}>{_budgetObject.nomeVendedor}</Text>
@@ -99,7 +106,10 @@ export default function DiscountConfirmation({
           </View>
           <View>
             <Text style={styles.result}>
-              Total R$ {_budgetObject.totalBruto - _discountValue}
+              Total R${" "}
+              {(_budgetObject.totalBruto - _discountValue)
+                .toFixed(2)
+                .replace(".", ",")}
             </Text>
             <Text style={styles.description}>
               Pagamento
@@ -133,7 +143,7 @@ export default function DiscountConfirmation({
     );
   } else {
     return (
-      <View>
+      <View style={styles.container}>
         <Dialog
           visible={dialog.visible}
           title={dialog.title}

@@ -1,40 +1,36 @@
-import { useEffect, useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Divider } from "../dividers/divider";
 import { MaterialIcons as Icon } from "@expo/vector-icons";
-import { UserLogs } from "../../models/user.logs.model";
+import { LogTypeEnum, UserLogs } from "../../models/user.logs.model";
 
 export function LogsItem({ data }: { data: UserLogs }) {
-  const [name, setName] = useState<any>("");
-  useEffect(() => {
-    if (data.type == "DESCONTO_ORCAMENTO") {
-      setName("attach-money");
-    }
-    if (data.type == "LIBERACAO_ORCAMENTO") {
-      setName("check-box");
-    }
-  }, []);
   return (
     <View>
       <View style={styles.container}>
         <View style={{ flexDirection: "row" }}>
           <Icon
             testID="icon"
-            name={name}
+            name={
+              data.type === LogTypeEnum.LIBERACAO_ORCAMENTO
+                ? "attach-money"
+                : "check-box"
+            }
             size={28}
             color="#123262"
             style={{ alignSelf: "center" }}
           />
           <View>
             <Text testID="title" style={styles.text}>
-              {data.title + " " + data.id}
+              {`${data.title} - ${data.id}`}
             </Text>
             <Text testID="description" style={styles.sub}>
               {data.description}
             </Text>
           </View>
         </View>
-        <Text testID="date" style={styles.sub}>{data.date}</Text>
+        <Text testID="date" style={styles.sub}>
+          {data.date}
+        </Text>
       </View>
       <Divider />
     </View>

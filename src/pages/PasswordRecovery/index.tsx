@@ -19,7 +19,7 @@ export default function PasswordRecovery({ navigation }: Properties) {
   const [dialogContent, setDialogContent] = useState<string>("");
 
   const handleRecoverPassword = () => {
-    if (email != "") {
+    if (email) {
       authContext.recoverPassword(email);
       navigation && navigation.navigate("SignIn");
     } else {
