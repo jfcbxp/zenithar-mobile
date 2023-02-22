@@ -2,6 +2,7 @@ import { StyleSheet, View, Image, GestureResponderEvent } from "react-native";
 import { Button } from "../buttons/button";
 
 interface Properties {
+  editable?: boolean;
   source?: string;
   onPress: (event: GestureResponderEvent) => void;
 }
@@ -17,7 +18,10 @@ export function Portrait(properties: Properties) {
         }
         style={styles.image}
       />
-      <Button title="SELECIONAR" onPress={properties.onPress} />
+      <Button
+        title="SELECIONAR"
+        disabled={!properties.editable}
+        onPress={properties.onPress} />
     </View>
   );
 }

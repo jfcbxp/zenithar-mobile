@@ -31,6 +31,7 @@ export function UserSettings(properties: Properties) {
   const [portrait, setPortrait] = useState<string | undefined>(PORTRAIT);
   const [changePassword, setChangePassword] = useState<boolean | undefined>();
   const [disabled, setDisabled] = useState(false);
+  const [editable, setEditable] = useState(true)
   const defaultDialog = { title: "", content: "", visible: false };
   const [dialog, setDialog] = useState(defaultDialog);
 
@@ -47,8 +48,6 @@ export function UserSettings(properties: Properties) {
   useEffect(() => {
     if (changePassword) {
       if (
-        portrait == (PORTRAIT || "") &&
-        fullName == (FULLNAME || "") &&
         currentPassword.length > 5 &&
         newPassword.length > 5 &&
         confirmPassword.length > 5
@@ -90,6 +89,7 @@ export function UserSettings(properties: Properties) {
 
   const handleChangePassword = () => {
     setDisabled(true);
+    setEditable(false)
     setChangePassword(true);
   };
 
@@ -116,11 +116,15 @@ export function UserSettings(properties: Properties) {
     >
       <View style={styles.container}>
         <View style={styles.field}>
-          <Portrait source={portrait} onPress={pickImage} />
+          <Portrait 
+          source={portrait} 
+          editable={editable}
+          onPress={pickImage} />
           <FullNameInput
             value={fullName}
             onChangeText={setFullName}
             maxLength={20}
+            editable={editable}
           />
           {!changePassword && (
             <CommandLink onPress={handleChangePassword} title="Alterar senha" />
