@@ -9,17 +9,17 @@ import { EmailInput } from "../../components/inputs/email-input";
 import { PasswordInput } from "../../components/inputs/password-input";
 import { StatusBar } from "expo-status-bar";
 
-interface Properties extends StackScreenProps<StackParams, "SignIn"> { }
+interface Properties extends StackScreenProps<StackParams, "SignIn"> {}
 
 export default function SignIn({ navigation }: Properties) {
   const authContext = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [disabled, setDisabled] = useState(true)
+  const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
-    setDisabled((email != "" && password != "") ? false : true)
-  }, [email, password])
+    setDisabled(!(email && password));
+  }, [email, password]);
 
   const handleSingIn = () => {
     authContext.signIn(email, password);
@@ -39,10 +39,7 @@ export default function SignIn({ navigation }: Properties) {
         <View style={{ marginBottom: 40 }}>
           <EmailInput value={email} onChangeText={setEmail} />
           <PasswordInput value={password} onChangeText={setPassword} />
-          <Button
-            title="ENTRAR"
-            disabled={disabled}
-            onPress={handleSingIn} />
+          <Button title="ENTRAR" disabled={disabled} onPress={handleSingIn} />
         </View>
         <CommandLink
           testID="link-cadastrar"

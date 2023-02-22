@@ -12,14 +12,14 @@ import { PasswordInput } from "../../components/inputs/password-input";
 import { FullNameInput } from "../../components/inputs/fullname-input";
 import { StatusBar } from "expo-status-bar";
 
-interface Properties extends StackScreenProps<StackParams, "SignUp"> { }
+interface Properties extends StackScreenProps<StackParams, "SignUp"> {}
 
 export default function SignUp({ navigation }: Properties) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
-  const [disabled, setDisabled] = useState(true)
+  const [disabled, setDisabled] = useState(true);
   const authContext = useContext(AuthContext);
 
   const [portrait, setPortrait] = useState("");
@@ -36,8 +36,8 @@ export default function SignUp({ navigation }: Properties) {
   };
 
   useEffect(() => {
-    setDisabled((email != "" && fullName != "" && password != "" && portrait != "") ? false : true)
-  }, [email, password, fullName, portrait])
+    setDisabled(!(email && fullName && password && portrait));
+  }, [email, password, fullName, portrait]);
 
   const handleSignUp = () => {
     if (email && password && fullName && portrait) {
@@ -61,7 +61,8 @@ export default function SignUp({ navigation }: Properties) {
             title="CONTINUAR"
             testID="continuar"
             disabled={disabled}
-            onPress={handleSignUp} />
+            onPress={handleSignUp}
+          />
         </View>
       </View>
       <Dialog

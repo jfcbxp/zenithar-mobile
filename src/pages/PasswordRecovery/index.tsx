@@ -9,7 +9,7 @@ import { EmailInput } from "../../components/inputs/email-input";
 import { StatusBar } from "expo-status-bar";
 
 interface Properties
-  extends StackScreenProps<StackParams, "PasswordRecovery"> { }
+  extends StackScreenProps<StackParams, "PasswordRecovery"> {}
 
 export default function PasswordRecovery({ navigation }: Properties) {
   const authContext = useContext(AuthContext);
@@ -17,11 +17,11 @@ export default function PasswordRecovery({ navigation }: Properties) {
   const [dialogVisible, setDialogVisible] = useState<boolean>(false);
   const [dialogTitle, setDialogTitle] = useState<string>("");
   const [dialogContent, setDialogContent] = useState<string>("");
-  const [disabled, setDisabled] = useState(true)
+  const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
-    setDisabled((email != "") ? false : true)
-  }, [email])
+    setDisabled(!email);
+  }, [email]);
 
   const handleRecoverPassword = () => {
     if (email) {
