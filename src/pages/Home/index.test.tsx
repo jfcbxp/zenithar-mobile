@@ -51,14 +51,12 @@ const user: User = {
   ],
   logs: [
     {
-      id: "1",
       date: "Test",
       title: "Test",
       description: "Test",
       type: LogTypeEnum.LIBERACAO_ORCAMENTO,
     },
     {
-      id: "2",
       date: "Test 2",
       title: "Test 2",
       description: "Test 2",

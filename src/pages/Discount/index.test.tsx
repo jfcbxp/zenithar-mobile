@@ -1,13 +1,16 @@
 import React from "react";
-import renderer from "react-test-renderer";
+import renderer, { act } from "react-test-renderer";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import Discount from ".";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, Pressable } from "react-native";
 import { User } from "../../models/user.model";
 import { LogTypeEnum } from "../../models/user.logs.model";
 import { AuthContext } from "../../contexts/auth.provider";
+import { Orcamento } from "../../models/from-api/orcamento.model";
+import { Dropdown } from "../../components/dropdowns/dropdown";
+import { ApplyDiscountModal } from "../../components/modals/apply-discount";
 
 const company = "companyTest";
 const department = "departmentTest";
@@ -35,14 +38,12 @@ const user: User = {
   ],
   logs: [
     {
-      id: "1",
       date: "Test",
       title: "Test",
       description: "Test",
       type: LogTypeEnum.LIBERACAO_ORCAMENTO,
     },
     {
-      id: "2",
       date: "Test 2",
       title: "Test 2",
       description: "Test 2",
@@ -50,6 +51,60 @@ const user: User = {
     },
   ],
 };
+
+jest.mock("../../services/budget.service", () => {
+  return {
+    useBudgetService: jest.fn(() => {
+      return {
+        loadBudget: (budget: string, branch: string): Promise<Orcamento> => {
+          const _budget: Orcamento = {
+            cliente: "",
+            desconto: 0,
+            empresa: "",
+            itens: [
+              {
+                armazem: "",
+                codigoBarras: "",
+                desconto: 0,
+                descricaoProduto: "",
+                empresa: "",
+                estoque: 0,
+                numero: "",
+                preco: 0,
+                produto: "",
+                quantidade: 0,
+                tipoEntrega: "",
+                total: 0,
+                valorDesconto: 0,
+              },
+            ],
+            loja: "",
+            nomeCliente: "",
+            nomeVendedor: "",
+            numero: "",
+            observacao: "",
+            pagamentos: [
+              {
+                empresa: "",
+                forma: "",
+                numero: "",
+                parcelas: 1,
+                valor: 0,
+              },
+            ],
+            statusOrcamento: "",
+            tipoOrcamento: "",
+            totalBruto: 0,
+            totalLiquido: 0,
+            valorDesconto: 0,
+            vendedor: "",
+          };
+          return Promise.resolve(_budget);
+        },
+      };
+    }),
+  };
+});
 
 describe("Discount test", () => {
   const navigation =
@@ -66,28 +121,69 @@ describe("Discount test", () => {
     };
   };
 
-  it("test Discount ActivityIndicator", async () => {
-    const rendered = await renderer.create(
-      <AuthContext.Provider
-        value={{
-          user,
-          company,
-          department,
-          urlBackend,
-          loading,
-          signUp,
-          signIn,
-          signOut,
-          recoverPassword,
-          userUpdate,
-          addLog,
-        }}
-      >
-        <Discount navigation={navigation} route={mockRoute()} />
-      </AuthContext.Provider>
-    );
+  const rendered = renderer.create(
+    <AuthContext.Provider
+      value={{
+        user,
+        company,
+        department,
+        urlBackend,
+        loading,
+        signUp,
+        signIn,
+        signOut,
+        recoverPassword,
+        userUpdate,
+        addLog,
+      }}
+    >
+      <Discount navigation={navigation} route={mockRoute()} />
+    </AuthContext.Provider>
+  );
 
+  it("test Discount ActivityIndicator", async () => {
     const activityIndicator = rendered.root.findAllByType(ActivityIndicator);
     expect(activityIndicator).toBeTruthy();
+  });
+
+  it("test Discount Dropdowns", async () => {
+    await act(() =>
+      rendered.update(
+        <AuthContext.Provider
+          value={{
+            user,
+            company,
+            department,
+            urlBackend,
+            loading,
+            signUp,
+            signIn,
+            signOut,
+            recoverPassword,
+            userUpdate,
+            addLog,
+          }}
+        >
+          <Discount navigation={navigation} route={mockRoute()} />
+        </AuthContext.Provider>
+      )
+    );
+
+    const dropdowns = rendered.root.findAllByType(Dropdown);
+
+    const pressable = dropdowns[0].findByType(Pressable);
+
+    await act(() => pressable.props.onPress());
+
+    expect(dropdowns[0]).toBeTruthy();
+    expect(dropdowns.length).toBe(2);
+  });
+
+  it("test Discount ApplyDiscountModal", async () => {
+    const applyDiscountModal = rendered.root.findByType(ApplyDiscountModal);
+
+    await act(() => applyDiscountModal.props.dismiss());
+
+    expect(applyDiscountModal).toBeTruthy();
   });
 });

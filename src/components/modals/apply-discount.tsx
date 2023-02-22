@@ -107,27 +107,16 @@ export function ApplyDiscountModal(properties: Properties) {
           style={[{ transform: [{ translateY: translation }] }, styles.field]}
         >
           <Text style={styles.title}>Desconto</Text>
-          {newTotal == "" ? (
-            <Text
-              style={{
-                fontSize: 24,
-                marginBottom: 16,
-              }}
-            >
-               
-            </Text>
-          ) : (
-            <Text
-              style={{
-                fontSize: 24,
-                fontWeight: "bold",
-                color: "red",
-                marginBottom: 16,
-              }}
-            >
-              R$ {newTotal}
-            </Text>
-          )}
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: "bold",
+              color: "red",
+              marginBottom: 16,
+            }}
+          >
+            {newTotal ? `R$ ${newTotal}` : ""}
+          </Text>
           <TextInput
             value={percentage}
             onChangeText={(text) => {
