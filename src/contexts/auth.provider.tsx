@@ -125,12 +125,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     await firebaseAuth
       .signInWithEmailAndPassword(_email, _password)
       .then(async (currentUser) => {
-        setLoading(false);
         if (currentUser.user?.emailVerified) {
           await _getUserRegister(currentUser.user.uid);
         } else {
           Alert("E-mail não verificado", "Por favor verifique seu [e-mail].");
         }
+        setLoading(false);
       })
       .catch((error) => {
         if (error) {
