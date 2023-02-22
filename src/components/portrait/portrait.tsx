@@ -20,7 +20,7 @@ export function Portrait(properties: Properties) {
       />
       <Button
         title="SELECIONAR"
-        disabled={properties.editable ? properties.editable : false}
+        disabled={properties.editable ? false : properties.editable}
         onPress={properties.onPress} />
     </View>
   );
