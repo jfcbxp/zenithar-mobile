@@ -16,6 +16,7 @@ import { Button } from "../buttons/button";
 import { DiscountStyles as styles } from "./discount-styles";
 import { Dialog } from "./dialog";
 import { TextInput } from "../inputs/text-input";
+import { Orcamento } from "../../models/from-api/orcamento.model";
 
 interface Properties extends ModalProps {
   visible: boolean;
@@ -23,6 +24,7 @@ interface Properties extends ModalProps {
   total: number;
   budget: string;
   branch: string;
+  budgetObject: Orcamento;
   discountLimit: number;
 }
 
@@ -156,9 +158,10 @@ export function ApplyDiscountModal(properties: Properties) {
             title="CONTINUAR"
             onPressIn={() => {
               navigation &&
-                navigation.navigate("Discount", {
+                navigation.navigate("DiscountConfirmation", {
                   _budget: properties.budget,
                   _branch: properties.branch,
+                  _budgetObject: properties.budgetObject,
                   _discountValue: discountValue,
                 });
               reset();

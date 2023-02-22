@@ -22,6 +22,7 @@ export function SwipeButton(properties: Properties) {
       containerStyle={{ backgroundColor: "#1F2D5A", borderRadius: 180 }}
       circleBackgroundColor="#163E60"
       circleSize={58}
+      goBackToStart={true}
       iconContainerStyle={{ paddingLeft: 16 }}
     />
   );
