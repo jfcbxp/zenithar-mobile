@@ -34,7 +34,7 @@ export function UserSettings(properties: Properties) {
   const [editable, setEditable] = useState(true)
 
   useEffect(() => {
-    setDisabled(portrait == (PORTRAIT || "") ? true : false)
+    setDisabled(portrait == PORTRAIT ? true : false)
   }, [portrait]);
 
   const comparePasswords = (current: string, new_: string, confirm: string) => {
@@ -75,9 +75,10 @@ export function UserSettings(properties: Properties) {
   };
 
   const handleChangePassword = () => {
-    setDisabled(true);
+    setFullName(FULLNAME)
+    setDisabled(true)
     setEditable(false)
-    setChangePassword(true);
+    setChangePassword(true)
   };
 
   const initials = () => {
@@ -108,7 +109,7 @@ export function UserSettings(properties: Properties) {
             value={fullName}
             onChangeText={(text) => {
               setFullName(text)
-              setDisabled(text != (FULLNAME || "") ? false : true)
+              setDisabled((text != FULLNAME && text) ? false : true)
             }}
             maxLength={20}
             editable={editable}
