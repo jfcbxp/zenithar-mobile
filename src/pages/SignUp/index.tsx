@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button } from "../../components/buttons/button";
 import { Dialog } from "../../components/modals/dialog";
@@ -12,13 +12,14 @@ import { PasswordInput } from "../../components/inputs/password-input";
 import { FullNameInput } from "../../components/inputs/fullname-input";
 import { StatusBar } from "expo-status-bar";
 
-interface Properties extends StackScreenProps<StackParams, "SignUp"> {}
+interface Properties extends StackScreenProps<StackParams, "SignUp"> { }
 
 export default function SignUp({ navigation }: Properties) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
+  const [disabled, setDisabled] = useState(true)
   const authContext = useContext(AuthContext);
 
   const [portrait, setPortrait] = useState("");
@@ -34,11 +35,13 @@ export default function SignUp({ navigation }: Properties) {
     }
   };
 
+  useEffect(() => {
+    setDisabled((email != "" && fullName != "" && password != "" && portrait != "") ? false : true)
+  }, [email, password, fullName, portrait])
+
   const handleSignUp = () => {
     if (email && password && fullName && portrait) {
       setVisible(true);
-    } else {
-      alert("Por favor, preencher todos os campos");
     }
   };
 
@@ -54,7 +57,11 @@ export default function SignUp({ navigation }: Properties) {
           />
           <EmailInput value={email} onChangeText={setEmail} />
           <PasswordInput value={password} onChangeText={setPassword} />
-          <Button testID="continuar" onPress={handleSignUp} title="CONTINUAR" />
+          <Button
+            title="CONTINUAR"
+            testID="continuar"
+            disabled={disabled}
+            onPress={handleSignUp} />
         </View>
       </View>
       <Dialog
