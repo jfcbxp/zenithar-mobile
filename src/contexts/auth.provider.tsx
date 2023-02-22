@@ -263,7 +263,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .then(async (snapshot) => {
         urlImage = await snapshot.ref.getDownloadURL();
       })
-      .catch((error) => console.log(error));
     return urlImage;
   };
 

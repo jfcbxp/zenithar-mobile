@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { GestureResponderEvent, Modal, ModalProps, View } from "react-native";
-import { DialogStyles as styles } from "./dialog";
+import { Dialog, DialogStyles as styles } from "./dialog";
 import { Button } from "../buttons/button";
 import { FullNameInput } from "../inputs/fullname-input";
 import { PasswordInput } from "../inputs/password-input";
@@ -32,6 +32,8 @@ export function UserSettings(properties: Properties) {
   const [changePassword, setChangePassword] = useState<boolean | undefined>();
   const [disabled, setDisabled] = useState(false);
   const [editable, setEditable] = useState(true)
+  const defaultDialog = { title: "", content: "", visible: false };
+  const [dialog, setDialog] = useState(defaultDialog);
 
   useEffect(() => {
     setDisabled(portrait == PORTRAIT ? true : false)
@@ -60,7 +62,13 @@ export function UserSettings(properties: Properties) {
       quality: 0.1,
     });
     if (!result.canceled) {
-      setPortrait(result.assets[0].uri);
+      const response = await fetch(result.assets[0].uri);
+      const blob = await response.blob();
+      if (blob.size <= 2000000 && (blob.type == "image/png" || blob.type == "image/jpeg")) {
+        setPortrait(result.assets[0].uri);
+      } else {
+        Alert("Erro", "O retrato deve ser uma imagem de formato PNG/JPEG e não deve exceder o tamanho de 2MBs")
+      }
     }
   };
 
@@ -91,6 +99,10 @@ export function UserSettings(properties: Properties) {
     setFullName(FULLNAME);
     setPortrait(PORTRAIT);
   };
+
+  const Alert = (title: string, content: string) => {
+    setDialog({ title: title, content: content, visible: true });
+  }
 
   return (
     <Modal
@@ -157,6 +169,14 @@ export function UserSettings(properties: Properties) {
             title="CONFIRMAR"
           />
         </View>
+        <Dialog
+          title={dialog.title}
+          content={dialog.content}
+          visible={dialog.visible}
+          dismiss={() => {
+            setDialog(defaultDialog);
+          }}
+        />
       </View>
     </Modal>
   );

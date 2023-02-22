@@ -20,9 +20,10 @@ export default function SignUp({ navigation }: Properties) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("")
-  const [visible, setVisible] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const [portrait, setPortrait] = useState("");
+  const defaultDialog = { title: "", content: "", visible: false };
+  const [dialog, setDialog] = useState(defaultDialog);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -32,7 +33,13 @@ export default function SignUp({ navigation }: Properties) {
       quality: 0.1,
     });
     if (!result.canceled) {
-      setPortrait(result.assets[0].uri);
+      const response = await fetch(result.assets[0].uri);
+      const blob = await response.blob();
+      if (blob.size <= 2000000 && (blob.type == "image/png" || blob.type == "image/jpeg")){
+        setPortrait(result.assets[0].uri);
+      } else {
+        Alert("Erro", "O retrato deve ser uma imagem de formato PNG/JPEG e não deve exceder o tamanho de 2MBs")
+      }
     }
   };
 
@@ -46,6 +53,10 @@ export default function SignUp({ navigation }: Properties) {
     } else {
       setDisabled(true)
     }
+  }
+
+  const Alert = (title: string, content: string) => {
+    setDialog({ title: title, content: content, visible: true });
   }
 
   return (
@@ -86,20 +97,25 @@ export default function SignUp({ navigation }: Properties) {
             title="CONTINUAR"
             testID="continuar"
             disabled={disabled}
-            onPress={() => setVisible(true)}
-          />
+            onPress={() => {
+              setDialog({
+                title: "Verificação de e-mail",
+                content: "Aguarde. Um e-mail de verificação foi enviado para sua caixa de entrada. Após a verificação, tente efetuar acesso.",
+                visible: true,
+              })
+            }} />
         </View>
       </View>
       <Dialog
-        title="Verificação de e-mail"
-        content={
-          "Aguarde. Um e-mail de verificação foi enviado para sua caixa de entrada. Após a verificação, tente efetuar acesso."
-        }
-        visible={visible}
+        title={dialog.title}
+        content={dialog.content}
+        visible={dialog.visible}
         dismiss={() => {
-          setVisible(false);
-          authContext.signUp(email, password, fullName, portrait);
-          navigation && navigation.navigate("SignIn");
+          if (dialog.title != "Erro") {
+            authContext.signUp(email, password, fullName, portrait);
+            navigation && navigation.navigate("SignIn");
+          }
+          setDialog(defaultDialog);
         }}
       />
       <StatusBar style="light" translucent={false} backgroundColor="silver" />
