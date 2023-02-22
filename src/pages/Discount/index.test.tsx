@@ -4,7 +4,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import Discount from ".";
-import { ActivityIndicator, Pressable } from "react-native";
+import { ActivityIndicator, Modal, Pressable } from "react-native";
 import { User } from "../../models/user.model";
 import { LogTypeEnum } from "../../models/user.logs.model";
 import { AuthContext } from "../../contexts/auth.provider";
@@ -14,6 +14,8 @@ import { ApplyDiscountModal } from "../../components/modals/apply-discount";
 import { MaterialIcons as Icon } from "@expo/vector-icons";
 import { Button } from "../../components/buttons/button";
 import { Dialog } from "../../components/modals/dialog";
+import { MaskedInput } from "../../components/inputs/masked-input";
+import { TextInput } from "../../components/inputs/text-input";
 
 const company = "companyTest";
 const department = "departmentTest";
@@ -202,11 +204,38 @@ describe("Discount test", () => {
   });
 
   it("test Discount ApplyDiscountModal", async () => {
+    const button = rendered.root.findByType(Button);
+
+    await act(() => button.props.onPress());
+
     const applyDiscountModal = rendered.root.findByType(ApplyDiscountModal);
+
+    const modal = applyDiscountModal.findByType(Modal);
+
+    await act(() => modal.props.onShow());
+
+    const maskedInput = applyDiscountModal.findByType(MaskedInput);
+
+    await act(() => maskedInput.props.onFocus());
+    await act(() => maskedInput.props.onChangeText("10", "10"));
+
+    const textInput = applyDiscountModal.findByType(TextInput);
+
+    await act(() => textInput.props.onFocus());
+    await act(() => textInput.props.onChangeText("10"));
+
+    const pressable = applyDiscountModal.findByType(Pressable);
+
+    await act(() => pressable.props.onPressIn());
+    await act(() => pressable.props.onPressOut());
 
     await act(() => applyDiscountModal.props.dismiss());
 
     expect(applyDiscountModal).toBeTruthy();
+    expect(modal).toBeTruthy();
+    expect(maskedInput).toBeTruthy();
+    expect(textInput).toBeTruthy();
+    expect(pressable).toBeTruthy();
   });
 
   it("test Discount Icon", async () => {
