@@ -12,7 +12,7 @@ import { PasswordInput } from "../../components/inputs/password-input";
 import { FullNameInput } from "../../components/inputs/fullname-input";
 import { StatusBar } from "expo-status-bar";
 
-interface Properties extends StackScreenProps<StackParams, "SignUp"> {}
+interface Properties extends StackScreenProps<StackParams, "SignUp"> { }
 
 export default function SignUp({ navigation }: Properties) {
   const [fullName, setFullName] = useState("");
@@ -49,7 +49,10 @@ export default function SignUp({ navigation }: Properties) {
     <View style={styles.container}>
       <View style={{ marginHorizontal: "10%" }}>
         <View>
-          <Portrait source={portrait} onPress={pickImage} />
+          <Portrait
+            source={portrait}
+            editable={true}
+            onPress={pickImage} />
           <FullNameInput
             value={fullName}
             onChangeText={setFullName}
