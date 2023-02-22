@@ -15,7 +15,6 @@ import { MaskedInput } from "../inputs/masked-input";
 import { Button } from "../buttons/button";
 import { DiscountStyles as styles } from "./discount-styles";
 import { Dialog } from "./dialog";
-import { TextInput } from "../inputs/text-input";
 import { Orcamento } from "../../models/from-api/orcamento.model";
 
 interface Properties extends ModalProps {
@@ -119,22 +118,26 @@ export function ApplyDiscountModal(properties: Properties) {
           >
             {newTotal ? `R$ ${newTotal}` : ""}
           </Text>
-          <TextInput
+          <MaskedInput
             value={percentage}
-            onChangeText={(text) => {
-              if (text.length == 2) {
-                text += ".";
-              }
-              setPercentage(text);
-              changeValueByPercentage(parseFloat(text));
+            onChangeText={(maskedText, rawText) => {
+              setPercentage(rawText!);
+              changeValueByPercentage(parseFloat(rawText!));
             }}
+            placeholder="Desconto %"
             onFocus={() => {
               initialValues();
             }}
-            keyboardType="numeric"
-            maxLength={7}
-            placeholder="Desconto %"
+            type="money"
+            options={{
+              precision: 2,
+              separator: ",",
+              delimiter: ".",
+              unit: "% ",
+              suffixUnit: "",
+            }}
           />
+
           <MaskedInput
             value={value}
             onChangeText={(maskedText, rawText) => {

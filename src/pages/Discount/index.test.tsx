@@ -214,15 +214,13 @@ describe("Discount test", () => {
 
     await act(() => modal.props.onShow());
 
-    const maskedInput = applyDiscountModal.findByType(MaskedInput);
+    const maskedInputs = applyDiscountModal.findAllByType(MaskedInput);
 
-    await act(() => maskedInput.props.onFocus());
-    await act(() => maskedInput.props.onChangeText("10", "10"));
+    await act(() => maskedInputs[0].props.onFocus());
+    await act(() => maskedInputs[0].props.onChangeText("10", "10"));
 
-    const textInput = applyDiscountModal.findByType(TextInput);
-
-    await act(() => textInput.props.onFocus());
-    await act(() => textInput.props.onChangeText("10"));
+    await act(() => maskedInputs[1].props.onFocus());
+    await act(() => maskedInputs[1].props.onChangeText("10", "10"));
 
     const pressable = applyDiscountModal.findByType(Pressable);
 
@@ -233,8 +231,8 @@ describe("Discount test", () => {
 
     expect(applyDiscountModal).toBeTruthy();
     expect(modal).toBeTruthy();
-    expect(maskedInput).toBeTruthy();
-    expect(textInput).toBeTruthy();
+    expect(maskedInputs[0]).toBeTruthy();
+    expect(maskedInputs[1]).toBeTruthy();
     expect(pressable).toBeTruthy();
   });
 

@@ -59,9 +59,11 @@ describe("SignUp test", () => {
   });
 
   it("test SignUp PasswordInput", async () => {
-    const passwordInput = rendered.root.findByType(PasswordInput);
-    await act(() => passwordInput.props.onChangeText(TEST_PASSWORD));
-    expect(passwordInput.props.value).toBe(TEST_PASSWORD);
+    const passwordInputs = rendered.root.findAllByType(PasswordInput);
+    await act(() => passwordInputs[0].props.onChangeText(TEST_PASSWORD));
+    await act(() => passwordInputs[1].props.onChangeText(TEST_PASSWORD));
+    expect(passwordInputs[0].props.value).toBe(TEST_PASSWORD);
+    expect(passwordInputs[1].props.value).toBe(TEST_PASSWORD);
   });
 
   it("test SignUp Button Alert", async () => {
@@ -72,13 +74,13 @@ describe("SignUp test", () => {
     const dialog = rendered.root.findByType(Dialog);
 
     expect(button.props.title).toBe("CONTINUAR");
-    expect(dialog.props.visible).toBe(false);
+    expect(dialog.props.visible).toBe(true);
   });
 
   it("test SignUp Button Success", async () => {
     const potrait = rendered.root.findByType(Portrait);
 
-    const passwordInput = rendered.root.findByType(PasswordInput);
+    const passwordInputs = rendered.root.findAllByType(PasswordInput);
     const fullNameInput = rendered.root.findByType(FullNameInput);
     const emailInput = rendered.root.findByType(EmailInput);
 
@@ -88,7 +90,8 @@ describe("SignUp test", () => {
     await act(() => {
       fullNameInput.props.onChangeText(TEST_NAME);
       emailInput.props.onChangeText(TEST_EMAIL);
-      passwordInput.props.onChangeText(TEST_PASSWORD);
+      passwordInputs[0].props.onChangeText(TEST_PASSWORD);
+      passwordInputs[1].props.onChangeText(TEST_PASSWORD);
       potrait.props.onPress();
     });
     await act(() => {

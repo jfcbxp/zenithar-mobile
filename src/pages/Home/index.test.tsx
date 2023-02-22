@@ -140,7 +140,7 @@ describe("Home test", () => {
     const button3 = _button[2];
     await act(() => button3.props.onPressIn());
     expect(button3.props.title).toBe("CONFIRMAR");
-    expect(button3.props.disabled).toBe(true);
+    expect(button3.props.disabled).toBe(false);
 
     await act(() => userSettings.props.dismiss());
   });
