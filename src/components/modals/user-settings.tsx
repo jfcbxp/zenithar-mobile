@@ -36,7 +36,7 @@ export function UserSettings(properties: Properties) {
 
   useEffect(() => {
     if (!changePassword) {
-      if (portrait == PORTRAIT && fullName == FULLNAME) {
+      if (portrait == (PORTRAIT || "") && fullName == (FULLNAME || "")) {
         setDisabled(true);
       } else {
         setDisabled(false);
@@ -47,6 +47,8 @@ export function UserSettings(properties: Properties) {
   useEffect(() => {
     if (changePassword) {
       if (
+        portrait == (PORTRAIT || "") &&
+        fullName == (FULLNAME || "") &&
         currentPassword.length > 5 &&
         newPassword.length > 5 &&
         confirmPassword.length > 5

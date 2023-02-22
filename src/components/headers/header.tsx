@@ -27,6 +27,7 @@ export function Header(properties: Properties) {
   const onPress = () => {
     setVisible(true);
   };
+  
   return (
     <View style={styles.header}>
       <Pressable onPress={onPress}>

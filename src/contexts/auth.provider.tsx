@@ -232,7 +232,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
               await _alertPasswordChange();
             })
             .catch((error) => {
-              Alert("Erro", error.message);
+              Alert("Erro", "Senha atual incorreta.");
             });
         })
         .catch((error) => {
