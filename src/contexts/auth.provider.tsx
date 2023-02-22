@@ -124,14 +124,22 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setLoading(true);
     await firebaseAuth
       .signInWithEmailAndPassword(_email, _password)
+      .then(async (currentUser) => {
+        setLoading(false);
+        if (currentUser.user?.emailVerified) {
+          await _getUserRegister(currentUser.user.uid);
+        } else {
+          Alert("E-mail não verificado", "Por favor verifique seu [e-mail].");
+        }
+      })
       .catch((error) => {
         if (error) {
+          setLoading(false);
           Alert(
             "Inválido",
             "Nenhum usuário encontrado com as credenciais fornecidas."
           );
         }
-        setLoading(false);
       });
   };
 
