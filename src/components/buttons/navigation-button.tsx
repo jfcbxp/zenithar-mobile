@@ -8,7 +8,7 @@ import {
 import { MaterialIcons as Icon } from "@expo/vector-icons";
 
 interface Properties extends PressableProps {
-  icon: any;
+  icon: keyof typeof Icon.glyphMap;
   title: string;
 }
 

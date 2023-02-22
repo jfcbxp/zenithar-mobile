@@ -11,6 +11,9 @@ import { AuthContext } from "../../contexts/auth.provider";
 import { Orcamento } from "../../models/from-api/orcamento.model";
 import { Dropdown } from "../../components/dropdowns/dropdown";
 import { ApplyDiscountModal } from "../../components/modals/apply-discount";
+import { MaterialIcons as Icon } from "@expo/vector-icons";
+import { Button } from "../../components/buttons/button";
+import { Dialog } from "../../components/modals/dialog";
 
 const company = "companyTest";
 const department = "departmentTest";
@@ -63,19 +66,19 @@ jest.mock("../../services/budget.service", () => {
             empresa: "",
             itens: [
               {
-                armazem: "",
-                codigoBarras: "",
-                desconto: 0,
-                descricaoProduto: "",
-                empresa: "",
-                estoque: 0,
-                numero: "",
-                preco: 0,
-                produto: "",
-                quantidade: 0,
-                tipoEntrega: "",
-                total: 0,
-                valorDesconto: 0,
+                armazem: "01",
+                codigoBarras: "123",
+                desconto: 10,
+                descricaoProduto: "TESTE",
+                empresa: "01",
+                estoque: 1,
+                numero: "TESTE",
+                preco: 20,
+                produto: "TESTE",
+                quantidade: 1,
+                tipoEntrega: "1",
+                total: 20,
+                valorDesconto: 10,
               },
             ],
             loja: "",
@@ -85,11 +88,18 @@ jest.mock("../../services/budget.service", () => {
             observacao: "",
             pagamentos: [
               {
-                empresa: "",
-                forma: "",
-                numero: "",
+                empresa: "01",
+                forma: "TS",
+                numero: "TESTE",
                 parcelas: 1,
-                valor: 0,
+                valor: 10,
+              },
+              {
+                empresa: "01",
+                forma: "TS",
+                numero: "TESTE",
+                parcelas: 1,
+                valor: 10,
               },
             ],
             statusOrcamento: "",
@@ -146,6 +156,14 @@ describe("Discount test", () => {
     expect(activityIndicator).toBeTruthy();
   });
 
+  it("test Discount Dialog without budgetData", async () => {
+    const dialog = rendered.root.findByType(Dialog);
+
+    await act(() => dialog.props.dismiss());
+
+    expect(dialog).toBeTruthy();
+  });
+
   it("test Discount Dropdowns", async () => {
     await act(() =>
       rendered.update(
@@ -171,11 +189,15 @@ describe("Discount test", () => {
 
     const dropdowns = rendered.root.findAllByType(Dropdown);
 
-    const pressable = dropdowns[0].findByType(Pressable);
+    const pressable1 = dropdowns[0].findByType(Pressable);
+    const pressable2 = dropdowns[1].findByType(Pressable);
 
-    await act(() => pressable.props.onPress());
+    await act(() => pressable1.props.onPress());
+    await act(() => pressable2.props.onPress());
 
     expect(dropdowns[0]).toBeTruthy();
+    expect(dropdowns[1]).toBeTruthy();
+
     expect(dropdowns.length).toBe(2);
   });
 
@@ -185,5 +207,32 @@ describe("Discount test", () => {
     await act(() => applyDiscountModal.props.dismiss());
 
     expect(applyDiscountModal).toBeTruthy();
+  });
+
+  it("test Discount Icon", async () => {
+    const icon = rendered.root.findByType(Icon);
+
+    await act(() => icon.props.onPress());
+
+    expect(icon).toBeTruthy();
+  });
+
+  it("test Discount Button", async () => {
+    const button = rendered.root.findByType(Button);
+
+    await act(() => button.props.onPress());
+
+    expect(button).toBeTruthy();
+  });
+
+  it("test Discount Dialog with budgetData", async () => {
+    const dialogs = rendered.root.findAllByType(Dialog);
+
+    await act(() => dialogs[0].props.dismiss());
+    await act(() => dialogs[1].props.dismiss());
+
+    expect(dialogs[0]).toBeTruthy();
+    expect(dialogs[1]).toBeTruthy();
+    expect(dialogs.length).toBe(2);
   });
 });
