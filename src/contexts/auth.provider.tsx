@@ -35,12 +35,12 @@ const defaultState = {
   department: undefined,
   urlBackend: undefined,
   loading: true,
-  signUp: async () => {},
-  signIn: async () => {},
-  signOut: async () => {},
-  recoverPassword: async () => {},
-  userUpdate: async () => {},
-  addLog: async () => {},
+  signUp: async () => { },
+  signIn: async () => { },
+  signOut: async () => { },
+  recoverPassword: async () => { },
+  userUpdate: async () => { },
+  addLog: async () => { },
 };
 
 export const AuthContext = createContext<AuthContextProps>(defaultState);
@@ -232,11 +232,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
               await _alertPasswordChange();
             })
             .catch((error) => {
-              Alert("Erro", "Senha atual incorreta.");
+              Alert("Erro", error.message);
             });
         })
         .catch((error) => {
-          Alert("Erro", error.message);
+          Alert("Erro", "Senha atual incorreta.");
         });
     }
   };

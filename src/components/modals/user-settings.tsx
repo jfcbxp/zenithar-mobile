@@ -59,7 +59,7 @@ export function UserSettings(properties: Properties) {
         setDisabled(true);
       }
     }
-  }, [confirmPassword]);
+  }, [currentPassword, newPassword, confirmPassword]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -116,10 +116,10 @@ export function UserSettings(properties: Properties) {
     >
       <View style={styles.container}>
         <View style={styles.field}>
-          <Portrait 
-          source={portrait} 
-          editable={editable}
-          onPress={pickImage} />
+          <Portrait
+            source={portrait}
+            editable={editable}
+            onPress={pickImage} />
           <FullNameInput
             value={fullName}
             onChangeText={setFullName}
