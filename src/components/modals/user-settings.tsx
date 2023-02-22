@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { GestureResponderEvent, Modal, ModalProps, View } from "react-native";
-import { Dialog, DialogStyles as styles } from "./dialog";
+import { DialogStyles as styles } from "./dialog";
 import { Button } from "../buttons/button";
 import { FullNameInput } from "../inputs/fullname-input";
 import { PasswordInput } from "../inputs/password-input";
@@ -32,34 +32,25 @@ export function UserSettings(properties: Properties) {
   const [changePassword, setChangePassword] = useState<boolean | undefined>();
   const [disabled, setDisabled] = useState(false);
   const [editable, setEditable] = useState(true)
-  const defaultDialog = { title: "", content: "", visible: false };
-  const [dialog, setDialog] = useState(defaultDialog);
 
   useEffect(() => {
-    if (!changePassword) {
-      if (portrait == (PORTRAIT || "") && fullName == (FULLNAME || "")) {
-        setDisabled(true);
-      } else {
-        setDisabled(false);
-      }
-    }
-  }, [portrait, fullName]);
+    setDisabled(portrait == (PORTRAIT || "") ? true : false)
+  }, [portrait]);
 
-  useEffect(() => {
-    if (changePassword) {
-      if (
-        currentPassword.length > 5 &&
-        newPassword.length > 5 &&
-        confirmPassword.length > 5
-      ) {
-        if (newPassword == confirmPassword) {
-          setDisabled(false);
-        }
-      } else {
-        setDisabled(true);
-      }
+  const comparePasswords = (current: string, new_: string, confirm: string) => {
+    if (
+      current.length > 5 &&
+      new_.length > 5 &&
+      confirm.length > 5 &&
+      new_ != "" &&
+      confirm != "" &&
+      new_ == confirm
+    ) {
+      setDisabled(false)
+    } else {
+      setDisabled(true)
     }
-  }, [currentPassword, newPassword, confirmPassword]);
+  }
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -74,17 +65,13 @@ export function UserSettings(properties: Properties) {
   };
 
   const handleUpdateUser = async () => {
-    if (fullName == "") {
-      Alert("Dados mandatórios", "Por favor, preencher todos os campos");
-    } else {
-      await properties.userUpdate(
-        fullName!,
-        portrait,
-        currentPassword,
-        newPassword
-      );
-    }
-    handleCancel();
+    await properties.userUpdate(
+      fullName!,
+      portrait,
+      currentPassword,
+      newPassword
+    );
+    initials();
   };
 
   const handleChangePassword = () => {
@@ -93,18 +80,15 @@ export function UserSettings(properties: Properties) {
     setChangePassword(true);
   };
 
-  const handleCancel = () => {
+  const initials = () => {
     setChangePassword(undefined);
     setDisabled(false);
+    setEditable(true)
     setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");
     setFullName(FULLNAME);
     setPortrait(PORTRAIT);
-  };
-
-  const Alert = (title: string, content: string) => {
-    setDialog({ title: title, content: content, visible: true });
   };
 
   return (
@@ -122,7 +106,10 @@ export function UserSettings(properties: Properties) {
             onPress={pickImage} />
           <FullNameInput
             value={fullName}
-            onChangeText={setFullName}
+            onChangeText={(text) => {
+              setFullName(text)
+              setDisabled(text != (FULLNAME || "") ? false : true)
+            }}
             maxLength={20}
             editable={editable}
           />
@@ -133,23 +120,32 @@ export function UserSettings(properties: Properties) {
             <View>
               <PasswordInput
                 value={currentPassword}
-                onChangeText={setCurrentPassword}
+                onChangeText={(text) => {
+                  setCurrentPassword(text)
+                  comparePasswords(text, newPassword, confirmPassword)
+                }}
                 placeholder="Senha atual"
               />
               <PasswordInput
                 value={newPassword}
-                onChangeText={setNewPassword}
+                onChangeText={(text) => {
+                  setNewPassword(text)
+                  comparePasswords(currentPassword, text, confirmPassword)
+                }}
                 placeholder="Nova senha"
               />
               <PasswordInput
                 value={confirmPassword}
-                onChangeText={setConfirmPassword}
+                onChangeText={(text) => {
+                  setConfirmPassword(text)
+                  comparePasswords(currentPassword, newPassword, text)
+                }}
                 placeholder="Confirmar nova senha"
               />
             </View>
           )}
           <Button
-            onPressIn={handleCancel}
+            onPressIn={initials}
             onPressOut={properties.dismiss}
             title="CANCELAR"
           />
@@ -161,16 +157,6 @@ export function UserSettings(properties: Properties) {
           />
         </View>
       </View>
-      {dialog.visible && (
-        <Dialog
-          title={dialog.title}
-          content={dialog.content}
-          visible={dialog.visible}
-          dismiss={() => {
-            setDialog(defaultDialog);
-          }}
-        />
-      )}
     </Modal>
   );
 }

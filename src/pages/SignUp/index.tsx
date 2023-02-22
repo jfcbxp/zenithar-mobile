@@ -15,14 +15,15 @@ import { StatusBar } from "expo-status-bar";
 interface Properties extends StackScreenProps<StackParams, "SignUp"> { }
 
 export default function SignUp({ navigation }: Properties) {
+  const authContext = useContext(AuthContext);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("")
   const [visible, setVisible] = useState(false);
   const [disabled, setDisabled] = useState(true);
-  const authContext = useContext(AuthContext);
-
   const [portrait, setPortrait] = useState("");
+
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -36,14 +37,16 @@ export default function SignUp({ navigation }: Properties) {
   };
 
   useEffect(() => {
-    setDisabled(!(email && fullName && password && portrait));
-  }, [email, password, fullName, portrait]);
+    check(fullName, email, password, confirmPassword, portrait)
+  }, [portrait])
 
-  const handleSignUp = () => {
-    if (email && password && fullName && portrait) {
-      setVisible(true);
+  const check = (fullName: string, email: string, password: string, confirmPassword: string, portrait: string) => {
+    if (fullName && email && password && confirmPassword && portrait && password == confirmPassword) {
+      setDisabled(false)
+    } else {
+      setDisabled(true)
     }
-  };
+  }
 
   return (
     <View style={styles.container}>
@@ -55,16 +58,35 @@ export default function SignUp({ navigation }: Properties) {
             onPress={pickImage} />
           <FullNameInput
             value={fullName}
-            onChangeText={setFullName}
-            maxLength={20}
-          />
-          <EmailInput value={email} onChangeText={setEmail} />
-          <PasswordInput value={password} onChangeText={setPassword} />
+            onChangeText={(text) => {
+              setFullName(text)
+              check(fullName, email, password, confirmPassword, portrait)
+            }}
+            maxLength={20} />
+          <EmailInput
+            value={email}
+            onChangeText={(text) => {
+              setEmail(text)
+              check(fullName, text, password, confirmPassword, portrait)
+            }} />
+          <PasswordInput
+            value={password}
+            onChangeText={(text) => {
+              setPassword(text)
+              check(fullName, email, text, confirmPassword, portrait)
+            }} />
+          <PasswordInput
+            placeholder="Confirmar senha"
+            value={confirmPassword}
+            onChangeText={(text) => {
+              setConfirmPassword(text)
+              check(fullName, email, password, text, portrait)
+            }} />
           <Button
             title="CONTINUAR"
             testID="continuar"
             disabled={disabled}
-            onPress={handleSignUp}
+            onPress={() => setVisible(true)}
           />
         </View>
       </View>

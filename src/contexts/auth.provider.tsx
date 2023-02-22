@@ -153,6 +153,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const recoverPassword = async (_email: string) => {
+    firebaseAuth.languageCode = "pt";
     await firebaseAuth.sendPasswordResetEmail(_email).catch((error) => {
       Alert(
         "Erro",
