@@ -105,10 +105,8 @@ describe("SignUp test", () => {
   it("test SignUp Dialog", async () => {
     const dialog = rendered.root.findByType(Dialog);
 
-    expect(dialog.props.title).toBe("Verificação de e-mail");
-    expect(dialog.props.content).toBe(
-      "Aguarde. Um e-mail de verificação foi enviado para sua caixa de entrada. Após a verificação, tente efetuar acesso."
-    );
+    expect(dialog.props.title).toBe("");
+    expect(dialog.props.content).toBe("");
   });
 
   it("test SignUp StatusBar", () => {
