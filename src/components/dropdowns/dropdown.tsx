@@ -5,7 +5,7 @@ import {
   Text,
   View,
   StyleSheet,
-  FlatList
+  FlatList,
 } from "react-native";
 import { Feather as Icon } from "@expo/vector-icons";
 
@@ -29,7 +29,7 @@ export function Dropdown<T extends unknown>(properties: Properties<T>) {
           <Text style={styles.text}>{properties.title}</Text>
           <Icon
             testID="icon"
-            name={visible === false ? "chevron-down" : "chevron-up"}
+            name={visible ? "chevron-up" : "chevron-down"}
             size={32}
           />
         </View>

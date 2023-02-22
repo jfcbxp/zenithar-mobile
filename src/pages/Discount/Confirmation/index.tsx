@@ -54,89 +54,68 @@ export default function DiscountConfirmation({
     setDialog({ title: title, content: content, visible: true });
   };
 
-  if (dialog.title != "Erro") {
-    return (
-      <ScrollView
-        contentContainerStyle={styles.container}
-        scrollEnabled={false}
-      >
-        <View style={styles.topField}>
-          <View style={styles.header}>
-            <Icon
-              testID="icon"
-              name="keyboard-arrow-left"
-              size={48}
-              color="white"
-              onPress={() => {
-                navigation && navigation.navigate("Home");
-              }}
-            />
-            <Text style={styles.headerText}>Desconto</Text>
-          </View>
-          <Text style={styles.client}>{_budgetObject.nomeCliente}</Text>
-          <Text style={styles.budget}>Orçamento #{_budget}</Text>
-        </View>
-        <View style={styles.bottomField}>
-          <View>
-            <Text style={styles.result}>{_budgetObject.tipoOrcamento}</Text>
-            <Text style={styles.description}>Tipo do orçamento</Text>
-          </View>
-          <View>
-            <Text style={styles.result}>{_budgetObject.nomeVendedor}</Text>
-            <Text style={styles.description}>Vendedor</Text>
-          </View>
-          <View>
-            <Text style={styles.result}>
-              Total R${" "}
-              {(_budgetObject.totalBruto - _discountValue)
-                .toFixed(2)
-                .replace(".", ",")}
-            </Text>
-            <Text style={styles.description}>
-              Pagamento
-              <Text style={{ fontWeight: "bold" }}>
-                {" "}
-                em {_budgetObject.pagamentos[0].forma}
-              </Text>
-            </Text>
-          </View>
-          <SwipeButton
-            onComplete={releaseDiscount}
-            title="EFETUAR DESCONTO"
-            underlayTitle="LIBERAR"
+  return (
+    <ScrollView contentContainerStyle={styles.container} scrollEnabled={false}>
+      <View style={styles.topField}>
+        <View style={styles.header}>
+          <Icon
+            testID="icon"
+            name="keyboard-arrow-left"
+            size={48}
+            color="white"
+            onPress={() => {
+              navigation && navigation.navigate("Home");
+            }}
           />
+          <Text style={styles.headerText}>Desconto</Text>
         </View>
-        <Dialog
-          visible={dialog.visible}
-          title={dialog.title}
-          content={dialog.content}
-          dismiss={() => {
-            navigation && navigation.navigate("Discount", { _branch, _budget });
-            setDialog(defaultDialog);
-          }}
-        />
-        <StatusBar
-          style="light"
-          translucent={false}
-          backgroundColor="#212A4D"
-        />
-      </ScrollView>
-    );
-  } else {
-    return (
-      <View style={styles.container}>
-        <Dialog
-          visible={dialog.visible}
-          title={dialog.title}
-          content={dialog.content}
-          dismiss={() => {
-            navigation && navigation.navigate("Home");
-            setDialog(defaultDialog);
-          }}
+        <Text style={styles.client}>{_budgetObject.nomeCliente}</Text>
+        <Text style={styles.budget}>Orçamento #{_budget}</Text>
+      </View>
+      <View style={styles.bottomField}>
+        <View>
+          <Text style={styles.result}>{_budgetObject.tipoOrcamento}</Text>
+          <Text style={styles.description}>Tipo do orçamento</Text>
+        </View>
+        <View>
+          <Text style={styles.result}>{_budgetObject.nomeVendedor}</Text>
+          <Text style={styles.description}>Vendedor</Text>
+        </View>
+        <View>
+          <Text style={styles.result}>
+            Total R${" "}
+            {(_budgetObject.totalBruto - _discountValue)
+              .toFixed(2)
+              .replace(".", ",")}
+          </Text>
+          <Text style={styles.description}>
+            Pagamento
+            <Text style={{ fontWeight: "bold" }}>
+              {" "}
+              em {_budgetObject.pagamentos[0].forma}
+            </Text>
+          </Text>
+        </View>
+        <SwipeButton
+          onComplete={releaseDiscount}
+          title="EFETUAR DESCONTO"
+          underlayTitle="LIBERAR"
         />
       </View>
-    );
-  }
+      <Dialog
+        visible={dialog.visible}
+        title={dialog.title}
+        content={dialog.content}
+        dismiss={() => {
+          if (dialog.title != "Erro") {
+            navigation && navigation.navigate("Home");
+          }
+          setDialog(defaultDialog);
+        }}
+      />
+      <StatusBar style="light" translucent={false} backgroundColor="#212A4D" />
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({

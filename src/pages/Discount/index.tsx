@@ -45,7 +45,9 @@ export default function Discount({ route, navigation }: Properties) {
   useEffect(() => {
     service
       .loadBudget(_budget, _branch)
-      .then((budget) => setBudgetData(budget))
+      .then((budget) => {
+        setBudgetData(budget);
+      })
       .catch((error) => {
         if (axios.isAxiosError(error)) {
           Alert("Erro", "Servidor indisponível");

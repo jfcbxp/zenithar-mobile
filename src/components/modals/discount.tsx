@@ -28,7 +28,7 @@ interface Properties extends ModalProps {
 export function DiscountModal(properties: Properties) {
   const navigation = useNavigation<NavigationParams>();
   const [budget, setBudget] = useState("");
-  const [branch, setBranch] = useState("");
+  const [branch, setBranch] = useState<UserBranch>();
   const [branches, setBranches] = useState<ItemType<UserBranch>[]>();
   const translation = useRef(new Animated.Value(400)).current;
   const [open, setOpen] = useState(false);
@@ -37,12 +37,12 @@ export function DiscountModal(properties: Properties) {
   useEffect(() => {
     let data = properties.branches;
     if (data) {
-      let array: ItemType<any>[] = [];
+      let array: ItemType<UserBranch>[] = [];
       Object.entries(data).forEach(([key, value]) => {
         array = [
           ...array,
           {
-            value: value.id,
+            value: value,
             label: `${value.id} - ${value.name}`,
           },
         ];
@@ -79,7 +79,7 @@ export function DiscountModal(properties: Properties) {
         <Pressable
           onPressIn={() => {
             translation.setValue(400);
-            setBranch("");
+            setBranch(undefined);
             setBudget("");
             setOpen(false);
           }}
@@ -115,11 +115,11 @@ export function DiscountModal(properties: Properties) {
               navigation &&
                 navigation.navigate("Discount", {
                   _budget: budget.toUpperCase(),
-                  _branch: branch,
+                  _branch: branch!.id,
                 });
               translation.setValue(400);
               setOpen(false);
-              setBranch("");
+              setBranch(undefined);
               setBudget("");
             }}
             onPressOut={properties.dismiss}
