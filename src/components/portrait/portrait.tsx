@@ -12,7 +12,7 @@ export function Portrait(properties: Properties) {
   const [disable, setDisable] = useState(false);
 
   useEffect(() => {
-    setDisable(properties.editable ? false : true);
+    setDisable(!properties.editable);
   }, [properties.editable]);
 
   return (

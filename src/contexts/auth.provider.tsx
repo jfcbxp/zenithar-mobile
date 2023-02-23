@@ -231,7 +231,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         blob.size <= 2000000 &&
         (blob.type == "image/png" || blob.type == "image/jpeg")
       ) {
-        console.log("CHEGOU AQUI");
         value = result.assets[0].uri;
       }
     }

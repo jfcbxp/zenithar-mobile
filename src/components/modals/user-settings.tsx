@@ -39,7 +39,7 @@ export function UserSettings(properties: Properties) {
   useEffect(() => {
     if (PORTRAIT) {
       if (portrait) {
-        setDisabled(portrait == PORTRAIT ? true : false);
+        setDisabled(portrait == PORTRAIT);
       } else {
         Alert(
           "Erro",
