@@ -37,13 +37,15 @@ const defaultState = {
   department: undefined,
   urlBackend: undefined,
   loading: true,
-  signUp: async () => { },
-  signIn: async () => { },
-  signOut: async () => { },
-  recoverPassword: async () => { },
-  userUpdate: async () => { },
-  addLog: async () => { },
-  pickImage: async (): Promise<string> => { return Promise.resolve("") }
+  signUp: async () => {},
+  signIn: async () => {},
+  signOut: async () => {},
+  recoverPassword: async () => {},
+  userUpdate: async () => {},
+  addLog: async () => {},
+  pickImage: async (): Promise<string> => {
+    return Promise.resolve("");
+  },
 };
 
 export const AuthContext = createContext<AuthContextProps>(defaultState);
@@ -215,7 +217,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const pickImage = async (): Promise<string> => {
-    let value = ""
+    let value = "";
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -225,12 +227,15 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     if (!result.canceled) {
       const response = await fetch(result.assets[0].uri);
       const blob = await response.blob();
-      if (blob.size <= 2000000 && (blob.type == "image/png" || blob.type == "image/jpeg")) {
-        console.log("CHEGOU AQUI")
-        value = result.assets[0].uri
+      if (
+        blob.size <= 2000000 &&
+        (blob.type == "image/png" || blob.type == "image/jpeg")
+      ) {
+        console.log("CHEGOU AQUI");
+        value = result.assets[0].uri;
       }
     }
-    return value
+    return value;
   };
 
   const _reauthenticate = async (currentPassword: string) => {
@@ -284,7 +289,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .put(blob)
       .then(async (snapshot) => {
         urlImage = await snapshot.ref.getDownloadURL();
-      })
+      });
     return urlImage;
   };
 

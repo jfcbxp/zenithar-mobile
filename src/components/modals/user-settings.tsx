@@ -32,17 +32,20 @@ export function UserSettings(properties: Properties) {
   const [portrait, setPortrait] = useState<string | undefined>(PORTRAIT);
   const [changePassword, setChangePassword] = useState<boolean | undefined>();
   const [disabled, setDisabled] = useState(false);
-  const [editable, setEditable] = useState(true)
+  const [editable, setEditable] = useState(true);
   const defaultDialog = { title: "", content: "", visible: false };
   const [dialog, setDialog] = useState(defaultDialog);
 
   useEffect(() => {
-    if (PORTRAIT != undefined && PORTRAIT != "") {
-      if (portrait == "") {
-        Alert("Erro", "O retrato deve ser uma imagem de formato PNG/JPEG e não deve exceder o tamanho de 2MBs")
-        setPortrait(PORTRAIT)
+    if (PORTRAIT) {
+      if (portrait) {
+        setDisabled(portrait == PORTRAIT ? true : false);
       } else {
-        setDisabled(portrait == PORTRAIT ? true : false)
+        Alert(
+          "Erro",
+          "O retrato deve ser uma imagem de formato PNG/JPEG e não deve exceder o tamanho de 2MBs"
+        );
+        setPortrait(PORTRAIT);
       }
     }
   }, [portrait]);
@@ -52,15 +55,15 @@ export function UserSettings(properties: Properties) {
       current.length > 5 &&
       new_.length > 5 &&
       confirm.length > 5 &&
-      new_ != "" &&
-      confirm != "" &&
+      new_ &&
+      confirm &&
       new_ == confirm
     ) {
-      setDisabled(false)
+      setDisabled(false);
     } else {
-      setDisabled(true)
+      setDisabled(true);
     }
-  }
+  };
 
   const handleUpdateUser = async () => {
     await properties.userUpdate(
@@ -73,16 +76,16 @@ export function UserSettings(properties: Properties) {
   };
 
   const handleChangePassword = () => {
-    setFullName(FULLNAME)
-    setDisabled(true)
-    setEditable(false)
-    setChangePassword(true)
+    setFullName(FULLNAME);
+    setDisabled(true);
+    setEditable(false);
+    setChangePassword(true);
   };
 
   const initials = () => {
     setChangePassword(undefined);
     setDisabled(false);
-    setEditable(true)
+    setEditable(true);
     setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");
@@ -91,13 +94,13 @@ export function UserSettings(properties: Properties) {
   };
 
   const pickImage = async () => {
-    const uri = await authContext.pickImage()
-    setPortrait(uri)
-  }
+    const uri = await authContext.pickImage();
+    setPortrait(uri);
+  };
 
   const Alert = (title: string, content: string) => {
     setDialog({ title: title, content: content, visible: true });
-  }
+  };
 
   return (
     <Modal
@@ -108,15 +111,12 @@ export function UserSettings(properties: Properties) {
     >
       <View style={styles.container}>
         <View style={styles.field}>
-          <Portrait
-            source={portrait}
-            editable={editable}
-            onPress={pickImage} />
+          <Portrait source={portrait} editable={editable} onPress={pickImage} />
           <FullNameInput
             value={fullName}
             onChangeText={(text) => {
-              setFullName(text)
-              setDisabled((text != FULLNAME && text) ? false : true)
+              setFullName(text);
+              setDisabled(text != FULLNAME && text ? false : true);
             }}
             maxLength={20}
             editable={editable}
@@ -129,24 +129,24 @@ export function UserSettings(properties: Properties) {
               <PasswordInput
                 value={currentPassword}
                 onChangeText={(text) => {
-                  setCurrentPassword(text)
-                  comparePasswords(text, newPassword, confirmPassword)
+                  setCurrentPassword(text);
+                  comparePasswords(text, newPassword, confirmPassword);
                 }}
                 placeholder="Senha atual"
               />
               <PasswordInput
                 value={newPassword}
                 onChangeText={(text) => {
-                  setNewPassword(text)
-                  comparePasswords(currentPassword, text, confirmPassword)
+                  setNewPassword(text);
+                  comparePasswords(currentPassword, text, confirmPassword);
                 }}
                 placeholder="Nova senha"
               />
               <PasswordInput
                 value={confirmPassword}
                 onChangeText={(text) => {
-                  setConfirmPassword(text)
-                  comparePasswords(currentPassword, newPassword, text)
+                  setConfirmPassword(text);
+                  comparePasswords(currentPassword, newPassword, text);
                 }}
                 placeholder="Confirmar nova senha"
               />

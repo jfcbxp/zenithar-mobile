@@ -9,11 +9,11 @@ interface Properties {
 }
 
 export function Portrait(properties: Properties) {
-  const [disable, setDisable] = useState(false)
+  const [disable, setDisable] = useState(false);
 
   useEffect(() => {
-    setDisable(properties.editable ? false : true)
-  }, [properties.editable])
+    setDisable(properties.editable ? false : true);
+  }, [properties.editable]);
 
   return (
     <View style={styles.container}>
@@ -28,7 +28,8 @@ export function Portrait(properties: Properties) {
       <Button
         title="SELECIONAR"
         disabled={disable}
-        onPress={properties.onPress} />
+        onPress={properties.onPress}
+      />
     </View>
   );
 }
