@@ -37,11 +37,13 @@ export function UserSettings(properties: Properties) {
   const [dialog, setDialog] = useState(defaultDialog);
 
   useEffect(() => {
-    if (portrait == "") {
-      Alert("Erro", "O retrato deve ser uma imagem de formato PNG/JPEG e não deve exceder o tamanho de 2MBs")
-      setPortrait(PORTRAIT)
-    } else {
-      setDisabled(portrait == PORTRAIT ? true : false)
+    if (PORTRAIT != undefined && PORTRAIT != "") {
+      if (portrait == "") {
+        Alert("Erro", "O retrato deve ser uma imagem de formato PNG/JPEG e não deve exceder o tamanho de 2MBs")
+        setPortrait(PORTRAIT)
+      } else {
+        setDisabled(portrait == PORTRAIT ? true : false)
+      }
     }
   }, [portrait]);
 
