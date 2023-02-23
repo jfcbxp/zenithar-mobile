@@ -5,7 +5,6 @@ import { Dialog } from "../../components/modals/dialog";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { AuthContext } from "../../contexts/auth.provider";
-import * as ImagePicker from "expo-image-picker";
 import { Portrait } from "../../components/portrait/portrait";
 import { EmailInput } from "../../components/inputs/email-input";
 import { PasswordInput } from "../../components/inputs/password-input";
@@ -25,26 +24,12 @@ export default function SignUp({ navigation }: Properties) {
   const defaultDialog = { title: "", content: "", visible: false };
   const [dialog, setDialog] = useState(defaultDialog);
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.1,
-    });
-    if (!result.canceled) {
-      const response = await fetch(result.assets[0].uri);
-      const blob = await response.blob();
-      if (blob.size <= 2000000 && (blob.type == "image/png" || blob.type == "image/jpeg")){
-        setPortrait(result.assets[0].uri);
-      } else {
-        Alert("Erro", "O retrato deve ser uma imagem de formato PNG/JPEG e não deve exceder o tamanho de 2MBs")
-      }
-    }
-  };
-
   useEffect(() => {
-    check(fullName, email, password, confirmPassword, portrait)
+    if (portrait == "") {
+      Alert("Erro", "O retrato deve ser uma imagem de formato PNG/JPEG e não deve exceder o tamanho de 2MBs")
+    } else {
+      check(fullName, email, password, confirmPassword, portrait)
+    }
   }, [portrait])
 
   const check = (fullName: string, email: string, password: string, confirmPassword: string, portrait: string) => {
@@ -53,6 +38,11 @@ export default function SignUp({ navigation }: Properties) {
     } else {
       setDisabled(true)
     }
+  }
+
+  const pickImage = async () => {
+    const uri = await authContext.pickImage()
+    setPortrait(uri)
   }
 
   const Alert = (title: string, content: string) => {

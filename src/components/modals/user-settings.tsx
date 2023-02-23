@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GestureResponderEvent, Modal, ModalProps, View } from "react-native";
 import { Dialog, DialogStyles as styles } from "./dialog";
 import { Button } from "../buttons/button";
@@ -7,6 +7,7 @@ import { PasswordInput } from "../inputs/password-input";
 import { Portrait } from "../portrait/portrait";
 import * as ImagePicker from "expo-image-picker";
 import { CommandLink } from "../buttons/command-link";
+import { AuthContext } from "../../contexts/auth.provider";
 
 interface Properties extends ModalProps {
   visible: boolean | undefined;
@@ -22,6 +23,7 @@ interface Properties extends ModalProps {
 }
 
 export function UserSettings(properties: Properties) {
+  const authContext = useContext(AuthContext);
   const FULLNAME = properties.fullName;
   const PORTRAIT = properties.portrait;
   const [fullName, setFullName] = useState<string | undefined>(FULLNAME);
@@ -36,7 +38,12 @@ export function UserSettings(properties: Properties) {
   const [dialog, setDialog] = useState(defaultDialog);
 
   useEffect(() => {
-    setDisabled(portrait == PORTRAIT ? true : false)
+    if (portrait == "") {
+      Alert("Erro", "O retrato deve ser uma imagem de formato PNG/JPEG e não deve exceder o tamanho de 2MBs")
+      setPortrait(PORTRAIT)
+    } else {
+      setDisabled(portrait == PORTRAIT ? true : false)
+    }
   }, [portrait]);
 
   const comparePasswords = (current: string, new_: string, confirm: string) => {
@@ -53,24 +60,6 @@ export function UserSettings(properties: Properties) {
       setDisabled(true)
     }
   }
-
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.1,
-    });
-    if (!result.canceled) {
-      const response = await fetch(result.assets[0].uri);
-      const blob = await response.blob();
-      if (blob.size <= 2000000 && (blob.type == "image/png" || blob.type == "image/jpeg")) {
-        setPortrait(result.assets[0].uri);
-      } else {
-        Alert("Erro", "O retrato deve ser uma imagem de formato PNG/JPEG e não deve exceder o tamanho de 2MBs")
-      }
-    }
-  };
 
   const handleUpdateUser = async () => {
     await properties.userUpdate(
@@ -99,6 +88,11 @@ export function UserSettings(properties: Properties) {
     setFullName(FULLNAME);
     setPortrait(PORTRAIT);
   };
+
+  const pickImage = async () => {
+    const uri = await authContext.pickImage()
+    setPortrait(uri)
+  }
 
   const Alert = (title: string, content: string) => {
     setDialog({ title: title, content: content, visible: true });
