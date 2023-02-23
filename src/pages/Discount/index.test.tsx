@@ -15,7 +15,6 @@ import { MaterialIcons as Icon } from "@expo/vector-icons";
 import { Button } from "../../components/buttons/button";
 import { Dialog } from "../../components/modals/dialog";
 import { MaskedInput } from "../../components/inputs/masked-input";
-import { TextInput } from "../../components/inputs/text-input";
 
 const company = "companyTest";
 const department = "departmentTest";
@@ -27,6 +26,7 @@ const signOut = jest.fn();
 const recoverPassword = jest.fn();
 const userUpdate = jest.fn();
 const addLog = jest.fn();
+const pickImage = jest.fn();
 const user: User = {
   uid: "uuidTest",
   fullName: "fullNameTest",
@@ -147,6 +147,7 @@ describe("Discount test", () => {
         recoverPassword,
         userUpdate,
         addLog,
+        pickImage,
       }}
     >
       <Discount navigation={navigation} route={mockRoute()} />
@@ -182,6 +183,7 @@ describe("Discount test", () => {
             recoverPassword,
             userUpdate,
             addLog,
+            pickImage,
           }}
         >
           <Discount navigation={navigation} route={mockRoute()} />
