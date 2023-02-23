@@ -4,6 +4,7 @@ import { firebaseAuth, storage, realtime } from "../services/firebase.service";
 import firebase from "firebase/compat/app";
 import { Dialog } from "../components/modals/dialog";
 import { UserLogs } from "../models/user.logs.model";
+import * as ImagePicker from "expo-image-picker";
 
 type AuthContextProps = {
   user: User | undefined;
@@ -27,6 +28,7 @@ type AuthContextProps = {
     _newPassword?: string
   ): Promise<void>;
   addLog(log: UserLogs): Promise<void>;
+  pickImage(): Promise<string>;
 };
 
 const defaultState = {
@@ -41,6 +43,9 @@ const defaultState = {
   recoverPassword: async () => {},
   userUpdate: async () => {},
   addLog: async () => {},
+  pickImage: async (): Promise<string> => {
+    return Promise.resolve("");
+  },
 };
 
 export const AuthContext = createContext<AuthContextProps>(defaultState);
@@ -124,14 +129,22 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setLoading(true);
     await firebaseAuth
       .signInWithEmailAndPassword(_email, _password)
+      .then(async (currentUser) => {
+        if (currentUser.user?.emailVerified) {
+          await _getUserRegister(currentUser.user.uid);
+        } else {
+          Alert("E-mail não verificado", "Por favor verifique seu [e-mail].");
+        }
+        setLoading(false);
+      })
       .catch((error) => {
         if (error) {
+          setLoading(false);
           Alert(
             "Inválido",
             "Nenhum usuário encontrado com as credenciais fornecidas."
           );
         }
-        setLoading(false);
       });
   };
 
@@ -145,6 +158,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const recoverPassword = async (_email: string) => {
+    firebaseAuth.languageCode = "pt";
     await firebaseAuth.sendPasswordResetEmail(_email).catch((error) => {
       Alert(
         "Erro",
@@ -202,6 +216,27 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setLoading(false);
   };
 
+  const pickImage = async (): Promise<string> => {
+    let value = "";
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.1,
+    });
+    if (!result.canceled) {
+      const response = await fetch(result.assets[0].uri);
+      const blob = await response.blob();
+      if (
+        blob.size <= 2000000 &&
+        (blob.type == "image/png" || blob.type == "image/jpeg")
+      ) {
+        value = result.assets[0].uri;
+      }
+    }
+    return value;
+  };
+
   const _reauthenticate = async (currentPassword: string) => {
     const user = firebaseAuth.currentUser!;
     const credentials = firebase.auth.EmailAuthProvider.credential(
@@ -228,7 +263,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             });
         })
         .catch((error) => {
-          Alert("Erro", error.message);
+          Alert("Erro", "Senha atual incorreta.");
         });
     }
   };
@@ -253,8 +288,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .put(blob)
       .then(async (snapshot) => {
         urlImage = await snapshot.ref.getDownloadURL();
-      })
-      .catch((error) => console.log(error));
+      });
     return urlImage;
   };
 
@@ -358,6 +392,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       recoverPassword,
       userUpdate,
       addLog,
+      pickImage,
     }),
     [
       user,
@@ -371,6 +406,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       recoverPassword,
       userUpdate,
       addLog,
+      pickImage,
     ]
   );
 

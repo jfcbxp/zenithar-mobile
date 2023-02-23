@@ -15,7 +15,6 @@ import { MaterialIcons as Icon } from "@expo/vector-icons";
 import { Button } from "../../components/buttons/button";
 import { Dialog } from "../../components/modals/dialog";
 import { MaskedInput } from "../../components/inputs/masked-input";
-import { TextInput } from "../../components/inputs/text-input";
 
 const company = "companyTest";
 const department = "departmentTest";
@@ -27,6 +26,7 @@ const signOut = jest.fn();
 const recoverPassword = jest.fn();
 const userUpdate = jest.fn();
 const addLog = jest.fn();
+const pickImage = jest.fn();
 const user: User = {
   uid: "uuidTest",
   fullName: "fullNameTest",
@@ -147,6 +147,7 @@ describe("Discount test", () => {
         recoverPassword,
         userUpdate,
         addLog,
+        pickImage,
       }}
     >
       <Discount navigation={navigation} route={mockRoute()} />
@@ -182,6 +183,7 @@ describe("Discount test", () => {
             recoverPassword,
             userUpdate,
             addLog,
+            pickImage,
           }}
         >
           <Discount navigation={navigation} route={mockRoute()} />
@@ -214,15 +216,13 @@ describe("Discount test", () => {
 
     await act(() => modal.props.onShow());
 
-    const maskedInput = applyDiscountModal.findByType(MaskedInput);
+    const maskedInputs = applyDiscountModal.findAllByType(MaskedInput);
 
-    await act(() => maskedInput.props.onFocus());
-    await act(() => maskedInput.props.onChangeText("10", "10"));
+    await act(() => maskedInputs[0].props.onFocus());
+    await act(() => maskedInputs[0].props.onChangeText("10", "10"));
 
-    const textInput = applyDiscountModal.findByType(TextInput);
-
-    await act(() => textInput.props.onFocus());
-    await act(() => textInput.props.onChangeText("10"));
+    await act(() => maskedInputs[1].props.onFocus());
+    await act(() => maskedInputs[1].props.onChangeText("10", "10"));
 
     const pressable = applyDiscountModal.findByType(Pressable);
 
@@ -233,8 +233,8 @@ describe("Discount test", () => {
 
     expect(applyDiscountModal).toBeTruthy();
     expect(modal).toBeTruthy();
-    expect(maskedInput).toBeTruthy();
-    expect(textInput).toBeTruthy();
+    expect(maskedInputs[0]).toBeTruthy();
+    expect(maskedInputs[1]).toBeTruthy();
     expect(pressable).toBeTruthy();
   });
 

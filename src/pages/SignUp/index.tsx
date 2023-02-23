@@ -1,11 +1,10 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button } from "../../components/buttons/button";
 import { Dialog } from "../../components/modals/dialog";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
 import { AuthContext } from "../../contexts/auth.provider";
-import * as ImagePicker from "expo-image-picker";
 import { Portrait } from "../../components/portrait/portrait";
 import { EmailInput } from "../../components/inputs/email-input";
 import { PasswordInput } from "../../components/inputs/password-input";
@@ -15,58 +14,117 @@ import { StatusBar } from "expo-status-bar";
 interface Properties extends StackScreenProps<StackParams, "SignUp"> {}
 
 export default function SignUp({ navigation }: Properties) {
+  const authContext = useContext(AuthContext);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [visible, setVisible] = useState(false);
-  const authContext = useContext(AuthContext);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [disabled, setDisabled] = useState(true);
+  const [portrait, setPortrait] = useState<string | undefined>();
+  const defaultDialog = { title: "", content: "", visible: false };
+  const [dialog, setDialog] = useState(defaultDialog);
 
-  const [portrait, setPortrait] = useState("");
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.1,
-    });
-    if (!result.canceled) {
-      setPortrait(result.assets[0].uri);
+  useEffect(() => {
+    if (portrait) {
+      check(fullName, email, password, confirmPassword, portrait);
+    } else {
+      Alert(
+        "Erro",
+        "O retrato deve ser uma imagem de formato PNG/JPEG e não deve exceder o tamanho de 2MBs"
+      );
+    }
+  }, [portrait]);
+
+  const check = (
+    fullName: string,
+    email: string,
+    password: string,
+    confirmPassword: string,
+    portrait: string
+  ) => {
+    if (
+      fullName &&
+      email &&
+      password &&
+      confirmPassword &&
+      portrait &&
+      password == confirmPassword
+    ) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
     }
   };
 
-  const handleSignUp = () => {
-    if (email && password && fullName && portrait) {
-      setVisible(true);
-    } else {
-      alert("Por favor, preencher todos os campos");
-    }
+  const pickImage = async () => {
+    const uri = await authContext.pickImage();
+    setPortrait(uri);
+  };
+
+  const Alert = (title: string, content: string) => {
+    setDialog({ title: title, content: content, visible: true });
   };
 
   return (
     <View style={styles.container}>
       <View style={{ marginHorizontal: "10%" }}>
         <View>
-          <Portrait source={portrait} onPress={pickImage} />
+          <Portrait source={portrait} editable={true} onPress={pickImage} />
           <FullNameInput
             value={fullName}
-            onChangeText={setFullName}
+            onChangeText={(text) => {
+              setFullName(text);
+              check(fullName, email, password, confirmPassword, portrait!);
+            }}
             maxLength={20}
           />
-          <EmailInput value={email} onChangeText={setEmail} />
-          <PasswordInput value={password} onChangeText={setPassword} />
-          <Button testID="continuar" onPress={handleSignUp} title="CONTINUAR" />
+          <EmailInput
+            value={email}
+            onChangeText={(text) => {
+              setEmail(text);
+              check(fullName, text, password, confirmPassword, portrait!);
+            }}
+          />
+          <PasswordInput
+            value={password}
+            onChangeText={(text) => {
+              setPassword(text);
+              check(fullName, email, text, confirmPassword, portrait!);
+            }}
+          />
+          <PasswordInput
+            placeholder="Confirmar senha"
+            value={confirmPassword}
+            onChangeText={(text) => {
+              setConfirmPassword(text);
+              check(fullName, email, password, text, portrait!);
+            }}
+          />
+          <Button
+            title="CONTINUAR"
+            testID="continuar"
+            disabled={disabled}
+            onPress={() => {
+              setDialog({
+                title: "Verificação de e-mail",
+                content:
+                  "Aguarde. Um e-mail de verificação foi enviado para sua caixa de entrada. Após a verificação, tente efetuar acesso.",
+                visible: true,
+              });
+            }}
+          />
         </View>
       </View>
       <Dialog
-        title="Verificação de e-mail"
-        content={
-          "Aguarde. Um e-mail de verificação foi enviado para sua caixa de entrada. Após a verificação, tente efetuar acesso."
-        }
-        visible={visible}
+        title={dialog.title}
+        content={dialog.content}
+        visible={dialog.visible}
         dismiss={() => {
-          setVisible(false);
-          authContext.signUp(email, password, fullName, portrait);
-          navigation && navigation.navigate("SignIn");
+          if (dialog.title != "Erro") {
+            authContext.signUp(email, password, fullName, portrait!);
+            navigation && navigation.navigate("SignIn");
+          }
+          setDialog(defaultDialog);
         }}
       />
       <StatusBar style="light" translucent={false} backgroundColor="silver" />

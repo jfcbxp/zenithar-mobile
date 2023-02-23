@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { StyleSheet, View, Image, Text } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { AuthContext } from "../../contexts/auth.provider";
@@ -12,9 +12,14 @@ import { StatusBar } from "expo-status-bar";
 interface Properties extends StackScreenProps<StackParams, "SignIn"> {}
 
 export default function SignIn({ navigation }: Properties) {
+  const authContext = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const authContext = useContext(AuthContext);
+  const [disabled, setDisabled] = useState(true);
+
+  useEffect(() => {
+    setDisabled(!(email && password));
+  }, [email, password]);
 
   const handleSingIn = () => {
     authContext.signIn(email, password);
@@ -34,7 +39,7 @@ export default function SignIn({ navigation }: Properties) {
         <View style={{ marginBottom: 40 }}>
           <EmailInput value={email} onChangeText={setEmail} />
           <PasswordInput value={password} onChangeText={setPassword} />
-          <Button onPress={handleSingIn} title="ENTRAR" />
+          <Button title="ENTRAR" disabled={disabled} onPress={handleSingIn} />
         </View>
         <CommandLink
           testID="link-cadastrar"

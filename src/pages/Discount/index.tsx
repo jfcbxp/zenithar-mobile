@@ -162,15 +162,9 @@ export default function Discount({ route, navigation }: Properties) {
         </View>
         <ApplyDiscountModal
           dismiss={() => {
-            navigation &&
-              navigation.navigate("DiscountConfirmation", {
-                _budget: _budget,
-                _branch: _branch,
-                _budgetObject: budgetData,
-                _discountValue: _discountValue!,
-              });
             setVisible(false);
           }}
+          budgetObject={budgetData}
           discountLimit={authContext.user?.discountLimit!}
           visible={visible}
           budget={_budget}

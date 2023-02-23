@@ -15,7 +15,7 @@ export function Button(properties: Properties) {
   const [opacity, setOpacity] = useState(1);
 
   useEffect(() => {
-    setOpacity(properties.disabled ? 0.5 : 1)
+    setOpacity(properties.disabled ? 0.5 : 1);
   }, [properties.disabled]);
 
   return (

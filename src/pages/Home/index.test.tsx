@@ -35,6 +35,7 @@ const signOut = jest.fn();
 const recoverPassword = jest.fn();
 const userUpdate = jest.fn();
 const addLog = jest.fn();
+const pickImage = jest.fn();
 const user: User = {
   uid: "uuidTest",
   fullName: "fullNameTest",
@@ -82,6 +83,7 @@ describe("Home test", () => {
         recoverPassword,
         userUpdate,
         addLog,
+        pickImage,
       }}
     >
       <Home navigation={navigation} route={route} />
@@ -140,7 +142,7 @@ describe("Home test", () => {
     const button3 = _button[2];
     await act(() => button3.props.onPressIn());
     expect(button3.props.title).toBe("CONFIRMAR");
-    expect(button3.props.disabled).toBe(true);
+    expect(button3.props.disabled).toBe(false);
 
     await act(() => userSettings.props.dismiss());
   });
@@ -207,6 +209,7 @@ describe("Home test", () => {
             recoverPassword,
             userUpdate,
             addLog,
+            pickImage,
           }}
         >
           <Home navigation={navigation} route={route} />

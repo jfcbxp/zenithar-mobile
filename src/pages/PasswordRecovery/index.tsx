@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
@@ -17,6 +17,11 @@ export default function PasswordRecovery({ navigation }: Properties) {
   const [dialogVisible, setDialogVisible] = useState<boolean>(false);
   const [dialogTitle, setDialogTitle] = useState<string>("");
   const [dialogContent, setDialogContent] = useState<string>("");
+  const [disabled, setDisabled] = useState(true);
+
+  useEffect(() => {
+    setDisabled(!email);
+  }, [email]);
 
   const handleRecoverPassword = () => {
     if (email) {
@@ -44,6 +49,7 @@ export default function PasswordRecovery({ navigation }: Properties) {
           <EmailInput value={email} onChangeText={setEmail} />
           <Button
             title="ENVIAR"
+            disabled={disabled}
             onPress={() => {
               Alert(
                 "Recuperação de senha",

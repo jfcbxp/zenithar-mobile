@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GestureResponderEvent, Modal, ModalProps, View } from "react-native";
 import { Dialog, DialogStyles as styles } from "./dialog";
 import { Button } from "../buttons/button";
 import { FullNameInput } from "../inputs/fullname-input";
 import { PasswordInput } from "../inputs/password-input";
 import { Portrait } from "../portrait/portrait";
-import * as ImagePicker from "expo-image-picker";
 import { CommandLink } from "../buttons/command-link";
+import { AuthContext } from "../../contexts/auth.provider";
 
 interface Properties extends ModalProps {
   visible: boolean | undefined;
@@ -22,6 +22,7 @@ interface Properties extends ModalProps {
 }
 
 export function UserSettings(properties: Properties) {
+  const authContext = useContext(AuthContext);
   const FULLNAME = properties.fullName;
   const PORTRAIT = properties.portrait;
   const [fullName, setFullName] = useState<string | undefined>(FULLNAME);
@@ -31,74 +32,70 @@ export function UserSettings(properties: Properties) {
   const [portrait, setPortrait] = useState<string | undefined>(PORTRAIT);
   const [changePassword, setChangePassword] = useState<boolean | undefined>();
   const [disabled, setDisabled] = useState(false);
+  const [editable, setEditable] = useState(true);
   const defaultDialog = { title: "", content: "", visible: false };
   const [dialog, setDialog] = useState(defaultDialog);
 
   useEffect(() => {
-    if (!changePassword) {
-      if (portrait == PORTRAIT && fullName == FULLNAME) {
-        setDisabled(true);
+    if (PORTRAIT) {
+      if (portrait) {
+        setDisabled(portrait == PORTRAIT);
       } else {
-        setDisabled(false);
+        Alert(
+          "Erro",
+          "O retrato deve ser uma imagem de formato PNG/JPEG e não deve exceder o tamanho de 2MBs"
+        );
+        setPortrait(PORTRAIT);
       }
     }
-  }, [portrait, fullName]);
+  }, [portrait]);
 
-  useEffect(() => {
-    if (changePassword) {
-      if (
-        currentPassword.length > 5 &&
-        newPassword.length > 5 &&
-        confirmPassword.length > 5
-      ) {
-        if (newPassword == confirmPassword) {
-          setDisabled(false);
-        }
-      } else {
-        setDisabled(true);
-      }
-    }
-  }, [confirmPassword]);
-
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.1,
-    });
-    if (!result.canceled) {
-      setPortrait(result.assets[0].uri);
+  const comparePasswords = (current: string, new_: string, confirm: string) => {
+    if (
+      current.length > 5 &&
+      new_.length > 5 &&
+      confirm.length > 5 &&
+      new_ &&
+      confirm &&
+      new_ == confirm
+    ) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
     }
   };
 
   const handleUpdateUser = async () => {
-    if (fullName == "") {
-      Alert("Dados mandatórios", "Por favor, preencher todos os campos");
-    } else {
-      await properties.userUpdate(
-        fullName!,
-        portrait,
-        currentPassword,
-        newPassword
-      );
-    }
-    handleCancel();
+    await properties.userUpdate(
+      fullName!,
+      portrait,
+      currentPassword,
+      newPassword
+    );
+    initials();
   };
 
   const handleChangePassword = () => {
+    setFullName(FULLNAME);
     setDisabled(true);
+    setEditable(false);
     setChangePassword(true);
   };
 
-  const handleCancel = () => {
+  const initials = () => {
     setChangePassword(undefined);
     setDisabled(false);
+    setEditable(true);
     setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");
     setFullName(FULLNAME);
     setPortrait(PORTRAIT);
+  };
+
+  const pickImage = async () => {
+    const uri = await authContext.pickImage();
+    setPortrait(uri);
   };
 
   const Alert = (title: string, content: string) => {
@@ -114,11 +111,15 @@ export function UserSettings(properties: Properties) {
     >
       <View style={styles.container}>
         <View style={styles.field}>
-          <Portrait source={portrait} onPress={pickImage} />
+          <Portrait source={portrait} editable={editable} onPress={pickImage} />
           <FullNameInput
             value={fullName}
-            onChangeText={setFullName}
+            onChangeText={(text) => {
+              setFullName(text);
+              setDisabled(text != FULLNAME && text ? false : true);
+            }}
             maxLength={20}
+            editable={editable}
           />
           {!changePassword && (
             <CommandLink onPress={handleChangePassword} title="Alterar senha" />
@@ -127,23 +128,32 @@ export function UserSettings(properties: Properties) {
             <View>
               <PasswordInput
                 value={currentPassword}
-                onChangeText={setCurrentPassword}
+                onChangeText={(text) => {
+                  setCurrentPassword(text);
+                  comparePasswords(text, newPassword, confirmPassword);
+                }}
                 placeholder="Senha atual"
               />
               <PasswordInput
                 value={newPassword}
-                onChangeText={setNewPassword}
+                onChangeText={(text) => {
+                  setNewPassword(text);
+                  comparePasswords(currentPassword, text, confirmPassword);
+                }}
                 placeholder="Nova senha"
               />
               <PasswordInput
                 value={confirmPassword}
-                onChangeText={setConfirmPassword}
+                onChangeText={(text) => {
+                  setConfirmPassword(text);
+                  comparePasswords(currentPassword, newPassword, text);
+                }}
                 placeholder="Confirmar nova senha"
               />
             </View>
           )}
           <Button
-            onPressIn={handleCancel}
+            onPressIn={initials}
             onPressOut={properties.dismiss}
             title="CANCELAR"
           />
@@ -154,8 +164,6 @@ export function UserSettings(properties: Properties) {
             title="CONFIRMAR"
           />
         </View>
-      </View>
-      {dialog.visible && (
         <Dialog
           title={dialog.title}
           content={dialog.content}
@@ -164,7 +172,7 @@ export function UserSettings(properties: Properties) {
             setDialog(defaultDialog);
           }}
         />
-      )}
+      </View>
     </Modal>
   );
 }
