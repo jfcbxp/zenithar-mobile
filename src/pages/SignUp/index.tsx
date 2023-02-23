@@ -20,7 +20,7 @@ export default function SignUp({ navigation }: Properties) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("")
   const [disabled, setDisabled] = useState(true);
-  const [portrait, setPortrait] = useState("");
+  const [portrait, setPortrait] = useState<string | undefined>();
   const defaultDialog = { title: "", content: "", visible: false };
   const [dialog, setDialog] = useState(defaultDialog);
 
@@ -28,7 +28,7 @@ export default function SignUp({ navigation }: Properties) {
     if (portrait == "") {
       Alert("Erro", "O retrato deve ser uma imagem de formato PNG/JPEG e não deve exceder o tamanho de 2MBs")
     } else {
-      check(fullName, email, password, confirmPassword, portrait)
+      check(fullName, email, password, confirmPassword, portrait!)
     }
   }, [portrait])
 
@@ -61,27 +61,27 @@ export default function SignUp({ navigation }: Properties) {
             value={fullName}
             onChangeText={(text) => {
               setFullName(text)
-              check(fullName, email, password, confirmPassword, portrait)
+              check(fullName, email, password, confirmPassword, portrait!)
             }}
             maxLength={20} />
           <EmailInput
             value={email}
             onChangeText={(text) => {
               setEmail(text)
-              check(fullName, text, password, confirmPassword, portrait)
+              check(fullName, text, password, confirmPassword, portrait!)
             }} />
           <PasswordInput
             value={password}
             onChangeText={(text) => {
               setPassword(text)
-              check(fullName, email, text, confirmPassword, portrait)
+              check(fullName, email, text, confirmPassword, portrait!)
             }} />
           <PasswordInput
             placeholder="Confirmar senha"
             value={confirmPassword}
             onChangeText={(text) => {
               setConfirmPassword(text)
-              check(fullName, email, password, text, portrait)
+              check(fullName, email, password, text, portrait!)
             }} />
           <Button
             title="CONTINUAR"
@@ -102,7 +102,7 @@ export default function SignUp({ navigation }: Properties) {
         visible={dialog.visible}
         dismiss={() => {
           if (dialog.title != "Erro") {
-            authContext.signUp(email, password, fullName, portrait);
+            authContext.signUp(email, password, fullName, portrait!);
             navigation && navigation.navigate("SignIn");
           }
           setDialog(defaultDialog);

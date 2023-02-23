@@ -5,7 +5,6 @@ import { Button } from "../buttons/button";
 import { FullNameInput } from "../inputs/fullname-input";
 import { PasswordInput } from "../inputs/password-input";
 import { Portrait } from "../portrait/portrait";
-import * as ImagePicker from "expo-image-picker";
 import { CommandLink } from "../buttons/command-link";
 import { AuthContext } from "../../contexts/auth.provider";
 
