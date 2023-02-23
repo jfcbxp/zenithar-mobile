@@ -26,7 +26,7 @@ export default function SignUp({ navigation }: Properties) {
 
   useEffect(() => {
     if (portrait) {
-      check(fullName, email, password, confirmPassword, portrait!);
+      check(fullName, email, password, confirmPassword, portrait);
     } else {
       Alert(
         "Erro",
