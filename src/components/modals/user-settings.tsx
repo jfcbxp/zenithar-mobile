@@ -36,20 +36,6 @@ export function UserSettings(properties: Properties) {
   const defaultDialog = { title: "", content: "", visible: false };
   const [dialog, setDialog] = useState(defaultDialog);
 
-  useEffect(() => {
-    if (PORTRAIT) {
-      if (portrait) {
-        setDisabled(portrait == PORTRAIT);
-      } else {
-        Alert(
-          "Erro",
-          "O retrato deve ser uma imagem de formato PNG/JPEG e não deve exceder o tamanho de 2MBs"
-        );
-        setPortrait(PORTRAIT);
-      }
-    }
-  }, [portrait]);
-
   const comparePasswords = (current: string, new_: string, confirm: string) => {
     if (
       current.length > 5 &&
@@ -95,7 +81,16 @@ export function UserSettings(properties: Properties) {
 
   const pickImage = async () => {
     const uri = await authContext.pickImage();
-    setPortrait(uri);
+    if (uri) {
+      setPortrait(uri);
+      setDisabled(portrait == PORTRAIT);
+    } else {
+      Alert(
+        "Erro",
+        "O retrato deve ser uma imagem de formato PNG/JPEG e não deve exceder o tamanho de 2MBs"
+      );
+      setPortrait(PORTRAIT);
+    }
   };
 
   const Alert = (title: string, content: string) => {
