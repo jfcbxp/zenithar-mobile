@@ -6,7 +6,7 @@ import {
   Text,
   ListRenderItem,
   ActivityIndicator,
-  ScrollView
+  ScrollView,
 } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
@@ -24,7 +24,7 @@ import { ItemsItem } from "../../components/lists/discount/items-item";
 import { PaymentMethodItem } from "../../components/lists/discount/payment-method-item";
 import axios from "axios";
 
-interface Properties extends StackScreenProps<StackParams, "Discount"> { }
+interface Properties extends StackScreenProps<StackParams, "Discount"> {}
 
 export default function Discount({ route, navigation }: Properties) {
   const { _budget, _branch, _discountValue } = route.params;
@@ -49,11 +49,13 @@ export default function Discount({ route, navigation }: Properties) {
       .then((budget) => {
         setBudgetData(budget);
       })
-      .catch((error) => {
-        if (axios.isAxiosError(error)) {
-          Alert("Erro", "Servidor indisponível");
-        } else {
-          Alert("Erro", error.response.data.error);
+      .catch((result) => {
+        if (axios.isAxiosError(result)) {
+          if (result.response?.data?.error) {
+            Alert("Erro", result.response?.data?.error);
+          } else {
+            Alert("Erro", "Servidor indisponível");
+          }
         }
       });
   }, []);
@@ -144,8 +146,7 @@ export default function Discount({ route, navigation }: Properties) {
             </View>
           </View>
         </View>
-        <ScrollView
-          style={styles.bottomField}>
+        <ScrollView style={styles.bottomField}>
           <Dropdown
             title="Itens"
             renderItem={renderItemItens}
@@ -159,9 +160,7 @@ export default function Discount({ route, navigation }: Properties) {
         </ScrollView>
         <footer>
           <View style={{ padding: "5%" }}>
-            <Button
-              title="CONTINUAR"
-              onPress={() => setVisible(true)} />
+            <Button title="CONTINUAR" onPress={() => setVisible(true)} />
           </View>
         </footer>
         <ApplyDiscountModal
@@ -259,6 +258,5 @@ const styles = StyleSheet.create({
     flex: 5,
     paddingTop: "2.5%",
     marginHorizontal: "5%",
-
   },
 });

@@ -41,11 +41,13 @@ export default function DiscountConfirmation({
         authContext.addLog(newLog);
         Alert("Sucesso", "Efetuado desconto para o orçamento: " + _budget);
       })
-      .catch((error) => {
-        if (axios.isAxiosError(error)) {
-          Alert("Erro", "Servidor indisponível");
-        } else {
-          Alert("Erro", error.response.data.error);
+      .catch((result) => {
+        if (axios.isAxiosError(result)) {
+          if (result.response?.data?.error) {
+            Alert("Erro", result.response?.data?.error);
+          } else {
+            Alert("Erro", "Servidor indisponível");
+          }
         }
       });
   };
