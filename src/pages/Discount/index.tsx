@@ -6,6 +6,7 @@ import {
   Text,
   ListRenderItem,
   ActivityIndicator,
+  ScrollView
 } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";
@@ -23,7 +24,7 @@ import { ItemsItem } from "../../components/lists/discount/items-item";
 import { PaymentMethodItem } from "../../components/lists/discount/payment-method-item";
 import axios from "axios";
 
-interface Properties extends StackScreenProps<StackParams, "Discount"> {}
+interface Properties extends StackScreenProps<StackParams, "Discount"> { }
 
 export default function Discount({ route, navigation }: Properties) {
   const { _budget, _branch, _discountValue } = route.params;
@@ -143,23 +144,26 @@ export default function Discount({ route, navigation }: Properties) {
             </View>
           </View>
         </View>
-        <View style={styles.bottomField}>
-          <View style={{ flex: 5, paddingTop: "2.5%" }}>
-            <Dropdown
-              title="Itens"
-              renderItem={renderItemItens}
-              data={budgetData.itens}
-            />
-            <Dropdown
-              renderItem={renderItemPagamentos}
-              title="Forma de pagamento"
-              data={budgetData.pagamentos}
-            />
+        <ScrollView
+          style={styles.bottomField}>
+          <Dropdown
+            title="Itens"
+            renderItem={renderItemItens}
+            data={budgetData.itens}
+          />
+          <Dropdown
+            renderItem={renderItemPagamentos}
+            title="Forma de pagamento"
+            data={budgetData.pagamentos}
+          />
+        </ScrollView>
+        <footer>
+          <View style={{ padding: "5%" }}>
+            <Button
+              title="CONTINUAR"
+              onPress={() => setVisible(true)} />
           </View>
-          <View style={{ flex: 1 }}>
-            <Button onPress={() => setVisible(true)} title="CONTINUAR" />
-          </View>
-        </View>
+        </footer>
         <ApplyDiscountModal
           dismiss={() => {
             setVisible(false);
@@ -215,7 +219,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#212A4D",
   },
   header: {
-    flex: 1,
     flexDirection: "row",
     alignItems: "center",
   },
@@ -225,7 +228,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   topField: {
-    flex: 2,
+    height: 256,
     backgroundColor: "#1F2D5A",
   },
   title: {
@@ -253,8 +256,9 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   bottomField: {
-    flex: 4,
-    flexDirection: "column",
+    flex: 5,
+    paddingTop: "2.5%",
     marginHorizontal: "5%",
+
   },
 });

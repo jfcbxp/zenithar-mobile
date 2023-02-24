@@ -5,7 +5,7 @@ import {
   Text,
   View,
   StyleSheet,
-  FlatList,
+  FlatList
 } from "react-native";
 import { Feather as Icon } from "@expo/vector-icons";
 

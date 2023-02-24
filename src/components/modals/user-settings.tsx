@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { GestureResponderEvent, Modal, ModalProps, View } from "react-native";
 import { Dialog, DialogStyles as styles } from "./dialog";
 import { Button } from "../buttons/button";

@@ -5,7 +5,7 @@ export function ItemsItem({ data }: { data: Itens }) {
   const hidden = true;
   return (
     <View style={styles.container}>
-      <View style={{ flex: 2, alignItems: "center" }}>
+      <View style={{ flex: 1, alignItems: "center" }}>
         {hidden ? (
           <View style={styles.noPhoto}>
             <Text style={styles.noPhotoText}>
@@ -20,7 +20,7 @@ export function ItemsItem({ data }: { data: Itens }) {
         )}
         <Text style={styles.title}>{data.produto}</Text>
       </View>
-      <View style={{ flex: 4 }}>
+      <View style={{ flex: 2 }}>
         <View>
           <Text style={styles.title}>{data.descricaoProduto}</Text>
           <Text style={styles.description}>Armazem: {data.armazem}</Text>

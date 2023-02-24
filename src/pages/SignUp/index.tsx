@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button } from "../../components/buttons/button";
 import { Dialog } from "../../components/modals/dialog";
