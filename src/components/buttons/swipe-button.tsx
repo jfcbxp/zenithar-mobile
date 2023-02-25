@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { ActivityIndicator, StyleSheet } from "react-native";
 import { SwipeButton as RNExpoSwipeButton } from "react-native-expo-swipe-button";
 import { MaterialIcons as Icon } from "@expo/vector-icons";
 
@@ -12,7 +12,12 @@ interface Properties {
 export function SwipeButton(properties: Properties) {
   return (
     <RNExpoSwipeButton
-      Icon={<Icon name="keyboard-arrow-right" size={42} color="white" />}
+      Icon={
+        !properties.disabled ?
+          <Icon name="keyboard-arrow-right" size={42} color="white" />
+          :
+          <ActivityIndicator size={42} color="white" />
+      }
       onComplete={properties.onComplete}
       disabled={properties.disabled}
       title={properties.title}
