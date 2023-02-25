@@ -6,7 +6,7 @@ import {
   Text,
   ListRenderItem,
   ActivityIndicator,
-  ScrollView,
+  ScrollView
 } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParams } from "../../types/stack.params";

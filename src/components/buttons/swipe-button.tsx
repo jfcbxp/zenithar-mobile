@@ -6,6 +6,7 @@ interface Properties {
   onComplete: () => void;
   title: string;
   underlayTitle: string;
+  disabled?: boolean
 }
 
 export function SwipeButton(properties: Properties) {
@@ -13,6 +14,7 @@ export function SwipeButton(properties: Properties) {
     <RNExpoSwipeButton
       Icon={<Icon name="keyboard-arrow-right" size={42} color="white" />}
       onComplete={properties.onComplete}
+      disabled={properties.disabled}
       title={properties.title}
       titleStyle={styles.title}
       underlayTitle={properties.underlayTitle}

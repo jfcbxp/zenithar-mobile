@@ -12,7 +12,7 @@ import { LogTypeEnum, UserLogs } from "../../../models/user.logs.model";
 import axios from "axios";
 
 interface Properties
-  extends StackScreenProps<StackParams, "DiscountConfirmation"> {}
+  extends StackScreenProps<StackParams, "DiscountConfirmation"> { }
 
 export default function DiscountConfirmation({
   navigation,
@@ -27,8 +27,10 @@ export default function DiscountConfirmation({
   const month = date.getMonth() + 1;
   const year = date.getFullYear();
   const service = useBudgetService();
+  const [disabled, setDisabled] = useState(false)
 
   const releaseDiscount = () => {
+    setDisabled(true)
     service
       .releaseDiscount(_budget, _branch, _discountValue)
       .then(() => {
@@ -102,6 +104,7 @@ export default function DiscountConfirmation({
           onComplete={releaseDiscount}
           title="EFETUAR DESCONTO"
           underlayTitle="LIBERAR"
+          disabled={disabled}
         />
       </View>
       <Dialog
@@ -111,6 +114,9 @@ export default function DiscountConfirmation({
         dismiss={() => {
           if (dialog.title != "Erro") {
             navigation && navigation.navigate("Home");
+            setDisabled(false)
+          } else {
+            setDisabled(false)
           }
           setDialog(defaultDialog);
         }}
