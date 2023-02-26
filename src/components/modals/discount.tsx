@@ -92,7 +92,9 @@ export function DiscountModal(properties: Properties) {
           <Text style={styles.title}>Desconto</Text>
           <MaskedInput
             value={budget}
-            onChangeText={setBudget}
+            onChangeText={(text) => {
+              setBudget(text.toUpperCase())
+            }}
             autoCapitalize="characters"
             placeholder="Número do Orçamento"
             maxLength={6}

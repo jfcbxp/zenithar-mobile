@@ -7,14 +7,19 @@ export function API(baseURL: string, token?: string) {
       withCredentials: true,
       headers: {
         "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "24022023",
         Authorization: `Bearer ${token}`,
       },
-      timeout: 5000,
+      timeout: 20000,
     });
   } else {
     return axios.create({
       baseURL: `${baseURL}/zenithar/`,
-      timeout: 5000,
+      headers: {
+        "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "24022023",
+      },
+      timeout: 20000,
     });
   }
 }

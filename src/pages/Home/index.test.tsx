@@ -176,7 +176,7 @@ describe("Home test", () => {
 
     const textInput = modal.findByType(MaskedInput);
     await act(() => textInput.props.onChangeText("test"));
-    expect(textInput.props.value).toBe("test");
+    expect(textInput.props.value).toBe("TEST");
 
     const picker = modal.findByType(Picker);
     await act(() => picker.props.setValue(""));

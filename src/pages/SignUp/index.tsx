@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button } from "../../components/buttons/button";
 import { Dialog } from "../../components/modals/dialog";
@@ -24,17 +24,6 @@ export default function SignUp({ navigation }: Properties) {
   const defaultDialog = { title: "", content: "", visible: false };
   const [dialog, setDialog] = useState(defaultDialog);
 
-  useEffect(() => {
-    if (portrait) {
-      check(fullName, email, password, confirmPassword, portrait);
-    } else {
-      Alert(
-        "Erro",
-        "O retrato deve ser uma imagem de formato PNG/JPEG e não deve exceder o tamanho de 2MBs"
-      );
-    }
-  }, [portrait]);
-
   const check = (
     fullName: string,
     email: string,
@@ -58,7 +47,15 @@ export default function SignUp({ navigation }: Properties) {
 
   const pickImage = async () => {
     const uri = await authContext.pickImage();
-    setPortrait(uri);
+    if (uri) {
+      setPortrait(uri);
+      check(fullName, email, password, confirmPassword, uri);
+    } else {
+      Alert(
+        "Erro",
+        "O retrato deve ser uma imagem de formato PNG/JPEG e não deve exceder o tamanho de 2MBs"
+      );
+    }
   };
 
   const Alert = (title: string, content: string) => {

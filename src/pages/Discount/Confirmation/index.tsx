@@ -27,25 +27,31 @@ export default function DiscountConfirmation({
   const month = date.getMonth() + 1;
   const year = date.getFullYear();
   const service = useBudgetService();
+  const [disabled, setDisabled] = useState(false);
 
   const releaseDiscount = () => {
+    setDisabled(true);
     service
       .releaseDiscount(_budget, _branch, _discountValue)
-      .then(() => {
+      .then(async () => {
         let newLog: UserLogs = {
           title: `Desconto no orçamento ${_budget}`,
           date: `${day}/${month}/${year}`,
-          description: `R$ ${_budgetObject.totalBruto - _discountValue}`,
+          description: `R$ ${(
+            _budgetObject.totalBruto - _discountValue
+          ).toFixed(2)}`,
           type: LogTypeEnum.DESCONTO_ORCAMENTO,
         };
-        authContext.addLog(newLog);
+        await authContext.addLog(newLog);
         Alert("Sucesso", "Efetuado desconto para o orçamento: " + _budget);
       })
-      .catch((error) => {
-        if (axios.isAxiosError(error)) {
-          Alert("Erro", "Servidor indisponível");
-        } else {
-          Alert("Erro", error.response.data.error);
+      .catch((result) => {
+        if (axios.isAxiosError(result)) {
+          if (result.response?.data?.error) {
+            Alert("Erro", result.response?.data?.error);
+          } else {
+            Alert("Erro", "Servidor indisponível");
+          }
         }
       });
   };
@@ -100,6 +106,7 @@ export default function DiscountConfirmation({
           onComplete={releaseDiscount}
           title="EFETUAR DESCONTO"
           underlayTitle="LIBERAR"
+          disabled={disabled}
         />
       </View>
       <Dialog
@@ -109,6 +116,9 @@ export default function DiscountConfirmation({
         dismiss={() => {
           if (dialog.title != "Erro") {
             navigation && navigation.navigate("Home");
+            setDisabled(false);
+          } else {
+            setDisabled(false);
           }
           setDialog(defaultDialog);
         }}
