@@ -24,7 +24,9 @@ export const useBudgetService = () => {
   ): Promise<void> => {
     const secret = (await tokenService.getToken())?.token;
     const api = API(tokenService.getUrl(), secret);
-    const url: string = `orcamento/efetuarDesconto?numeroOrcamento=${budget}&empresa=${branch}&valorDesconto=${discountValue}`;
+    const url: string = `orcamento/efetuarDesconto?numeroOrcamento=${budget}&empresa=${branch}&valorDesconto=${discountValue.toFixed(
+      2
+    )}`;
     await api.patch<Orcamento>(url);
   };
 
