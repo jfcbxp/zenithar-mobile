@@ -33,7 +33,7 @@ export default function DiscountConfirmation({
     setDisabled(true);
     service
       .releaseDiscount(_budget, _branch, _discountValue)
-      .then(() => {
+      .then(async () => {
         let newLog: UserLogs = {
           title: `Desconto no orçamento ${_budget}`,
           date: `${day}/${month}/${year}`,
@@ -42,7 +42,7 @@ export default function DiscountConfirmation({
           ).toFixed(2)}`,
           type: LogTypeEnum.DESCONTO_ORCAMENTO,
         };
-        authContext.addLog(newLog);
+        await authContext.addLog(newLog);
         Alert("Sucesso", "Efetuado desconto para o orçamento: " + _budget);
       })
       .catch((result) => {

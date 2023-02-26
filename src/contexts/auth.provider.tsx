@@ -201,7 +201,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const addLog = async (log: UserLogs) => {
-    setLoading(true);
     let _user: User = user!;
     let logs = _user.logs ? _user.logs : [];
     logs.reverse();
@@ -213,7 +212,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     await realtime.ref("users").child(_user.uid).child("logs").update(logs);
     _user.logs = logs;
     setUser(_user);
-    setLoading(false);
   };
 
   const pickImage = async (): Promise<string> => {
