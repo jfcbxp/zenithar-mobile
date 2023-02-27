@@ -52,6 +52,7 @@ jobs:
           file_name: .env
           fail_on_empty: false
       - name: 🚀 Build Web Project
+        uses: actions/checkout@v2
         run: npm run github
       - name: Deploy
         uses: FirebaseExtended/action-hosting-deploy@v0
