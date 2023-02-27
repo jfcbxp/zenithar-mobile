@@ -49,6 +49,7 @@ jobs:
           envkey_MESSAGING_SENDER_ID: ${{ secrets.MESSAGING_SENDER_ID }}
           envkey_APP_ID: ${{ secrets.APP_ID }}
           envkey_MEASUREMENT_ID: ${{ secrets.MEASUREMENT_ID }}
+          envkey_EXPO_ENV: "development"
           file_name: .env
           fail_on_empty: false
       - name: 🚀 Build Web Project
