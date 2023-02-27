@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - develop
+  pull_request:
+    types: [opened, synchronize, reopened]
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -50,7 +52,7 @@ jobs:
           file_name: .env
           fail_on_empty: false
       - name: 🚀 Build Web Project
-        run: npx expo export:web
+        run: APP_ENV=development npx expo export:web
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
