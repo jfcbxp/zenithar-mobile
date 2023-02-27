@@ -14,7 +14,7 @@
       "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)"
     ]
   },
-  "homepage": "https://zenithar-mobile.web.app",
+  "homepage": "https://jfcbxp.github.io/zenithar-mobile",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -23,8 +23,8 @@
     "test": "jest",
     "testWithCoverage": "jest --verbose --coverage",
     "completeTestWithCoverage": "jest --verbose --updateSnapshot --watch --coverage && open ./coverage/lcov-report/index.html",
-    "github": "npx expo export:web",
-    "firebase": "npx expo export:web"
+    "github": "APP_ENV=development npx expo export:web",
+    "firebase": "APP_ENV=production npx expo export:web"
   },
   "dependencies": {
     "@expo/webpack-config": "^0.17.2",
