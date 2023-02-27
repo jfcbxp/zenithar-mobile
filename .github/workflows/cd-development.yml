@@ -1,4 +1,4 @@
-name: CD build
+name: CD Github pages build
 
 on:
   push:
@@ -50,7 +50,7 @@ jobs:
           file_name: .env
           fail_on_empty: false
       - name: 🚀 Build Web Project
-        run: APP_ENV=development npx expo export:web
+        run: npm run github
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
