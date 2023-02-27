@@ -50,7 +50,7 @@ jobs:
           file_name: .env
           fail_on_empty: false
       - name: 🚀 Build Web Project
-        run: APP_ENV=production npx expo export:web
+        run: npm run firebase
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:

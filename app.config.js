@@ -1,5 +1,5 @@
 module.exports = () => {
-  if (process.env.APP_ENV === "production") {
+  if (process.env.NODE_ENV === "production") {
     return require("./app.production.json");
   } else {
     return require("./app.development.json");
