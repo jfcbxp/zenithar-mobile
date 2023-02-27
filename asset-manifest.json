@@ -1,7 +1,7 @@
 {
   "files": {
-    "app.js": "/zenithar-mobile/static/js/app.dbf4f888.chunk.js",
-    "app.js.map": "/zenithar-mobile/static/js/app.dbf4f888.chunk.js.map",
+    "app.js": "/zenithar-mobile/static/js/app.422a4ab8.chunk.js",
+    "app.js.map": "/zenithar-mobile/static/js/app.422a4ab8.chunk.js.map",
     "runtime~app.js": "/zenithar-mobile/static/js/runtime~app.562f6c92.js",
     "runtime~app.js.map": "/zenithar-mobile/static/js/runtime~app.562f6c92.js.map",
     "static/js/2.41163c37.chunk.js": "/zenithar-mobile/static/js/2.41163c37.chunk.js",
@@ -37,6 +37,6 @@
   "entrypoints": [
     "static/js/runtime~app.562f6c92.js",
     "static/js/2.41163c37.chunk.js",
-    "static/js/app.dbf4f888.chunk.js"
+    "static/js/app.422a4ab8.chunk.js"
   ]
 }
