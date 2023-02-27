@@ -1,11 +1,9 @@
-name: CD Github pages build
+name: CD Firebase build
 
 on:
   push:
     branches:
-      - develop
-  pull_request:
-    types: [opened, synchronize, reopened]
+      - release
 jobs:
   deploy:
     runs-on: ubuntu-latest
