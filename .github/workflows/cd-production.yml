@@ -52,8 +52,8 @@ jobs:
           file_name: .env
           fail_on_empty: false
       - name: 🚀 Build Web Project
-      - run: npm run firebase
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+        run: npm run firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_ZENITHAR_MOBILE }}"
