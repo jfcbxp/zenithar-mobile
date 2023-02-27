@@ -4,7 +4,7 @@
   "lang": "en",
   "name": "Zenithar",
   "short_name": "Zenithar",
-  "start_url": "/?utm_source=web_app_manifest",
+  "start_url": "/zenithar-mobile/",
   "orientation": "portrait",
   "icons": [
     {
