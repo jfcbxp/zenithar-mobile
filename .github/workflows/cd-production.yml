@@ -3,7 +3,9 @@ name: CD Firebase Host build
 on:
   push:
     branches:
-      - release
+      - develop
+  pull_request:
+    types: [opened, synchronize, reopened]
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -50,9 +52,11 @@ jobs:
           file_name: .env
           fail_on_empty: false
       - name: 🚀 Build Web Project
-        run: npm run firebase
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - uses: actions/checkout@v2
+      - run: npm run firebase
+      - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./web-build
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_ZENITHAR_MOBILE }}"
+          channelId: live
+          projectId: zenithar-mobile
