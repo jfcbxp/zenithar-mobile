@@ -1,4 +1,4 @@
-name: CD Firebase Host build
+name: CD Github pages build
 
 on:
   push:
@@ -52,10 +52,10 @@ jobs:
           file_name: .env
           fail_on_empty: false
       - name: 🚀 Build Web Project
-        run: npm run firebase
+        run: npm run github
+      - name: Deploy
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_ZENITHAR_MOBILE }}"
-          channelId: live
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_ZENITHAR_MOBILE }}
           projectId: zenithar-mobile
