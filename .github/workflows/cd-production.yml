@@ -53,6 +53,7 @@ jobs:
           fail_on_empty: false
       - name: 🚀 Build Web Project
       - run: npm run firebase
+      - name: Deploy
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
