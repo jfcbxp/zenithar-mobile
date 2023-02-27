@@ -9,9 +9,14 @@ export default function AppRoutes() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen name="Discount" component={Discount} />
+      <Stack.Screen
+        name="Discount"
+        options={{ title: "Desconto" }}
+        component={Discount}
+      />
       <Stack.Screen
         name="DiscountConfirmation"
+        options={{ title: "Confirmação de Desconto" }}
         component={DiscountConfirmation}
       />
     </Stack.Navigator>

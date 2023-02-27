@@ -12,7 +12,7 @@ export default function AuthRoutes() {
         name="SignIn"
         component={SignIn}
         options={{
-          title: "",
+          title: "Login",
           headerShown: false,
         }}
       />
@@ -20,7 +20,7 @@ export default function AuthRoutes() {
         name="SignUp"
         component={SignUp}
         options={{
-          title: "Seus dados",
+          title: "Cadastro",
           headerTransparent: true,
         }}
       />
