@@ -28,7 +28,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png",
-      "startUrl": "/zenithar-mobile/?utm_source=web_app_manifest"
+      "startUrl": "/zenithar-mobile/"
     },
     "plugins": [
       [
