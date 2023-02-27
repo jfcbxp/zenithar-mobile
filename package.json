@@ -23,8 +23,8 @@
     "test": "jest",
     "testWithCoverage": "jest --verbose --coverage",
     "completeTestWithCoverage": "jest --verbose --updateSnapshot --watch --coverage && open ./coverage/lcov-report/index.html",
-    "github": "APP_ENV=development npx expo export:web",
-    "firebase": "APP_ENV=production npx expo export:web"
+    "github": "npm pkg set 'homepage'='https://jfcbxp.github.io/zenithar-mobile' & npx expo export:web",
+    "firebase": "npm pkg set 'homepage'='https://zenithar-mobile.web.app' & npx expo export:web"
   },
   "dependencies": {
     "@expo/webpack-config": "^0.17.2",
@@ -79,5 +79,6 @@
     "workbox-streams": "^6.5.4",
     "workbox-webpack-plugin": "^6.5.4"
   },
-  "private": true
+  "private": true,
+  "'homepage'": "'https://jfcbxp.github.io/zenithar-mobile'"
 }
