@@ -46,7 +46,7 @@ export function ApplyDiscountModal(properties: Properties) {
         `Limite de desconto permitido: ${properties.discountLimit}%`
       );
     } else {
-      setPercentage(discountPercentage.toString());
+      setPercentage(discountPercentage.toFixed(2));
       total -= value;
       setNewTotal(total.toFixed(2).replace(".", ","));
       setDiscountValue(value);
