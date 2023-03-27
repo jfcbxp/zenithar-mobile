@@ -4,6 +4,7 @@ export type StackParams = {
   SignIn: undefined;
   SignUp: undefined;
   PasswordRecovery: undefined;
+  PhoneSignIn: undefined;
   Home: undefined;
   Discount: {
     _budget: string;
