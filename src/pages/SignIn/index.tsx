@@ -42,6 +42,13 @@ export default function SignIn({ navigation }: Properties) {
           <Button title="ENTRAR" disabled={disabled} onPress={handleSingIn} />
         </View>
         <CommandLink
+          testID="link-login-phone"
+          onPress={() => {
+            navigation && navigation.navigate("PhoneSignIn");
+          }}
+          title="Entre com número de telefone móvel"
+        />
+        <CommandLink
           testID="link-cadastrar"
           onPress={() => {
             navigation && navigation.navigate("SignUp");

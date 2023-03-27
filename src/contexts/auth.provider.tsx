@@ -5,6 +5,7 @@ import firebase from "firebase/compat/app";
 import { Dialog } from "../components/modals/dialog";
 import { UserLogs } from "../models/user.logs.model";
 import * as ImagePicker from "expo-image-picker";
+import { InputDialog } from "../components/modals/input-dialog";
 
 type AuthContextProps = {
   user: User | undefined;
@@ -19,6 +20,10 @@ type AuthContextProps = {
     _portrait: string
   ): Promise<void>;
   signIn(_email: string, _password: string): Promise<void>;
+  phoneSignIn(
+    phoneNumber: string,
+    applicationVerifier: firebase.auth.ApplicationVerifier
+  ): Promise<void>;
   signOut(): Promise<void>;
   recoverPassword(_email: string): Promise<void>;
   userUpdate(
@@ -37,12 +42,13 @@ const defaultState = {
   department: undefined,
   urlBackend: undefined,
   loading: true,
-  signUp: async () => {},
-  signIn: async () => {},
-  signOut: async () => {},
-  recoverPassword: async () => {},
-  userUpdate: async () => {},
-  addLog: async () => {},
+  signUp: async () => { },
+  signIn: async () => { },
+  phoneSignIn: async () => { },
+  signOut: async () => { },
+  recoverPassword: async () => { },
+  userUpdate: async () => { },
+  addLog: async () => { },
   pickImage: async (): Promise<string> => {
     return Promise.resolve("");
   },
@@ -63,11 +69,16 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const defaultDialog = { title: "", content: "", visible: false };
   const [dialog, setDialog] = useState(defaultDialog);
   const [expireAt, setExpireAt] = useState("");
+  const [verificationId, setVerificationId] = useState("");
+  const [code, setCode] = useState("")
+  const [codeVisible, setCodeVisible] = useState(false)
+  const [fullName, setFullName] = useState("")
+  const [fullNameVisible, setFullNameVisible] = useState(false)
 
   useEffect(() => {
     firebaseAuth.onAuthStateChanged(async (currentUser) => {
       if (currentUser) {
-        if (currentUser.emailVerified) {
+        if (currentUser.emailVerified || currentUser.phoneNumber) {
           if (!user) {
             await _getUserRegister(currentUser.uid);
           }
@@ -148,6 +159,50 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       });
   };
 
+  const phoneSignIn = async (
+    phoneNumber: string,
+    applicationVerifier: firebase.auth.ApplicationVerifier
+  ) => {
+    const phoneProvider = new firebase.auth.PhoneAuthProvider()
+    phoneProvider
+      .verifyPhoneNumber(phoneNumber, applicationVerifier)
+      .then((result) => {
+        setVerificationId(result)
+        setCodeVisible(true)
+      })
+  }
+
+  const _confirmCode = async (
+    verificationId: string,
+    code: string
+  ) => {
+    const credential = firebase.auth.PhoneAuthProvider.credential(verificationId, code)
+    await firebaseAuth.signInWithCredential(credential)
+      .then(async (currentUser) => {
+        await realtime
+          .ref("users")
+          .child(currentUser.user?.uid!)
+          .once("value")
+          .then(async (snapshot) => {
+            if (snapshot.exists()) {
+              await _getUserRegister(currentUser.user?.uid!)
+            } else {
+              let _user: User = {
+                uid: currentUser.user?.uid!,
+                fullName: "",
+                verified: true,
+                portrait: "",
+                discountLimit: 0,
+              }
+              await _userRegister(_user)
+            }
+          })
+        setVerificationId("")
+        setCode("")
+        setCodeVisible(false)
+      })
+  }
+
   const signOut = async () => {
     setLoading(true);
     await firebaseAuth.signOut();
@@ -193,6 +248,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         _user.fullName = _fullName;
         _user.portrait = _portraitURL;
         setUser(_user);
+        setFullName("")
+        setFullNameVisible(false)
       });
     if (_currentPassword && _newPassword) {
       await _userUpdatePassword(_currentPassword, _newPassword);
@@ -302,6 +359,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       })
       .then(() => {
         setUser(_user);
+        if (!_user.fullName) {
+          setFullNameVisible(true)
+        }
       });
   };
 
@@ -330,6 +390,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           }
         }
         setUser(_user);
+        if (!_user.fullName) {
+          setFullNameVisible(true)
+        }
         _user.department && (await _storeDepartment(_user.department));
         _user.company && (await _licenseCheck(_user.company));
       });
@@ -386,6 +449,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       loading,
       signUp,
       signIn,
+      phoneSignIn,
       signOut,
       recoverPassword,
       userUpdate,
@@ -400,6 +464,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       loading,
       signUp,
       signIn,
+      phoneSignIn,
       signOut,
       recoverPassword,
       userUpdate,
@@ -416,8 +481,19 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         visible={dialog.visible}
         dismiss={() => {
           setDialog(defaultDialog);
-        }}
-      />
+        }} />
+      <InputDialog
+        value={code}
+        onChangeText={setCode}
+        title="Código"
+        visible={codeVisible}
+        dismiss={() => _confirmCode(verificationId, code)} />
+      <InputDialog
+        value={fullName}
+        onChangeText={setFullName}
+        title="Nome completo"
+        visible={fullNameVisible}
+        dismiss={() => userUpdate(fullName, "")} />
       {children}
     </AuthContext.Provider>
   );

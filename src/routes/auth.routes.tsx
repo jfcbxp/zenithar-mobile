@@ -1,6 +1,7 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import PasswordRecovery from "../pages/PasswordRecovery";
 import SignIn from "../pages/SignIn";
+import PhoneSignIn from "../pages/SignIn/Phone";
 import SignUp from "../pages/SignUp";
 import { StackParams } from "../types/stack.params";
 
@@ -29,6 +30,14 @@ export default function AuthRoutes() {
         component={PasswordRecovery}
         options={{
           title: "Recuperação de senha",
+          headerTransparent: true,
+        }}
+      />
+      <Stack.Screen
+        name="PhoneSignIn"
+        component={PhoneSignIn}
+        options={{
+          title: "Login com telefone móvel",
           headerTransparent: true,
         }}
       />
